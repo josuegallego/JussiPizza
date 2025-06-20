@@ -368,12 +368,12 @@ export default function Home() {
       {/* Hero Section */}
       <section
         id="home"
-        className="relative pt-32 pb-20 px-6 text-center min-h-screen flex items-center justify-center overflow-hidden"
+        className="relative pt-32 pb-20 px-4 md:px-6 text-center min-h-screen flex items-center justify-center overflow-hidden"
         style={{
           backgroundImage: `url('/IMG_0096.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          backgroundAttachment: "fixed",
+          backgroundAttachment: window.innerWidth > 768 ? "fixed" : "scroll",
         }}
       >
         {/* Background Overlay with Blur Effect */}
@@ -389,53 +389,57 @@ export default function Home() {
         </div>
 
         <div className="container mx-auto relative z-10">
-          <div className="flex justify-center mb-12">
-            <div className="bg-[#F22233] text-white px-6 py-3 rounded-full flex items-center space-x-2 shadow-lg animate-bounce">
-              <Award className="w-5 h-5" />
+          <div className="flex justify-center mb-8 md:mb-12 px-4">
+            <div className="bg-[#F22233] text-white px-4 md:px-6 py-2 md:py-3 rounded-full flex items-center space-x-2 shadow-lg animate-bounce text-sm md:text-base">
+              <Award className="w-4 h-4 md:w-5 md:h-5" />
               <span className="font-semibold">Ganadores del Pizza Fest 2021</span>
             </div>
           </div>
 
-          <h2 className="text-6xl md:text-8xl font-bold text-white mb-8 leading-tight animate-fade-in drop-shadow-2xl">
-            Bienvenidos a<br />
-            <span className="relative inline-block">
-              <span className="absolute inset-0 text-black blur-md opacity-60">
-                Jussi Pizza
-              </span>
-              <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-[#F22233] to-[#F3EDD6] bg-[length:300%_300%] bg-[position:0%_50%] animate-gradient-x drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] text-6xl md:text-8xl font-bold leading-tight">
-                Jussi Pizza
-              </span>
+        <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold text-white mb-6 md:mb-8 leading-tight animate-fade-in drop-shadow-2xl">
+          Bienvenidos a<br />
+          <span className="relative inline-block">
+            {/* Blur detrás */}
+            <span className="absolute inset-0 text-black blur-sm opacity-40 sm:opacity-50">
+              Jussi Pizza
             </span>
-          </h2>
 
-          <div className="flex items-center justify-center space-x-3 mb-10 animate-fade-in delay-300">
-            <Heart className="w-8 h-8 text-[#F22233] animate-pulse drop-shadow-lg" />
-            <p className="text-2xl text-white italic font-bold bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full border border-white/30 drop-shadow-lg">
+            {/* Texto animado */}
+            <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-[#F22233] to-[#F3EDD6] bg-[length:300%_300%] bg-[position:0%_50%] animate-gradient-x drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+              Jussi Pizza
+            </span>
+          </span>
+        </h2>
+
+
+
+          <div className="flex items-center justify-center space-x-2 md:space-x-3 mb-8 md:mb-10 animate-fade-in delay-300 px-4">
+            <Heart className="w-6 h-6 md:w-8 md:h-8 text-[#F22233] animate-pulse drop-shadow-lg" />
+            <p className="text-lg md:text-2xl text-white italic font-bold bg-white/20 backdrop-blur-sm px-4 md:px-6 py-2 md:py-3 rounded-full border border-white/30 drop-shadow-lg">
               "En las manos de Dios"
             </p>
-            <Heart className="w-8 h-8 text-[#F22233] animate-pulse drop-shadow-lg" />
+            <Heart className="w-6 h-6 md:w-8 md:h-8 text-[#F22233] animate-pulse drop-shadow-lg" />
           </div>
 
-          <p className="text-xl md:text-2xl text-white/95 mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in delay-500 bg-black/20 backdrop-blur-sm rounded-2xl p-8 border border-white/20 drop-shadow-xl">
+          <p className="text-base md:text-xl lg:text-2xl text-white/95 mb-8 md:mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in delay-500 bg-black/20 backdrop-blur-sm rounded-2xl p-4 md:p-8 border border-white/20 drop-shadow-xl">
             Auténtica y deliciosa pizza en el corazón de Jamundí. Nuestras pizzas se preparan con ingredientes frescos y
             de calidad, combinando la tradición italiana con el sabor único Colombiano. Cada porción está hecha con
             dedicación, pasión... y mucho amor.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in delay-1000">
+          <div className="flex flex-col gap-4 md:gap-6 justify-center animate-fade-in delay-1000 px-4">
             <Button
               onClick={() => scrollToSection("menu")}
-              className="bg-gradient-to-r from-[#25D366] to-[#25D366]/90 hover:from-[#25D366]/90 hover:to-[#25D366] text-white px-12 py-6 rounded-2xl text-xl font-bold transition-all duration-300 hover:scale-110 hover:shadow-2xl shadow-lg flex items-center space-x-3 transform hover:-translate-y-2 backdrop-blur-sm border border-white/20"
+              className="w-full md:w-auto bg-gradient-to-r from-[#25D366] to-[#25D366]/90 hover:from-[#25D366]/90 hover:to-[#25D366] text-white px-8 md:px-12 py-4 md:py-6 rounded-2xl text-lg md:text-xl font-bold transition-all duration-300 hover:scale-110 hover:shadow-2xl shadow-lg flex items-center justify-center space-x-3 transform hover:-translate-y-2 backdrop-blur-sm border border-white/20"
             >
-              <span className="flex items-center space-x-3">
-                <Pizza className="w-7 h-7" />
-                <span>Ver Menú</span>
-              </span>
+              <Pizza className="w-6 h-6 md:w-7 md:h-7" />
+              <span>Ver Menú</span>
             </Button>
             <Button
               onClick={handleWhatsAppClick}
-              className="bg-gradient-to-r from-[#25D366] to-[#25D366]/90 hover:from-[#25D366]/90 hover:to-[#25D366] text-white px-12 py-6 rounded-2xl text-xl font-bold transition-all duration-300 hover:scale-110 hover:shadow-2xl shadow-lg flex items-center space-x-3 transform hover:-translate-y-2 backdrop-blur-sm border border-white/20"
+              className="w-full md:w-auto bg-gradient-to-r from-[#25D366] to-[#25D366]/90 hover:from-[#25D366]/90 hover:to-[#25D366] text-white px-8 md:px-12 py-4 md:py-6 rounded-2xl text-lg md:text-xl font-bold transition-all duration-300 hover:scale-110 hover:shadow-2xl shadow-lg flex items-center justify-center space-x-3 transform hover:-translate-y-2 backdrop-blur-sm border border-white/20"
             >
+              <MessageCircle className="w-6 h-6 md:w-7 md:h-7" />
               <span>¡Pedir Ahora!</span>
             </Button>
           </div>
