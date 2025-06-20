@@ -369,11 +369,11 @@ export default function Home() {
       <section
         id="home"
         className="relative pt-32 pb-20 px-4 md:px-6 text-center min-h-screen flex items-center justify-center overflow-hidden"
-        style={{
+       style={{
           backgroundImage: `url('/IMG_0096.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          backgroundAttachment: window.innerWidth > 768 ? "fixed" : "scroll",
+          backgroundAttachment: typeof window !== "undefined" && window.innerWidth > 768 ? "fixed" : "scroll",
         }}
       >
         {/* Background Overlay with Blur Effect */}
