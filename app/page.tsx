@@ -396,20 +396,25 @@ export default function Home() {
             </div>
           </div>
 
-        <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold text-white mb-6 md:mb-8 leading-tight animate-fade-in drop-shadow-2xl">
-          Bienvenidos a<br />
-          <span className="relative inline-block">
-            {/* Blur detrás */}
-            <span className="absolute inset-0 text-black blur-sm opacity-40 sm:opacity-50">
-              Jussi Pizza
-            </span>
+          <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 md:mb-8 leading-tight animate-fade-in drop-shadow-2xl">
 
-            {/* Texto animado */}
-            <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-[#F22233] to-[#F3EDD6] bg-[length:300%_300%] bg-[position:0%_50%] animate-gradient-x drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
-              Jussi Pizza
+            BIENVENIDOS A<br />
+            <span className="relative inline-block">
+              {/* Blur detrás */}
+              <span className="absolute inset-0 text-black blur-sm opacity-40 sm:opacity-50">
+                JUSSI PIZZA
+              </span>
+
+              {/* Texto final con estilos por letra */}
+              <span className="relative drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+                <span className="text-white">JUSSI </span>
+                <span className="text-[#4EBF4B]">PI</span>
+                <span className="text-white">ZZ</span>
+                <span className="text-[#F22233]">A</span>
+              </span>
             </span>
-          </span>
-        </h2>
+          </h2>
+
 
 
 
