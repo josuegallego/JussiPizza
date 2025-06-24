@@ -11,7 +11,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
+   // unoptimized: true,
   },
   // Si quieres desactivar completamente todos los indicadores de desarrollo
    devIndicators: false,
