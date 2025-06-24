@@ -305,24 +305,28 @@ export default function Home() {
       </header>
 
  {/* Hero Section */}
-      <section
-        id="home"
-        className="relative pt-32 pb-20 px-4 md:px-6 text-center min-h-screen flex items-center justify-center overflow-hidden bg-cover bg-center bg-fixed md:bg-fixed"
-        style={{
-          backgroundImage: `url('/IMG_0096.jpg')`,
-        }}
-      >
-        {/* Background Overlay with Blur Effect */}
-        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
-        <div className="absolute inset-0 bg-gradient-to-br from-[#F3EDD6]/20 via-transparent to-[#4EBF4B]/10"></div>
+<section
+  id="home"
+  className="relative pt-32 pb-20 px-4 md:px-6 text-center min-h-screen flex items-center justify-center overflow-hidden"
+  style={{
+    backgroundImage: `url('/IMG_0096.jpg')`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundAttachment: 'fixed',
+    backgroundRepeat: 'no-repeat'
+  }}
+>
+  {/* Background Overlay with Blur Effect */}
+  <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+  <div className="absolute inset-0 bg-gradient-to-br from-[#F3EDD6]/20 via-transparent to-[#4EBF4B]/10"></div>
 
-        {/* Floating Elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 w-4 h-4 bg-[#F22233]/30 rounded-full animate-ping"></div>
-          <div className="absolute top-40 right-20 w-6 h-6 bg-[#4EBF4B]/30 rounded-full animate-ping delay-1000"></div>
-          <div className="absolute bottom-32 left-20 w-5 h-5 bg-[#F27F1B]/30 rounded-full animate-ping delay-2000"></div>
-          <div className="absolute bottom-20 right-10 w-3 h-3 bg-[#F22233]/30 rounded-full animate-ping delay-500"></div>
-        </div>
+  {/* Floating Elements */}
+  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className="absolute top-20 left-10 w-4 h-4 bg-[#F22233]/30 rounded-full animate-ping"></div>
+    <div className="absolute top-40 right-20 w-6 h-6 bg-[#4EBF4B]/30 rounded-full animate-ping delay-1000"></div>
+    <div className="absolute bottom-32 left-20 w-5 h-5 bg-[#F27F1B]/30 rounded-full animate-ping delay-2000"></div>
+    <div className="absolute bottom-20 right-10 w-3 h-3 bg-[#F22233]/30 rounded-full animate-ping delay-500"></div>
+  </div>
 
         <div className="container mx-auto relative z-10">
           <div className="flex justify-center mb-8 md:mb-12 px-4">
