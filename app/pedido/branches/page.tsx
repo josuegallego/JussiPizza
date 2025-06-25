@@ -130,7 +130,8 @@ const branches = [
             <div className="grid md:grid-cols-2 gap-4 text-left">
               <div>
                 <h4 className="font-semibold text-brown-900 mb-2">🕐 Horarios de Atención</h4>
-                <p className="text-brown-700">Lunes a Domingo: 6:00 PM - 10:30 PM</p>
+                <p className="text-brown-700">Miércoles a lunes: 6:00 PM - 10:30 PM</p>
+                <p className="text-brown-700">Martes no tenemos servicio</p>
               </div>
               <div>
                 <h4 className="font-semibold text-brown-900 mb-2">🚚 Servicio a Domicilio</h4>
