@@ -70,8 +70,8 @@ export function PizzaOrder({ onBack, onAddItem }: PizzaOrderProps) {
   const sizes = [
     { name: "Porción", description: "9 cm - 1 porción", traditional: true },
     { name: "Personal", description: "21 cm - 4 mini porciones", traditional: true, special: true },
-    { name: "Pequeña", description: "6 porciones", traditional: true, special: true },
-    { name: "Mediana", description: "8-10 porciones", traditional: true, special: true },
+    { name: "Pequeña", description: "30 cm - 6 porciones", traditional: true, special: true },
+    { name: "Mediana", description: "40 cm - 8 ó 10 porciones", traditional: true, special: true },
   ]
 
   const flavors = [

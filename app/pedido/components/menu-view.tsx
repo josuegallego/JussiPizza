@@ -184,28 +184,28 @@ export function MenuView({ onStartOrder, onBack }: MenuViewProps) {
       items: [
         {
           name: "Jugos Naturales",
-          ingredients: "En agua o en leche ($4,000)",
-          flavors: ["Mora", "Lulo", "Maracuyá", "Mango", "Guanábana"],
+          ingredients: "En agua o en leche",
+          flavors: ["Mora", "Lulo", "Maracuyá", "Mango", "Guanábana", "Lulo", "Fresa"],
         },
         {
           name: "Frappés",
-          ingredients: "Bebida helada cremosa ($8,000)",
-          flavors: ["Mora", "Lulo", "Maracuyá", "Mango", "Guanábana", "Chocolate", "Vainilla", "Fresa"],
+          ingredients: "Bebida granizada",
+          flavors: ["Mora", "Lulo", "Maracuyá", "Mango", "Guanábana", "Lulo", "Fresa"],
         },
         {
           name: "Limonadas",
           ingredients: "Refrescantes limonadas",
-          flavors: ["Natural ($3,500)", "Cerezada ($4,000)", "De coco ($4,500)"],
+          flavors: ["Natural", "Cerezada", "De coco"],
         },
         {
           name: "Gaseosas Coca Cola",
           ingredients: "Bebidas gaseosas",
-          flavors: ["Personal ($3,000)", "Litro y medio ($6,000)"],
+          flavors: ["Personal", "Litro y medio"],
         },
         {
           name: "Gaseosas Postobón",
           ingredients: "Bebidas gaseosas",
-          flavors: ["Personal ($2,500)", "Litro y medio ($5,500)"],
+          flavors: ["Personal", "Litro y medio"],
         },
       ],
     },

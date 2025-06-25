@@ -13,8 +13,8 @@ interface ItemSelectionProps {
 
 export function ItemSelection({ onBack, onSelectItem, hasItems, onViewSummary }: ItemSelectionProps) {
   const items = [
-    { type: "pizza" as const, name: "🍕 Pizza", description: "Deliciosas pizzas artesanales" },
-    { type: "lasana" as const, name: "🍝 Lasaña", description: "Lasañas caseras y cremosas" },
+    { type: "pizza" as const, name: "🍕 Pizza", description: "Gran variedad de sabores" },
+    { type: "lasana" as const, name: "🍝 Lasaña", description: "Las mejores lasañas caseras" },
     { type: "desgranado" as const, name: "🌽 Desgranado", description: "Con maíz o maduro" },
     { type: "bebida" as const, name: "🥤 Bebida", description: "Jugos naturales y gaseosas" },
   ]

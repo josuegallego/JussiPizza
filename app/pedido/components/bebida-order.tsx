@@ -39,7 +39,7 @@ export function BebidaOrder({ onBack, onAddItem }: BebidaOrderProps) {
   const gaseosaOptions = [
     { brand: "Coca Cola", size: "Personal", price: 4000 },
     { brand: "Coca Cola", size: "Litro y medio", price: 7000 },
-    { brand: "Postobón", size: "Personal", price: 3000 },
+    { brand: "Postobón", size: "Personal", price: 4000 },
     { brand: "Postobón", size: "Litro y medio", price: 6000 },
   ]
 

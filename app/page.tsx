@@ -6,152 +6,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 
-const pizzasEspeciales = [
-  {
-    name: "De la casa",
-    ingredients: "Queso, cebolla, cabano, salami, champiñones, jamón y pimentón",
-    popular: true,
-  },
-  {
-    name: "Especial",
-    ingredients: "Queso, maíz, tomate, tocineta, aceite de oliva y albahaca",
-    popular: false,
-  },
-  {
-    name: "Zamba",
-    ingredients: "Queso, maduro, chorizo, tocineta y maíz",
-    popular: true,
-  },
-  {
-    name: "Cárnica",
-    ingredients: "Queso, cabano, salami, jamón y carne boloñesa",
-    popular: false,
-  },
-  {
-    name: "Pocha",
-    ingredients: "Queso, pollo y champiñones",
-    popular: false,
-  },
-  {
-    name: "Vegetariana",
-    ingredients: "Queso, cebolla, champiñones, tomate, aceitunas, pimentón y ajo en polvo",
-    popular: false,
-  },
-  {
-    name: "Casual",
-    ingredients: "Queso, pollo, tomate y tocineta",
-    popular: false,
-  },
-  {
-    name: "Americana",
-    ingredients: "Queso, piña, salchicha americana y maíz",
-    popular: true,
-  },
-  {
-    name: "Napoly",
-    ingredients: "Queso, cabano, carne boloñesa y champiñones",
-    popular: false,
-  },
-  {
-    name: "BBQ",
-    ingredients: "Queso, pollo, piña, tocineta y salsa BBQ dulce",
-    popular: true,
-  },
-  {
-    name: "Primavera",
-    ingredients: "Queso, carne boloñesa, tomate picado y orégano",
-    popular: false,
-  },
-  {
-    name: "Tropical",
-    ingredients: "Queso, cebolla, cabano, piña y jamón",
-    popular: false,
-  },
-  {
-    name: "Tollo",
-    ingredients: "Queso, pollo, piña y jamón",
-    popular: false,
-  },
-  {
-    name: "Madurito",
-    ingredients: "Queso, maduro y tocineta",
-    popular: true,
-  },
-  {
-    name: "Clásica",
-    ingredients: "Queso, piña, jamón y tocineta",
-    popular: false,
-  },
-  {
-    name: "Picardía",
-    ingredients: "Queso, salami, piña, carne boloñesa y pimienta limón",
-    popular: false,
-  },
-  {
-    name: "Mexicana",
-    ingredients: "Queso, cebolla, tomate, carne boloñesa, pimentón y jalapeños",
-    popular: true,
-  },
-  {
-    name: "Napolitana",
-    ingredients: "Queso, tomate, albahaca y aceite de oliva",
-    popular: false,
-  },
-]
-
-const pizzasTradicionales = [
-  {
-    name: "Hawaiana",
-    ingredients: "Queso, jamón y piña",
-    popular: true,
-  },
-  {
-    name: "Jamón y Queso",
-    ingredients: "Queso y jamón",
-    popular: false,
-  },
-  {
-    name: "Pepperoni",
-    ingredients: "Queso y pepperoni",
-    popular: true,
-  },
-]
-
-const lasanas = [
-  {
-    name: "Lasaña Mini",
-    ingredients: "Queso, pasta, carne boloñesa y pollo",
-    size: "Porción individual",
-    category: "lasana",
-  },
-  {
-    name: "Lasaña Personal",
-    ingredients: "Queso, pasta, carne boloñesa y pollo",
-    size: "Porción individual",
-    category: "lasana",
-  },
-]
-const desgranados = [
-  {
-    name: "Desgranado Ranchero",
-    ingredients: "Queso, tocineta y pollo",
-    options: "Con maíz o maduro",
-    category: "desgranado",
-  },
-  {
-    name: "Desgranado Campesino",
-    ingredients: "Queso, pollo, tocineta y chorizo de ternera",
-    options: "Con maíz o maduro",
-    category: "desgranado",
-  },
-  {
-    name: "Desgranado Americano",
-    ingredients: "Queso, pollo y salchicha americana",
-    options: "Con maíz o maduro",
-    category: "desgranado",
-  },
-]
-
 const locations = [
   {
     name: "Sede Sachamate",
@@ -165,12 +19,6 @@ const locations = [
     mapSrc:
       "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3983.3354983682593!2d-76.54898070321042!3d3.266644999999991!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e309983d6c3c0e7%3A0x556bfa1aac6aae29!2sJussi%20Pizza!5e0!3m2!1sen!2sco!4v1750386509586!5m2!1sen!2sco",
   },
-]
-
-const pizzaSizes = [
-  { name: "Personal", size: "21 cm", slices: "4 mini porciones", diameter: 60 },
-  { name: "Pequeña", size: "30 cm", slices: "6 porciones", diameter: 80 },
-  { name: "Mediana", size: "40 cm", slices: "8 porciones (opcional hasta 10)", diameter: 100 },
 ]
 
 export default function Home() {
@@ -210,7 +58,7 @@ export default function Home() {
   // Update active section on scroll
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ["home", "menu", "locations", "contact"]
+      const sections = ["home", "locations", "contact"]
       const scrollPosition = window.scrollY + 100
 
       for (const section of sections) {
@@ -249,7 +97,6 @@ export default function Home() {
           <nav className="hidden md:flex space-x-6">
             {[
               { id: "home", label: "Inicio" },
-              { id: "menu", label: "Menú" },
               { id: "locations", label: "Ubicaciones" },
               { id: "contact", label: "Contacto" },
             ].map((item) => (
@@ -285,7 +132,6 @@ export default function Home() {
             <nav className="flex flex-col space-y-2 mt-4">
               {[
                 { id: "home", label: "Inicio" },
-                { id: "menu", label: "Menú" },
                 { id: "locations", label: "Ubicaciones" },
                 { id: "contact", label: "Contacto" },
               ].map((item) => (
@@ -339,21 +185,26 @@ export default function Home() {
             </div>
           </div>
 
-          <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 md:mb-8 leading-tight animate-fade-in drop-shadow-2xl">
-
-            BIENVENIDOS A<br />
+<h2 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white mb-6 md:mb-8 leading-tight animate-fade-in drop-shadow-2xl tracking-tight">
             <span className="relative inline-block">
-              {/* Blur detrás */}
-              <span className="absolute inset-0 text-black blur-sm opacity-40 sm:opacity-50">
+              {/* Sombra sutil de fondo */}
+              <span className="absolute inset-0 text-black blur-sm opacity-40 transform translate-x-1 translate-y-1">
                 JUSSI PIZZA
               </span>
-
-              {/* Texto final con estilos por letra */}
-              <span className="relative drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
-                <span className="text-white">JUSSI </span>
-                <span className="text-[#4EBF4B]">PI</span>
-                <span className="text-white">ZZ</span>
-                <span className="text-[#F22233]">A</span>
+              
+              {/* Texto principal claro y nítido */}
+              <span className="relative font-black">
+                <span className="inline-block transform hover:scale-110 transition-transform duration-300 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">J</span>
+                <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-75 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">U</span>
+                <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-150 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">S</span>
+                <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-225 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">S</span>
+                <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-300 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">I</span>
+                <span className="mx-2 md:mx-4"></span>
+                <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-375 text-[#4EBF4B] drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] filter drop-shadow-[0_0_15px_rgba(78,191,75,0.6)]">P</span>
+                <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-450 text-[#4EBF4B] drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] filter drop-shadow-[0_0_15px_rgba(78,191,75,0.6)]">I</span>
+                <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-525 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">Z</span>
+                <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-600 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">Z</span>
+                <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-675 text-[#F22233] drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] filter drop-shadow-[0_0_15px_rgba(242,34,51,0.6)]">A</span>
               </span>
             </span>
           </h2>
@@ -377,11 +228,11 @@ export default function Home() {
 
           <div className="flex flex-col gap-4 md:gap-6 justify-center animate-fade-in delay-1000 px-4">
             <Button
-              onClick={() => scrollToSection("menu")}
+              onClick={() => scrollToSection("locations")}
               className="w-full md:w-auto bg-gradient-to-r from-[#25D366] to-[#25D366]/90 hover:from-[#25D366]/90 hover:to-[#25D366] text-white px-8 md:px-12 py-4 md:py-6 rounded-2xl text-lg md:text-xl font-bold transition-all duration-300 hover:scale-110 hover:shadow-2xl shadow-lg flex items-center justify-center space-x-3 transform hover:-translate-y-2 backdrop-blur-sm border border-white/20"
             >
-              <Pizza className="w-6 h-6 md:w-7 md:h-7" />
-              <span>Ver Menú</span>
+              <MapPin className="w-6 h-6 md:w-7 md:h-7" />
+              <span>Ver Ubicaciones</span>
             </Button>
             <Button
               onClick={handleOrderClick}
@@ -394,213 +245,6 @@ export default function Home() {
         </div>
       </section>
 
-
-      {/* Menu Section */}
-      <section id="menu" className="py-20 px-6 bg-white">
-        <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h3 className="text-4xl md:text-5xl font-bold text-[#231107] mb-4">Nuestro Menú</h3>
-            <p className="text-xl text-[#231107]/70 max-w-2xl mx-auto">
-              Las mejores pizzas, lasañas y desgranados deliciosos preparados con ingredientes frescos
-            </p>
-          </div>
-
-          {/* Pizzas Tradicionales Section */}
-          <div className="mb-16">
-            <div className="bg-gradient-to-r from-[#4EBF4B]/10 to-[#4EBF4B]/5 rounded-2xl p-6 mb-8">
-              <h4 className="text-3xl font-bold text-[#231107] text-center mb-4">🍕 Sabores Tradicionales</h4>
-              <p className="text-center text-[#231107]/70">Los clásicos de siempre que nunca pasan de moda</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {pizzasTradicionales.map((pizza, index) => (
-                <Card
-                  key={index}
-                  className="group hover:shadow-xl transition-all duration-300 border-2 border-[#F3EDD6] hover:border-[#4EBF4B] bg-gradient-to-br from-white to-[#F3EDD6]/20 relative overflow-hidden flex flex-col h-full"
-                >
-                  {pizza.popular && (
-                    <div className="absolute top-3 right-3 bg-[#4EBF4B] text-white px-3 py-1 rounded-full text-sm font-semibold z-10">
-                      Favorita
-                    </div>
-                  )}
-                  <CardContent className="p-6 flex flex-col h-full">
-                    <div className="relative mb-4">
-                      <img
-                        src="/tradicional.jpg?height=200&width=300"
-                        alt={`Pizza ${pizza.name}`}
-                        className="w-full h-48 object-cover rounded-xl"
-                      />
-                    </div>
-
-                    <h4 className="text-2xl font-bold text-[#231107] mb-3 group-hover:text-[#4EBF4B] transition-colors">
-                      {pizza.name}
-                    </h4>
-
-                    <p className="text-[#231107]/70 leading-relaxed mb-4 flex-grow">{pizza.ingredients}</p>
-
-                    <Button
-                      onClick={handleOrderClick}
-                      className="w-full bg-[#4EBF4B] hover:bg-[#4EBF4B]/90 text-white rounded-xl py-3 font-semibold transition-all duration-300 hover:scale-105 mt-auto"
-                    >
-                      Ordenar Esta Pizza
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-
-          {/* Pizzas Especiales Section */}
-          <div className="mb-16">
-            <div className="bg-gradient-to-r from-[#F22233]/10 to-[#F22233]/5 rounded-2xl p-6 mb-8">
-              <h4 className="text-3xl font-bold text-[#231107] text-center mb-4">🍕 Sabores Especiales</h4>
-              <p className="text-center text-[#231107]/70">Sabores únicos que encantan paladares</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {pizzasEspeciales.map((pizza, index) => (
-                <Card
-                  key={index}
-                  className="group hover:shadow-xl transition-all duration-300 border-2 border-[#F3EDD6] hover:border-[#F22233] bg-gradient-to-br from-white to-[#F3EDD6]/20 relative overflow-hidden flex flex-col h-full"
-                >
-                  {pizza.popular && (
-                    <div className="absolute top-3 right-3 bg-[#F22233] text-white px-3 py-1 rounded-full text-sm font-semibold z-10">
-                      Popular
-                    </div>
-                  )}
-                  <CardContent className="p-6 flex flex-col h-full">
-                    <div className="relative mb-4">
-                      <img
-                        src="/espc.jpg?height=200&width=300"
-                        alt={`Pizza ${pizza.name}`}
-                        className="w-full h-48 object-cover rounded-xl"
-                      />
-                    </div>
-
-                    <h4 className="text-2xl font-bold text-[#231107] mb-3 group-hover:text-[#F22233] transition-colors">
-                      {pizza.name}
-                    </h4>
-
-                    <p className="text-[#231107]/70 leading-relaxed mb-4 flex-grow">{pizza.ingredients}</p>
-
-                    <Button
-                      onClick={handleOrderClick}
-                      className="w-full bg-[#F22233] hover:bg-[#F22233]/90 text-white rounded-xl py-3 font-semibold transition-all duration-300 hover:scale-105 mt-auto"
-                    >
-                      Ordenar Esta Pizza
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-
-          {/* Pizza Sizes */}
-          <div className="bg-gradient-to-r from-[#F27F1B]/10 to-[#F27F1B]/5 rounded-2xl p-8 mb-16">
-            <h4 className="text-3xl font-bold text-[#231107] text-center mb-8">Tamaños Disponibles</h4>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-              {pizzaSizes.map((size, index) => (
-                <div key={index} className="text-center flex flex-col items-center">
-                  <div className="relative mb-4 flex items-center justify-center" style={{ height: "120px" }}>
-                    <div
-                      className="rounded-full border-4 border-[#F22233] bg-[#F27F1B]/20 flex items-center justify-center"
-                      style={{ width: size.diameter, height: size.diameter }}
-                    >
-                      <Pizza className="w-8 h-8 text-[#F22233]" />
-                    </div>
-                  </div>
-                  <div className="flex-1 flex flex-col justify-start">
-                    <h5 className="text-xl font-bold text-[#231107] mb-2">{size.name}</h5>
-                    <p className="text-[#231107]/70 mb-1">{size.size}</p>
-                    <p className="text-[#231107]/70">{size.slices}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="bg-white rounded-xl p-6 text-center">
-              <p className="text-lg text-[#231107] font-medium">
-                <span className="text-[#F22233] font-bold">¡Combina sabores!</span> Puedes combinar tu pizza con 2
-                sabores diferentes. Los precios varían según los sabores elegidos.
-              </p>
-            </div>
-          </div>
-
-          {/* Desgranados Section */}
-          <div className="mb-16">
-            <div className="bg-gradient-to-r from-[#F27F1B]/10 to-[#F27F1B]/5 rounded-2xl p-6 mb-8">
-              <h4 className="text-3xl font-bold text-[#231107] text-center mb-4">🌽 Nuestros Desgranados</h4>
-              <p className="text-center text-[#231107]/70">Puedes elegir si los quieres con maíz o maduro</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {desgranados.map((desgranado, index) => (
-                <Card
-                  key={index}
-                  className="group hover:shadow-xl transition-all duration-300 border-2 border-[#F3EDD6] hover:border-[#F27F1B] bg-gradient-to-br from-white to-[#F3EDD6]/20 relative overflow-hidden flex flex-col h-full"
-                >
-                  <CardContent className="p-6 flex flex-col h-full">
-                    <div className="relative mb-4">
-                      <img
-                        src="/maiz.jpg?height=200&width=300"
-                        alt={`${desgranado.name}`}
-                        className="w-full h-48 object-cover rounded-xl"
-                      />
-                    </div>
-                    <h4 className="text-2xl font-bold text-[#231107] mb-3 group-hover:text-[#F27F1B] transition-colors">
-                      {desgranado.name}
-                    </h4>
-                    <div className="flex-grow">
-                      <p className="text-[#231107]/70 leading-relaxed mb-2">{desgranado.ingredients}</p>
-                      <p className="text-[#F27F1B] font-semibold text-sm mb-4">{desgranado.options}</p>
-                    </div>
-                    <Button
-                      onClick={handleOrderClick}
-                      className="w-full bg-[#F27F1B] hover:bg-[#F27F1B]/90 text-white rounded-xl py-3 font-semibold transition-all duration-300 hover:scale-105 mt-auto"
-                    >
-                      Ordenar Desgranado
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-
-          {/* Lasañas Section */}
-          <div className="mb-16">
-            <div className="bg-gradient-to-r from-[#F27F1B]/10 to-[#F27F1B]/5 rounded-2xl p-6 mb-8">
-              <h4 className="text-3xl font-bold text-[#231107] text-center">🍝 Nuestras Lasañas</h4>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 justify-center max-w-4xl mx-auto">
-              {lasanas.map((lasana, index) => (
-                <Card
-                  key={index}
-                  className="group hover:shadow-xl transition-all duration-300 border-2 border-[#F3EDD6] hover:border-[#F27F1B] bg-gradient-to-br from-white to-[#F3EDD6]/20 relative overflow-hidden"
-                >
-                  <CardContent className="p-6">
-                    <div className="relative mb-4">
-                      <img
-                        src="/lasaña.jpg?height=200&width=300"
-                        alt={lasana.name}
-                        className="w-full h-48 object-cover rounded-xl"
-                      />
-                    </div>
-                    <h4 className="text-2xl font-bold text-[#231107] mb-3 group-hover:text-[#F27F1B] transition-colors">
-                      {lasana.name}
-                    </h4>
-                    <p className="text-[#231107]/70 leading-relaxed mb-2">{lasana.ingredients}</p>
-                    <p className="text-[#F27F1B] font-semibold text-sm mb-4">{lasana.size}</p>
-                    <Button
-                      onClick={handleOrderClick}
-                      className="w-full bg-[#F27F1B] hover:bg-[#F27F1B]/90 text-white rounded-xl py-3 font-semibold transition-all duration-300 hover:scale-105"
-                    >
-                      Ordenar {lasana.name}
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
  {/* Locations Section */}
       <section id="locations" className="py-20 px-6 bg-[#F3EDD6]">
         <div className="container mx-auto">
