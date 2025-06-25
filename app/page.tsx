@@ -185,30 +185,36 @@ export default function Home() {
             </div>
           </div>
 
-<h2 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white mb-6 md:mb-8 leading-tight animate-fade-in drop-shadow-2xl tracking-tight">
-            <span className="relative inline-block">
+<h2 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white mb-6 md:mb-8 leading-tight animate-fade-in drop-shadow-2xl tracking-tight text-center">
+            <div className="relative">
               {/* Sombra sutil de fondo */}
-              <span className="absolute inset-0 text-black blur-sm opacity-40 transform translate-x-1 translate-y-1">
-                JUSSI PIZZA
-              </span>
+              <div className="absolute inset-0 text-black blur-sm opacity-40 transform translate-x-1 translate-y-1">
+                <div>JUSSI</div>
+                <div>PIZZA</div>
+              </div>
               
               {/* Texto principal claro y nítido */}
-              <span className="relative font-black">
-                <span className="inline-block transform hover:scale-110 transition-transform duration-300 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">J</span>
-                <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-75 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">U</span>
-                <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-150 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">S</span>
-                <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-225 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">S</span>
-                <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-300 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">I</span>
-                <span className="mx-2 md:mx-4"></span>
-                <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-375 text-[#4EBF4B] drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] filter drop-shadow-[0_0_15px_rgba(78,191,75,0.6)]">P</span>
-                <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-450 text-[#4EBF4B] drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] filter drop-shadow-[0_0_15px_rgba(78,191,75,0.6)]">I</span>
-                <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-525 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">Z</span>
-                <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-600 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">Z</span>
-                <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-675 text-[#F22233] drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] filter drop-shadow-[0_0_15px_rgba(242,34,51,0.6)]">A</span>
-              </span>
-            </span>
+              <div className="relative font-black">
+                {/* JUSSI en la primera línea */}
+                <div className="block">
+                  <span className="inline-block transform hover:scale-110 transition-transform duration-300 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">J</span>
+                  <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-75 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">U</span>
+                  <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-150 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">S</span>
+                  <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-225 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">S</span>
+                  <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-300 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">I</span>
+                </div>
+                
+                {/* PIZZA en la segunda línea */}
+                <div className="block">
+                  <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-375 text-[#4EBF4B] drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] filter drop-shadow-[0_0_15px_rgba(78,191,75,0.6)]">P</span>
+                  <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-450 text-[#4EBF4B] drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] filter drop-shadow-[0_0_15px_rgba(78,191,75,0.6)]">I</span>
+                  <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-525 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">Z</span>
+                  <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-600 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">Z</span>
+                  <span className="inline-block transform hover:scale-110 transition-transform duration-300 delay-675 text-[#F22233] drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] filter drop-shadow-[0_0_15px_rgba(242,34,51,0.6)]">A</span>
+                </div>
+              </div>
+            </div>
           </h2>
-
 
 
 
