@@ -85,6 +85,7 @@ const neighborhoods = [
   { name: "VILLA MONICA", price: 4000 },
   { name: "VILLA TATIANA", price: 4000 },
   // Conjuntos Cerrados
+  { name: "LOS NARANJOS", price: 4000 },
   { name: "SOLARES DE SACHAMATE", price: 6000 },
   { name: "COUNTRY PLAZA I Y II", price: 7000 },
   { name: "SOL DEL CAMPO", price: 6000 },

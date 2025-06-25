@@ -287,7 +287,7 @@ Muchas gracias!`
             variant="outline"
             className="w-full h-12 text-lg font-semibold border-2 border-red-500 text-red-600 hover:bg-red-50 disabled:opacity-50"
           >
-            Finalizar pedido
+            Cancelar pedido
           </Button>
         </div>
       </div>
