@@ -308,17 +308,20 @@ export default function Home() {
 <section
   id="home"
   className="relative pt-32 pb-20 px-4 md:px-6 text-center min-h-screen flex items-center justify-center overflow-hidden"
-  style={{
-    backgroundImage: `url('/IMG_0096.jpg')`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundAttachment: 'fixed',
-    backgroundRepeat: 'no-repeat'
-  }}
 >
+  {/* Imagen de fondo como elemento HTML */}
+  <div className="absolute inset-0 z-0">
+    <img
+      src="/IMG_0096.jpg"
+      alt="Pizza Background"
+      className="w-full h-full object-cover object-center"
+    />
+  </div>
+
   {/* Background Overlay with Blur Effect */}
-  <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
-  <div className="absolute inset-0 bg-gradient-to-br from-[#F3EDD6]/20 via-transparent to-[#4EBF4B]/10"></div>
+  <div className="absolute inset-0 bg-black/40 backdrop-blur-sm z-10"></div>
+  <div className="absolute inset-0 bg-gradient-to-br from-[#F3EDD6]/20 via-transparent to-[#4EBF4B]/10 z-10"></div>
+
 
   {/* Floating Elements */}
   <div className="absolute inset-0 overflow-hidden pointer-events-none">
