@@ -26,18 +26,54 @@ export function Payment({ orderItems, deliveryInfo, totalPrice, deliveryCost, on
   const finalTotal = totalPrice + deliveryCost
 
   // Function to parse cash amount with different formats
+// Function to parse cash amount with different formats (Colombian format)
   const parseCashAmount = (value: string): number => {
     if (!value) return 0
-    // Remove spaces and replace commas with dots, then remove all dots except the last one
-    const cleaned = value.replace(/\s/g, "").replace(/,/g, ".")
-    // If there are multiple dots, treat all but the last as thousand separators
-    const parts = cleaned.split(".")
-    if (parts.length > 2) {
-      // Join all parts except the last with empty string, then add the last part as decimals
-      const integerPart = parts.slice(0, -1).join("")
-      const decimalPart = parts[parts.length - 1]
-      return Number.parseFloat(`${integerPart}.${decimalPart}`)
+    
+    // Remove all spaces
+    let cleaned = value.replace(/\s/g, "")
+    
+    // Check if there's a comma (likely decimal separator)
+    if (cleaned.includes(",") && cleaned.includes(".")) {
+      // Both comma and dot present - treat dot as thousands, comma as decimal
+      // Example: 1.000,50 -> 1000.50
+      cleaned = cleaned.replace(/\./g, "").replace(",", ".")
+    } else if (cleaned.includes(",")) {
+      // Only comma present - could be decimal separator if after last group
+      // Example: 1000,50 -> 1000.50 or 1,000 -> 1000
+      const commaIndex = cleaned.lastIndexOf(",")
+      const afterComma = cleaned.substring(commaIndex + 1)
+      
+      // If there are 1-2 digits after comma, treat as decimal
+      if (afterComma.length <= 2 && /^\d+$/.test(afterComma)) {
+        cleaned = cleaned.replace(",", ".")
+      } else {
+        // Otherwise treat as thousands separator
+        cleaned = cleaned.replace(/,/g, "")
+      }
+    } else if (cleaned.includes(".")) {
+      // Only dots present - treat as thousands separators in Colombian format
+      // Example: 10.000 -> 10000, 1.000.000 -> 1000000
+      const dotCount = (cleaned.match(/\./g) || []).length
+      const lastDotIndex = cleaned.lastIndexOf(".")
+      const afterLastDot = cleaned.substring(lastDotIndex + 1)
+      
+      // If only one dot and 1-2 digits after it, could be decimal
+      // But in Colombian context, this is more likely thousands separator
+      // So we'll treat all dots as thousands separators unless it's clearly decimal
+      if (dotCount === 1 && afterLastDot.length <= 2 && afterLastDot.length > 0 && parseInt(afterLastDot) < 100) {
+        // Could be decimal, but let's check the number before dot
+        const beforeDot = cleaned.substring(0, lastDotIndex)
+        // If the number before dot is less than 1000, might be decimal
+        // But in Colombian context, 10.000 is more common than 10.50
+        // So we'll assume it's thousands separator
+        cleaned = cleaned.replace(/\./g, "")
+      } else {
+        // Multiple dots or clearly thousands format
+        cleaned = cleaned.replace(/\./g, "")
+      }
     }
+    
     return Number.parseFloat(cleaned) || 0
   }
 
