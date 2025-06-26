@@ -35,7 +35,7 @@ const neighborhoods = [
   { name: "CIRO VELASCO", price: 4000 },
   { name: "CIUDAD SUR", price: 4000 },
   { name: "COVICEDROS", price: 4000 },
-  { name: "CONDADO DEL SUR", price: 4000 },
+  { name: "CONDADO DEL SUR", price: 5000 },
   { name: "DORADO", price: 4000 },
   { name: "ESPERANZA", price: 4000 },
   { name: "ESMERALDA", price: 4000 },
@@ -46,7 +46,7 @@ const neighborhoods = [
   { name: "JUAN DE AMPUDIA", price: 4000 },
   { name: "JUAN PABLO II", price: 4000 },
   { name: "LIBERTADORES", price: 4000 },
-  { name: "LA ALBORADA", price: 4000 },
+  { name: "LA ALBORADA", price: 5000 },
   { name: "LA LUCHA", price: 4000 },
   { name: "MANDARINOS", price: 6000 },
   { name: "MAKUNAIMA", price: 5000 },
@@ -85,7 +85,8 @@ const neighborhoods = [
   { name: "VILLA MONICA", price: 4000 },
   { name: "VILLA TATIANA", price: 4000 },
   { name: "LOS NARANJOS", price: 4000 },
-  { name: "RECANTO", price: 2000 },
+  { name: "RECANTO", price: 3000 },
+  { name: "VENTINO", price: 3000 },
   // Conjuntos Cerrados
   { name: "LOS NARANJOS", price: 4000 },
   { name: "SOLARES DE SACHAMATE", price: 6000 },
@@ -145,6 +146,7 @@ const neighborhoods = [
   { name: "SAN MARINO", price: 6000 },
   { name: "ARBORE COUNTRY CLUB", price: 12000 },
   { name: "CIUDAD COUNTRY", price: 8000 },
+  { name: "VERONA", price: 4000 },
 ]
 
 export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps) {
