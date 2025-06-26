@@ -283,10 +283,10 @@ Muchas gracias!`
                 )}
                 {paymentMethod === "cash" && !cashAmount && (
                   <p className="text-orange-600 font-medium">
-                    * Campo obligatorio: Debes especificar con cuánto vas a pagar
+                    * Campo obligatorio: Para saber cuánto cambio tenerte listo
                   </p>
                 )}
-                <p className="text-gray-500 text-xs mt-1">Puedes usar puntos o comas: 50000, 50.000 o 50,000</p>
+                <p className="text-gray-500 text-xs mt-1"></p>
               </div>
             </CardContent>
           </Card>

@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { ArrowLeft, MapPin } from "lucide-react"
+import { ArrowLeft, MapPin, AlertCircle } from "lucide-react"
 import type { DeliveryInfo as DeliveryInfoType } from "./order-flow"
 
 interface DeliveryInfoProps {
@@ -147,7 +147,18 @@ const neighborhoods = [
   { name: "ARBORE COUNTRY CLUB", price: 12000 },
   { name: "CIUDAD COUNTRY", price: 8000 },
   { name: "VERONA", price: 4000 },
+  { name: "PASEO DE PANGOLA", price: 5000 },
+  { name: "PAISAJE DE PANGOLA", price: 5000 },
+  { name: "CAMINOS DE PANGOLA", price: 5000 },
+  { name: "CAMPOS DE PANGOLA", price: 5000 },
+  { name: "PARAÍSO DE PANGOLA", price: 5000 },
 ]
+
+// Opción especial para cuando no encuentran su barrio
+const NOT_IN_LIST_OPTION = {
+  name: "MI BARRIO NO ESTÁ EN LA LISTA",
+  price: 0 // El precio se definirá después
+}
 
 export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps) {
   const [deliveryType, setDeliveryType] = useState<"delivery" | "pickup" | "">("")
@@ -157,6 +168,7 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
   const [observations, setObservations] = useState("")
   const [location, setLocation] = useState<"anturios" | "sachamate" | undefined>(undefined)
   const [neighborhood, setNeighborhood] = useState("")
+  const [customNeighborhood, setCustomNeighborhood] = useState("")
   const [searchTerm, setSearchTerm] = useState("")
 
   const locations = [
@@ -174,18 +186,27 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
     },
   ]
 
-  const filteredNeighborhoods = neighborhoods.filter((n) => n.name.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredNeighborhoods = neighborhoods.filter((n) => 
+    n.name.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+
+  // Siempre mostrar la opción "no está en lista" al principio
+  const neighborhoodOptions = [NOT_IN_LIST_OPTION, ...filteredNeighborhoods]
 
   const handleContinue = () => {
     if (!deliveryType || !name || !phone) return
 
     if (deliveryType === "delivery") {
       if (!address || !neighborhood) return
+      // Si seleccionó "no está en lista", también necesita escribir el barrio
+      if (neighborhood === NOT_IN_LIST_OPTION.name && !customNeighborhood.trim()) return
     } else {
       if (!location) return
     }
 
     const selectedNeighborhood = neighborhoods.find((n) => n.name === neighborhood)
+    const finalNeighborhood = neighborhood === NOT_IN_LIST_OPTION.name ? customNeighborhood : neighborhood
+    
     const info: DeliveryInfoType = {
       type: deliveryType,
       name,
@@ -193,14 +214,18 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
       address: deliveryType === "delivery" ? address : undefined,
       observations: deliveryType === "delivery" ? observations : undefined,
       location: deliveryType === "pickup" ? location : undefined,
-      neighborhood: deliveryType === "delivery" ? neighborhood : undefined,
-      deliveryCost: deliveryType === "delivery" ? selectedNeighborhood?.price || 0 : 0,
+      neighborhood: deliveryType === "delivery" ? finalNeighborhood : undefined,
+      deliveryCost: deliveryType === "delivery" ? (selectedNeighborhood?.price || 0) : 0,
     }
 
     onContinue(info)
   }
 
-  const canContinue = deliveryType && name && phone && (deliveryType === "pickup" ? location : address && neighborhood)
+  const canContinue = deliveryType && name && phone && 
+    (deliveryType === "pickup" 
+      ? location 
+      : address && neighborhood && (neighborhood !== NOT_IN_LIST_OPTION.name || customNeighborhood.trim())
+    )
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
@@ -253,6 +278,7 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
                   setAddress("")
                   setObservations("")
                   setNeighborhood("")
+                  setCustomNeighborhood("")
                 }}
                 className="w-4 h-4 text-green-600"
               />
@@ -315,6 +341,22 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
                   className="mt-1"
                 />
               </div>
+              
+              {/* Aviso importante sobre barrios */}
+              <div className="p-3 bg-blue-50 border border-blue-200 rounded-md">
+                <div className="flex items-start space-x-2">
+                  <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5" />
+                  <div>
+                    <p className="text-sm text-blue-800 font-medium">
+                      ¡Importante!
+                    </p>
+                    <p className="text-sm text-blue-700">
+                      Si no encuentras tu barrio, selecciona "MI BARRIO NO ESTÁ EN LA LISTA"
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               <div>
                 <Label htmlFor="neighborhood" className="text-brown-900">
                   Barrio *
@@ -327,24 +369,58 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
                   className="mt-1 mb-2"
                 />
                 <div className="max-h-40 overflow-y-auto border rounded-md">
-                  {filteredNeighborhoods.map((n) => (
-                    <div key={n.name} className="flex items-center space-x-3 p-2 hover:bg-green-50">
+                  {neighborhoodOptions.map((n, index) => (
+                    <div 
+                      key={`${n.name}-${index}`} 
+                      className={`flex items-center space-x-3 p-2 hover:bg-green-50 ${
+                        n.name === NOT_IN_LIST_OPTION.name ? 'bg-orange-50 border-b border-orange-200' : ''
+                      }`}
+                    >
                       <input
                         type="radio"
-                        id={n.name}
+                        id={`${n.name}-${index}`}
                         name="neighborhood"
                         value={n.name}
                         checked={neighborhood === n.name}
-                        onChange={(e) => setNeighborhood(e.target.value)}
+                        onChange={(e) => {
+                          setNeighborhood(e.target.value)
+                          if (e.target.value !== NOT_IN_LIST_OPTION.name) {
+                            setCustomNeighborhood("")
+                          }
+                        }}
                         className="w-4 h-4 text-green-600"
                       />
-                      <Label htmlFor={n.name} className="cursor-pointer flex-1">
-                        <span className="text-sm text-brown-900">{n.name}</span>
+                      <Label htmlFor={`${n.name}-${index}`} className="cursor-pointer flex-1">
+                        <span className={`text-sm ${
+                          n.name === NOT_IN_LIST_OPTION.name 
+                            ? 'text-orange-800 font-medium' 
+                            : 'text-brown-900'
+                        }`}>
+                          {n.name === NOT_IN_LIST_OPTION.name ? ' ' : ''}{n.name}
+                        </span>
                       </Label>
                     </div>
                   ))}
                 </div>
-                {neighborhood && (
+
+                {/* Campo para escribir barrio personalizado */}
+                {neighborhood === NOT_IN_LIST_OPTION.name && (
+                  <div className="mt-3">
+                    <Label htmlFor="customNeighborhood" className="text-brown-900">
+                      Escribe el nombre de tu barrio *
+                    </Label>
+                    <Input
+                      id="customNeighborhood"
+                      value={customNeighborhood}
+                      onChange={(e) => setCustomNeighborhood(e.target.value)}
+                      placeholder="Nombre de tu barrio"
+                      className="mt-1"
+                    />
+                  </div>
+                )}
+
+                {/* Mostrar información del barrio seleccionado */}
+                {neighborhood && neighborhood !== NOT_IN_LIST_OPTION.name && (
                   <div className="mt-3 p-3 bg-green-100 border border-green-300 rounded-md">
                     <p className="text-sm text-green-800 font-medium">
                       ✅ Barrio seleccionado: <strong>{neighborhood}</strong>
@@ -357,7 +433,20 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
                     </p>
                   </div>
                 )}
+
+                {/* Aviso para barrio no en lista */}
+                {neighborhood === NOT_IN_LIST_OPTION.name && customNeighborhood && (
+                  <div className="mt-3 p-3 bg-orange-100 border border-orange-300 rounded-md">
+                    <p className="text-sm text-orange-800 font-medium">
+                      ⏳ Barrio: <strong>{customNeighborhood}</strong>
+                    </p>
+                    <p className="text-sm text-orange-700">
+                      El costo de domicilio será confirmado por WhatsApp (entre $4,000 - $10,000)
+                    </p>
+                  </div>
+                )}
               </div>
+              
               <div>
                 <Label htmlFor="observations" className="text-brown-900">
                   Observaciones
