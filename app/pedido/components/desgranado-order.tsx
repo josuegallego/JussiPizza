@@ -66,7 +66,7 @@ export function DesgranandoOrder({ onBack, onAddItem }: DesgranandoOrderProps) {
         <div className="flex items-center justify-between max-w-md mx-auto">
           <Button variant="ghost" onClick={onBack} className="text-brown-700 hover:bg-green-100">
             <ArrowLeft className="w-5 h-5 mr-2" />
-            Atrás
+            
           </Button>
           <h1 className="text-xl font-bold text-brown-900">🌽 Desgranado</h1>
           <div className="w-16"></div>

@@ -84,7 +84,6 @@ const neighborhoods = [
   { name: "VILLA ELVIRA", price: 4000 },
   { name: "VILLA MONICA", price: 4000 },
   { name: "VILLA TATIANA", price: 4000 },
-  { name: "LOS NARANJOS", price: 4000 },
   { name: "RECANTO", price: 3000 },
   { name: "VENTINO", price: 3000 },
   // Conjuntos Cerrados
@@ -152,6 +151,7 @@ const neighborhoods = [
   { name: "CAMINOS DE PANGOLA", price: 5000 },
   { name: "CAMPOS DE PANGOLA", price: 5000 },
   { name: "PARAÍSO DE PANGOLA", price: 5000 },
+  { name: "HACIENDA EL PINO", price: 4000 },
 ]
 
 // Opción especial para cuando no encuentran su barrio
@@ -186,11 +186,14 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
     },
   ]
 
-  const filteredNeighborhoods = neighborhoods.filter((n) => 
-    n.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  // Filtrar barrios basado en el término de búsqueda
+  const filteredNeighborhoods = searchTerm.trim() 
+    ? neighborhoods.filter((n) => 
+        n.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : []
 
-  // Siempre mostrar la opción "no está en lista" al principio
+  // Siempre incluir la opción "no está en lista" al principio
   const neighborhoodOptions = [NOT_IN_LIST_OPTION, ...filteredNeighborhoods]
 
   const handleContinue = () => {
@@ -234,7 +237,7 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
         <div className="flex items-center justify-between max-w-md mx-auto">
           <Button variant="ghost" onClick={onBack} className="text-brown-700 hover:bg-green-100">
             <ArrowLeft className="w-5 h-5 mr-2" />
-            Atrás
+            
           </Button>
           <h1 className="text-xl font-bold text-brown-900">Información de Entrega</h1>
           <div className="w-16"></div>
@@ -365,43 +368,50 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
                   id="neighborhoodSearch"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Buscar barrio..."
+                  placeholder="Busca tu barrio aquí:"
                   className="mt-1 mb-2"
                 />
-                <div className="max-h-40 overflow-y-auto border rounded-md">
-                  {neighborhoodOptions.map((n, index) => (
-                    <div 
-                      key={`${n.name}-${index}`} 
-                      className={`flex items-center space-x-3 p-2 hover:bg-green-50 ${
-                        n.name === NOT_IN_LIST_OPTION.name ? 'bg-orange-50 border-b border-orange-200' : ''
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        id={`${n.name}-${index}`}
-                        name="neighborhood"
-                        value={n.name}
-                        checked={neighborhood === n.name}
-                        onChange={(e) => {
-                          setNeighborhood(e.target.value)
-                          if (e.target.value !== NOT_IN_LIST_OPTION.name) {
-                            setCustomNeighborhood("")
-                          }
-                        }}
-                        className="w-4 h-4 text-green-600"
-                      />
-                      <Label htmlFor={`${n.name}-${index}`} className="cursor-pointer flex-1">
-                        <span className={`text-sm ${
-                          n.name === NOT_IN_LIST_OPTION.name 
-                            ? 'text-orange-800 font-medium' 
-                            : 'text-brown-900'
-                        }`}>
-                          {n.name === NOT_IN_LIST_OPTION.name ? ' ' : ''}{n.name}
-                        </span>
-                      </Label>
-                    </div>
-                  ))}
-                </div>
+                {searchTerm.trim() && (
+                  <div className="max-h-40 overflow-y-auto border rounded-md">
+                    {neighborhoodOptions.map((n, index) => (
+                      <div 
+                        key={`${n.name}-${index}`} 
+                        className={`flex items-center space-x-3 p-2 hover:bg-green-50 ${
+                          n.name === NOT_IN_LIST_OPTION.name ? 'bg-orange-50 border-b border-orange-200' : ''
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          id={`${n.name}-${index}`}
+                          name="neighborhood"
+                          value={n.name}
+                          checked={neighborhood === n.name}
+                          onChange={(e) => {
+                            setNeighborhood(e.target.value)
+                            if (e.target.value !== NOT_IN_LIST_OPTION.name) {
+                              setCustomNeighborhood("")
+                            }
+                          }}
+                          className="w-4 h-4 text-green-600"
+                        />
+                        <Label htmlFor={`${n.name}-${index}`} className="cursor-pointer flex-1">
+                          <span className={`text-sm ${
+                            n.name === NOT_IN_LIST_OPTION.name 
+                              ? 'text-orange-800 font-medium' 
+                              : 'text-brown-900'
+                          }`}>
+                            {n.name}
+                          </span>
+                          {n.name !== NOT_IN_LIST_OPTION.name && (
+                            <span className="text-xs text-gray-500 ml-2">
+                              
+                            </span>
+                          )}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
                 {/* Campo para escribir barrio personalizado */}
                 {neighborhood === NOT_IN_LIST_OPTION.name && (
