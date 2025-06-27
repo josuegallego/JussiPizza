@@ -20,13 +20,16 @@ export function BebidaOrder({ onBack, onAddItem }: BebidaOrderProps) {
   const [flavor, setFlavor] = useState("")
 
   const types = [
-    { name: "Jugo", price: 4000 },
+    { name: "Jugo", price: 0 }, // Precio variable según base
     { name: "Frappé", price: 7000 },
     { name: "Limonada", price: 0 }, // Precio variable según sabor
     { name: "Gaseosa", price: 0 }, // Precio variable según marca y tamaño
   ]
 
-  const juiceBases = ["En agua", "En leche"]
+  const juiceBases = [
+    { name: "En agua", price: 6000 },
+    { name: "En leche", price: 7000 }
+  ]
   const juiceFlavors = ["Mora", "Lulo", "Maracuyá", "Mango", "Guanábana", "Fresa"]
   const frappeFlavors = ["Mora", "Lulo", "Maracuyá", "Mango", "Guanábana", "Fresa"]
 
@@ -44,11 +47,13 @@ export function BebidaOrder({ onBack, onAddItem }: BebidaOrderProps) {
   ]
 
   const getPrice = () => {
-    const selectedType = types.find((t) => t.name === type)
-    if (!selectedType) return 0
+    if (type === "Jugo") {
+      const selectedBase = juiceBases.find((b) => b.name === base)
+      return selectedBase?.price || 0
+    }
 
-    if (type === "Jugo" || type === "Frappé") {
-      return selectedType.price
+    if (type === "Frappé") {
+      return 7000
     }
 
     if (type === "Limonada") {
@@ -162,8 +167,8 @@ export function BebidaOrder({ onBack, onAddItem }: BebidaOrderProps) {
                 <Label htmlFor={typeOption.name} className="flex-1 cursor-pointer">
                   <div className="flex justify-between items-center">
                     <div className="font-medium text-brown-900">{typeOption.name}</div>
-                    {typeOption.price > 0 && typeOption.name !== "Jugo" && typeOption.name !== "Frappé" && (
-                      <div className="text-lg font-bold text-green-600">${typeOption.price.toLocaleString()}</div>
+                    {typeOption.price > 0 && (
+                      <div className="text-lg font-bold text-green-600"></div>
                     )}
                   </div>
                 </Label>
@@ -180,23 +185,26 @@ export function BebidaOrder({ onBack, onAddItem }: BebidaOrderProps) {
             </CardHeader>
             <CardContent className="space-y-3">
               {juiceBases.map((baseOption) => (
-                <div key={baseOption} className="flex items-center space-x-3">
+                <div key={baseOption.name} className="flex items-center space-x-3">
                   <input
                     type="radio"
-                    id={baseOption}
+                    id={baseOption.name}
                     name="base"
-                    value={baseOption}
-                    checked={base === baseOption}
+                    value={baseOption.name}
+                    checked={base === baseOption.name}
                     onChange={(e) => setBase(e.target.value)}
                     className="w-4 h-4 text-green-600"
                   />
-                  <Label htmlFor={baseOption} className="cursor-pointer text-brown-900">
-                    {baseOption}
+                  <Label htmlFor={baseOption.name} className="flex-1 cursor-pointer">
+                    <div className="flex justify-between items-center">
+                      <div className="font-medium text-brown-900">{baseOption.name}</div>
+                      <div className="text-lg font-bold text-green-600">${baseOption.price.toLocaleString()}</div>
+                    </div>
                   </Label>
                 </div>
               ))}
             </CardContent>
-          </Card>
+        </Card>
         )}
 
         {/* Flavor/Option Selection */}
