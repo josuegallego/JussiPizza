@@ -353,7 +353,7 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
                   id="address"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  placeholder="Calle, carrera, número, casa, torre, apto"
+                  placeholder="Calle, carrera, casa / torre, apto"
                   className="mt-1"
                 />
               </div>
@@ -361,7 +361,7 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
               {/* Selección de tipo de ubicación */}
               <div>
                 <Label className="text-brown-900 block mb-2">
-                  ¿Vives en una casa en barrio o en una unidad residencial? *
+                  ¿Dónde te encuentras? *
                 </Label>
                 <div className="flex space-x-4 mb-4">
                   <Button
@@ -510,7 +510,7 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
                   id="observations"
                   value={observations}
                   onChange={(e) => setObservations(e.target.value)}
-                  placeholder="Referencias adicionales, apartamento, etc."
+                  placeholder="Referencias adicionales"
                   className="mt-1"
                   rows={3}
                 />
