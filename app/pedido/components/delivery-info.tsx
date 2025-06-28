@@ -14,150 +14,154 @@ interface DeliveryInfoProps {
   onContinue: (info: DeliveryInfoType) => void
 }
 
+// Separamos en barrios y unidades residenciales
 const neighborhoods = [
-  { name: "ANGEL MARIA CAMACHO", price: 4000 },
-  { name: "ARBOLEDA", price: 4000 },
-  { name: "ALFEREZ REAL", price: 4000 },
-  { name: "ALAMEDA DE RIO CLARO (Bloques aptos)", price: 6000 },
-  { name: "ADRIANITA", price: 4000 },
-  { name: "ALBORADA", price: 4000 },
-  { name: "AURORA", price: 4000 },
-  { name: "BELALCAZAR II", price: 5000 },
-  { name: "AMIGOS 2000", price: 6000 },
-  { name: "ACACIAS", price: 4000 },
-  { name: "BELALCAZAR I", price: 4000 },
-  { name: "BRISAS DEL ROSARIO", price: 4000 },
-  { name: "BELLO HORIZONTE", price: 4000 },
-  { name: "ANTURIOS", price: 2000 },
-  { name: "CENTENARIO", price: 4000 },
-  { name: "CANTABRIA", price: 4000 },
-  { name: "PARQUE NATURA", price: 5000 },
-  { name: "CIRO VELASCO", price: 4000 },
-  { name: "CIUDAD SUR", price: 4000 },
-  { name: "COVICEDROS", price: 4000 },
-  { name: "CONDADO DEL SUR", price: 5000 },
-  { name: "DORADO", price: 4000 },
-  { name: "ESPERANZA", price: 4000 },
-  { name: "ESMERALDA", price: 4000 },
-  { name: "ESTACION", price: 4000 },
-  { name: "HOJARASCA", price: 4000 },
-  { name: "JARDIN I", price: 5000 },
-  { name: "JARDIN II", price: 6000 },
-  { name: "JUAN DE AMPUDIA", price: 4000 },
-  { name: "JUAN PABLO II", price: 4000 },
-  { name: "LIBERTADORES", price: 4000 },
-  { name: "LA ALBORADA", price: 5000 },
-  { name: "LA LUCHA", price: 4000 },
-  { name: "MANDARINOS", price: 6000 },
-  { name: "MAKUNAIMA", price: 5000 },
-  { name: "MARGARITAS", price: 6000 },
-  { name: "OPORTO", price: 5000 },
-  { name: "PORTAL DEL JORDAN", price: 4000 },
-  { name: "PORTAL DE JAMUNDI", price: 4000 },
-  { name: "PANAMERICANO", price: 5000 },
-  { name: "PILOTO", price: 4000 },
-  { name: "POPULAR", price: 4000 },
-  { name: "PORVENIR", price: 4000 },
-  { name: "PRIMERO DE MAYO", price: 4000 },
-  { name: "PARQUES DE CASTILLA", price: 4000 },
-  { name: "LA PRADERA", price: 4000 },
-  { name: "PORTAL DEL SAMAN", price: 4000 },
-  { name: "PALOSANTO", price: 4000 },
-  { name: "PALMAS", price: 6000 },
-  { name: "QUINTAS DE BOLIVAR", price: 5000 },
-  { name: "ROSARIO", price: 4000 },
-  { name: "RINCON DE ZARAGOZA", price: 4000 },
-  { name: "RINCON DE LAS GARZAS", price: 4000 },
-  { name: "RIBERAS DEL ROSARIO", price: 4000 },
-  { name: "SIGLO XXI", price: 5000 },
-  { name: "SACHAMATE (URB. MUNICIPAL)", price: 2000 },
-  { name: "SOLAR DE LAS GARZAS", price: 4000 },
-  { name: "SIMON BOLIVAR", price: 4000 },
-  { name: "SANTA ANA", price: 4000 },
-  { name: "SOCORRO", price: 4000 },
-  { name: "VILLA ESTELA", price: 5000 },
-  { name: "VILLA MAITE", price: 5000 },
-  { name: "VILLA PAULINA", price: 4000 },
-  { name: "VILLA PIME 1", price: 5000 },
-  { name: "VILLA PIME 2", price: 5000 },
-  { name: "VILLA DEL SOL", price: 5000 },
-  { name: "VILLA ELVIRA", price: 4000 },
-  { name: "VILLA MONICA", price: 4000 },
-  { name: "VILLA TATIANA", price: 4000 },
-  { name: "RECANTO", price: 3000 },
-  { name: "VENTINO", price: 3000 },
-  // Conjuntos Cerrados
-  { name: "LOS NARANJOS", price: 4000 },
-  { name: "SOLARES DE SACHAMATE", price: 6000 },
-  { name: "COUNTRY PLAZA II", price: 7000 },
-  { name: "COUNTRY PLAZA I", price: 7000 },
-  { name: "SOL DEL CAMPO", price: 6000 },
-  { name: "SOL DE LA ARBOLEDA", price: 6000 },
-  { name: "SOL DE LA LLANURA", price: 6000 },
-  { name: "SOL DEL BOSQUE", price: 6000 },
-  { name: "SOL DE PRIMAVERA", price: 6000 },
-  { name: "SAN CAYETANO", price: 6000 },
-  { name: "TORRES DE JAMUNDI", price: 5000 },
-  { name: "VILLAS DE ALTAGRACIA", price: 4000 },
-  { name: "EL PINO", price: 4000 },
-  { name: "PRADOS DE ALFAGUARA", price: 4000 },
-  { name: "ALEGRA", price: 5000 },
-  { name: "GUAYACANES DE VERDE ALFAGUARA", price: 8000 },
-  { name: "ALMENDROS DE VERDE ALFAGUARA", price: 8000 },
-  { name: "PALMERAS DE VERDE ALFAGUARA", price: 8000 },
-  { name: "GUADUALES DE VERDE ALFAGUARA", price: 8000 },
-  { name: "CASA CAMPO CONJUNTO RESIDENCIAL", price: 8000 },
-  { name: "TANGELOS DE VERDE ALFAGUARA", price: 8000 },
-  { name: "LAGOS DE VERDE ALFAGUARA", price: 8000 },
-  { name: "FARALLONES DE VERDE ALFAGUARA", price: 8000 },
-  { name: "ENTRELAGOS CONJUNTO RESIDENCIAL", price: 8000 },
-  { name: "VILLAS DE LAS MERCEDES", price: 12000 },
-  { name: "HONTANAR DE LAS MERCEDES", price: 12000 },
-  { name: "MANANTIAL DE LAS MERCEDES", price: 12000 },
-  { name: "FONTANAR DE LAS MERCEDES", price: 12000 },
-  { name: "SENDEROS DE LAS MERCEDES", price: 12000 },
-  { name: "RINCON DE LAS MERCEDES", price: 12000 },
-  { name: "LAS MERCEDES", price: 12000 },
-  { name: "GUADUALES DE LAS MERCEDES", price: 12000 },
-  { name: "VALLE DEL RIO", price: 12000 },
-  { name: "VALLE VERDE", price: 12000 },
-  { name: "BALCONES DE VERDE HORIZONTE", price: 12000 },
-  { name: "PORTALES DE VERDE HORIZONTE", price: 12000 },
-  { name: "PRADERAS DE VERDE HORIZONTE", price: 12000 },
-  { name: "SENDEROS DE VERDE HORIZONTE", price: 12000 },
-  { name: "RINCON DE LOS GUADUALES", price: 12000 },
-  { name: "MANÀ", price: 8000 },
-  { name: "CIUDAD DE DIOS I Y II", price: 8000 },
-  { name: "BAMBÙ", price: 4000 },
-  { name: "CARBONERO", price: 4000 },
-  { name: "LA ARBOLEDA", price: 4000 },
-  { name: "KOA", price: 2000 },
-  { name: "MIRADOR DE FARALLONES", price: 4000 },
-  { name: "FORESTAL AQUA", price: 6000 },
-  { name: "VILLAS DEL PARQUE", price: 7000 },
-  { name: "SENDEROS DE LA MORADA", price: 12000 },
-  { name: "RESERVAS DE RIO CLARO", price: 12000 },
-  { name: "CLUB DE CAMPO LA MORADA", price: 12000 },
-  { name: "SOLARES DE LA MORADA", price: 12000 },
-  { name: "REMANSOS DE LA MORADA", price: 12000 },
-  { name: "PARAISO DE LA MORADA", price: 12000 },
-  { name: "SAMANES DE LA MORADA", price: 12000 },
-  { name: "SAN MARINO", price: 6000 },
-  { name: "ARBORE COUNTRY CLUB", price: 12000 },
-  { name: "CIUDAD COUNTRY", price: 8000 },
-  { name: "VERONA", price: 4000 },
-  { name: "PASEO DE PANGOLA", price: 5000 },
-  { name: "PAISAJE DE PANGOLA", price: 5000 },
-  { name: "CAMINOS DE PANGOLA", price: 5000 },
-  { name: "CAMPOS DE PANGOLA", price: 5000 },
-  { name: "PARAÍSO DE PANGOLA", price: 5000 },
-  { name: "HACIENDA EL PINO", price: 4000 },
+  { name: "ANGEL MARIA CAMACHO", price: 4000, type: "barrio" },
+  { name: "ALFEREZ REAL", price: 4000, type: "barrio" },
+  { name: "ADRIANITA", price: 4000, type: "barrio" },
+  { name: "ALBORADA", price: 4000, type: "barrio" },
+  { name: "AURORA", price: 4000, type: "barrio" },
+  { name: "ACACIAS", price: 4000, type: "barrio" },
+  { name: "BRISAS DEL ROSARIO", price: 4000, type: "barrio" },
+  { name: "BELLO HORIZONTE", price: 4000, type: "barrio" },
+  { name: "ANTURIOS", price: 2000, type: "barrio" },
+  { name: "CENTENARIO", price: 4000, type: "barrio" },
+  { name: "CANTABRIA", price: 4000, type: "barrio" },
+  { name: "CIRO VELASCO", price: 4000, type: "barrio" },
+  { name: "CIUDAD SUR", price: 4000, type: "barrio" },
+  { name: "COVICEDROS", price: 4000, type: "barrio" },
+  { name: "DORADO", price: 4000, type: "barrio" },
+  { name: "ESPERANZA", price: 4000, type: "barrio" },
+  { name: "ESMERALDA", price: 4000, type: "barrio" },
+  { name: "ESTACION", price: 4000, type: "barrio" },
+  { name: "HOJARASCA", price: 4000, type: "barrio" },
+  { name: "JUAN DE AMPUDIA", price: 4000, type: "barrio" },
+  { name: "JUAN PABLO II", price: 4000, type: "barrio" },
+  { name: "LIBERTADORES", price: 4000, type: "barrio" },
+  { name: "LA LUCHA", price: 4000, type: "barrio" },
+  { name: "PANAMERICANO", price: 5000, type: "barrio" },
+  { name: "PILOTO", price: 4000, type: "barrio" },
+  { name: "POPULAR", price: 4000, type: "barrio" },
+  { name: "PORVENIR", price: 4000, type: "barrio" },
+  { name: "PRIMERO DE MAYO", price: 4000, type: "barrio" },
+  { name: "LA PRADERA", price: 4000, type: "barrio" },
+  { name: "ROSARIO", price: 4000, type: "barrio" },
+  { name: "RINCON DE ZARAGOZA", price: 4000, type: "barrio" },
+  { name: "RINCON DE LAS GARZAS", price: 4000, type: "barrio" },
+  { name: "RIBERAS DEL ROSARIO", price: 4000, type: "barrio" },
+  { name: "SIGLO XXI", price: 5000, type: "barrio" },
+  { name: "SACHAMATE (CASA)", price: 2000, type: "barrio" },
+  { name: "SOLAR DE LAS GARZAS", price: 4000, type: "barrio" },
+  { name: "SIMON BOLIVAR", price: 4000, type: "barrio" },
+  { name: "SANTA ANA", price: 4000, type: "barrio" },
+  { name: "SOCORRO", price: 4000, type: "barrio" },
+  { name: "RECANTO", price: 3000, type: "barrio" },
+  { name: "VENTINO", price: 3000, type: "barrio" },
+  { name: "VERONA", price: 4000, type: "barrio" },
 ]
 
-// Opción especial para cuando no encuentran su barrio
+const residentialUnits = [
+  { name: "ARBOLEDA", price: 4000, type: "unidad" },
+  { name: "ALAMEDA DE RIO CLARO (Bloques aptos)", price: 6000, type: "unidad" },
+  { name: "BELALCAZAR II", price: 5000, type: "unidad" },
+  { name: "AMIGOS 2000", price: 6000, type: "unidad" },
+  { name: "BELALCAZAR I", price: 4000, type: "unidad" },
+  { name: "PARQUE NATURA", price: 5000, type: "unidad" },
+  { name: "CONDADO DEL SUR", price: 5000, type: "unidad" },
+  { name: "JARDIN I", price: 5000, type: "unidad" },
+  { name: "JARDIN II", price: 6000, type: "unidad" },
+  { name: "LA ALBORADA", price: 5000, type: "unidad" },
+  { name: "MANDARINOS", price: 6000, type: "unidad" },
+  { name: "MAKUNAIMA", price: 5000, type: "unidad" },
+  { name: "MARGARITAS", price: 6000, type: "unidad" },
+  { name: "OPORTO", price: 5000, type: "unidad" },
+  { name: "PORTAL DEL JORDAN", price: 4000, type: "unidad" },
+  { name: "PORTAL DE JAMUNDI", price: 4000, type: "unidad" },
+  { name: "PARQUES DE CASTILLA", price: 4000, type: "unidad" },
+  { name: "PORTAL DEL SAMAN", price: 4000, type: "unidad" },
+  { name: "PALOSANTO", price: 4000, type: "unidad" },
+  { name: "PALMAS", price: 6000, type: "unidad" },
+  { name: "QUINTAS DE BOLIVAR", price: 5000, type: "unidad" },
+  { name: "VILLA ESTELA", price: 5000, type: "unidad" },
+  { name: "VILLA MAITE", price: 5000, type: "unidad" },
+  { name: "VILLA PAULINA", price: 4000, type: "unidad" },
+  { name: "VILLA PIME 1", price: 5000, type: "unidad" },
+  { name: "VILLA PIME 2", price: 5000, type: "unidad" },
+  { name: "VILLA DEL SOL", price: 5000, type: "unidad" },
+  { name: "VILLA ELVIRA", price: 4000, type: "unidad" },
+  { name: "VILLA MONICA", price: 4000, type: "unidad" },
+  { name: "VILLA TATIANA", price: 4000, type: "unidad" },
+  { name: "LOS NARANJOS", price: 4000, type: "unidad" },
+  { name: "SOLARES DE SACHAMATE", price: 6000, type: "unidad" },
+  { name: "COUNTRY PLAZA II", price: 7000, type: "unidad" },
+  { name: "COUNTRY PLAZA I", price: 7000, type: "unidad" },
+  { name: "SOL DEL CAMPO", price: 6000, type: "unidad" },
+  { name: "SOL DE LA ARBOLEDA", price: 6000, type: "unidad" },
+  { name: "SOL DE LA LLANURA", price: 6000, type: "unidad" },
+  { name: "SOL DEL BOSQUE", price: 6000, type: "unidad" },
+  { name: "SOL DE PRIMAVERA", price: 6000, type: "unidad" },
+  { name: "SAN CAYETANO", price: 6000, type: "unidad" },
+  { name: "TORRES DE JAMUNDI", price: 5000, type: "unidad" },
+  { name: "VILLAS DE ALTAGRACIA", price: 4000, type: "unidad" },
+  { name: "EL PINO", price: 4000, type: "unidad" },
+  { name: "PRADOS DE ALFAGUARA", price: 4000, type: "unidad" },
+  { name: "ALEGRA", price: 5000, type: "unidad" },
+  { name: "GUAYACANES DE VERDE ALFAGUARA", price: 8000, type: "unidad" },
+  { name: "ALMENDROS DE VERDE ALFAGUARA", price: 8000, type: "unidad" },
+  { name: "PALMERAS DE VERDE ALFAGUARA", price: 8000, type: "unidad" },
+  { name: "GUADUALES DE VERDE ALFAGUARA", price: 8000, type: "unidad" },
+  { name: "CASA CAMPO CONJUNTO RESIDENCIAL", price: 8000, type: "unidad" },
+  { name: "TANGELOS DE VERDE ALFAGUARA", price: 8000, type: "unidad" },
+  { name: "LAGOS DE VERDE ALFAGUARA", price: 8000, type: "unidad" },
+  { name: "FARALLONES DE VERDE ALFAGUARA", price: 8000, type: "unidad" },
+  { name: "ENTRELAGOS CONJUNTO RESIDENCIAL", price: 8000, type: "unidad" },
+  { name: "VILLAS DE LAS MERCEDES", price: 12000, type: "unidad" },
+  { name: "HONTANAR DE LAS MERCEDES", price: 12000, type: "unidad" },
+  { name: "MANANTIAL DE LAS MERCEDES", price: 12000, type: "unidad" },
+  { name: "FONTANAR DE LAS MERCEDES", price: 12000, type: "unidad" },
+  { name: "SENDEROS DE LAS MERCEDES", price: 12000, type: "unidad" },
+  { name: "RINCON DE LAS MERCEDES", price: 12000, type: "unidad" },
+  { name: "LAS MERCEDES", price: 12000, type: "unidad" },
+  { name: "GUADUALES DE LAS MERCEDES", price: 12000, type: "unidad" },
+  { name: "VALLE DEL RIO", price: 12000, type: "unidad" },
+  { name: "VALLE VERDE", price: 12000, type: "unidad" },
+  { name: "BALCONES DE VERDE HORIZONTE", price: 12000, type: "unidad" },
+  { name: "PORTALES DE VERDE HORIZONTE", price: 12000, type: "unidad" },
+  { name: "PRADERAS DE VERDE HORIZONTE", price: 12000, type: "unidad" },
+  { name: "SENDEROS DE VERDE HORIZONTE", price: 12000, type: "unidad" },
+  { name: "RINCON DE LOS GUADUALES", price: 12000, type: "unidad" },
+  { name: "MANÀ", price: 8000, type: "unidad" },
+  { name: "CIUDAD DE DIOS I Y II", price: 8000, type: "unidad" },
+  { name: "BAMBÙ", price: 4000, type: "unidad" },
+  { name: "CARBONERO", price: 4000, type: "unidad" },
+  { name: "LA ARBOLEDA", price: 4000, type: "unidad" },
+  { name: "KOA", price: 2000, type: "unidad" },
+  { name: "MIRADOR DE FARALLONES", price: 4000, type: "unidad" },
+  { name: "FORESTAL AQUA", price: 6000, type: "unidad" },
+  { name: "VILLAS DEL PARQUE", price: 7000, type: "unidad" },
+  { name: "SENDEROS DE LA MORADA", price: 12000, type: "unidad" },
+  { name: "RESERVAS DE RIO CLARO", price: 12000, type: "unidad" },
+  { name: "CLUB DE CAMPO LA MORADA", price: 12000, type: "unidad" },
+  { name: "SOLARES DE LA MORADA", price: 12000, type: "unidad" },
+  { name: "REMANSOS DE LA MORADA", price: 12000, type: "unidad" },
+  { name: "PARAISO DE LA MORADA", price: 12000, type: "unidad" },
+  { name: "SAMANES DE LA MORADA", price: 12000, type: "unidad" },
+  { name: "SAN MARINO", price: 6000, type: "unidad" },
+  { name: "ARBORE COUNTRY CLUB", price: 12000, type: "unidad" },
+  { name: "CIUDAD COUNTRY", price: 8000, type: "unidad" },
+  { name: "PASEO DE PANGOLA", price: 5000, type: "unidad" },
+  { name: "PAISAJE DE PANGOLA", price: 5000, type: "unidad" },
+  { name: "CAMINOS DE PANGOLA", price: 5000, type: "unidad" },
+  { name: "CAMPOS DE PANGOLA", price: 5000, type: "unidad" },
+  { name: "PARAÍSO DE PANGOLA", price: 5000, type: "unidad" },
+  { name: "HACIENDA EL PINO", price: 4000, type: "unidad" },
+]
+
+// Opción especial para cuando no encuentran su opción
 const NOT_IN_LIST_OPTION = {
-  name: "MI BARRIO NO ESTÁ EN LA LISTA",
-  price: 0 // El precio se definirá después
+  name: "NO ENCUENTRO MI BARRIO O UNIDAD RESIDENCIAL",
+  price: 0,
+  type: "otro"
 }
 
 export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps) {
@@ -170,6 +174,7 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
   const [neighborhood, setNeighborhood] = useState("")
   const [customNeighborhood, setCustomNeighborhood] = useState("")
   const [searchTerm, setSearchTerm] = useState("")
+  const [locationType, setLocationType] = useState<"barrio" | "unidad" | "">("")
 
   const locations = [
     {
@@ -185,16 +190,25 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
       mapUrl: "https://maps.app.goo.gl/GnmVHC39gcTEv2Fd8",
     },
   ]
-
-  // Filtrar barrios basado en el término de búsqueda
+  // Filtrar opciones basado en el término de búsqueda
   const filteredNeighborhoods = searchTerm.trim() 
     ? neighborhoods.filter((n) => 
         n.name.toLowerCase().includes(searchTerm.toLowerCase())
       )
     : []
 
+  const filteredResidentialUnits = searchTerm.trim() 
+    ? residentialUnits.filter((u) => 
+        u.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : []
+
   // Siempre incluir la opción "no está en lista" al principio
-  const neighborhoodOptions = [NOT_IN_LIST_OPTION, ...filteredNeighborhoods]
+  const allOptions = [
+    NOT_IN_LIST_OPTION,
+    ...filteredNeighborhoods,
+    ...filteredResidentialUnits
+  ]
 
   const handleContinue = () => {
     if (!deliveryType || !name || !phone) return
@@ -207,7 +221,7 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
       if (!location) return
     }
 
-    const selectedNeighborhood = neighborhoods.find((n) => n.name === neighborhood)
+    const selectedOption = [...neighborhoods, ...residentialUnits].find((n) => n.name === neighborhood)
     const finalNeighborhood = neighborhood === NOT_IN_LIST_OPTION.name ? customNeighborhood : neighborhood
     
     const info: DeliveryInfoType = {
@@ -218,7 +232,7 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
       observations: deliveryType === "delivery" ? observations : undefined,
       location: deliveryType === "pickup" ? location : undefined,
       neighborhood: deliveryType === "delivery" ? finalNeighborhood : undefined,
-      deliveryCost: deliveryType === "delivery" ? (selectedNeighborhood?.price || 0) : 0,
+      deliveryCost: deliveryType === "delivery" ? (selectedOption?.price || 0) : 0,
     }
 
     onContinue(info)
@@ -237,7 +251,6 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
         <div className="flex items-center justify-between max-w-md mx-auto">
           <Button variant="ghost" onClick={onBack} className="text-brown-700 hover:bg-green-100">
             <ArrowLeft className="w-5 h-5 mr-2" />
-            
           </Button>
           <h1 className="text-xl font-bold text-brown-900">Información de Entrega</h1>
           <div className="w-16"></div>
@@ -340,122 +353,154 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
                   id="address"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  placeholder="Calle, carrera, número, barrio"
+                  placeholder="Calle, carrera, número, casa, torre, apto"
                   className="mt-1"
                 />
               </div>
               
-              {/* Aviso importante sobre barrios */}
-              <div className="p-3 bg-blue-50 border border-blue-200 rounded-md">
-                <div className="flex items-start space-x-2">
-                  <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5" />
-                  <div>
-                    <p className="text-sm text-blue-800 font-medium">
-                      ¡Importante!
-                    </p>
-                    <p className="text-sm text-blue-700">
-                      Si no encuentras tu barrio, selecciona "MI BARRIO NO ESTÁ EN LA LISTA"
-                    </p>
-                  </div>
+              {/* Selección de tipo de ubicación */}
+              <div>
+                <Label className="text-brown-900 block mb-2">
+                  ¿Vives en una casa en barrio o en una unidad residencial? *
+                </Label>
+                <div className="flex space-x-4 mb-4">
+                  <Button
+                    variant={locationType === "barrio" ? "default" : "outline"}
+                    onClick={() => {
+                      setLocationType("barrio")
+                      setNeighborhood("")
+                      setCustomNeighborhood("")
+                      setSearchTerm("")
+                    }}
+                    className="flex-1"
+                  >
+                    Barrio
+                  </Button>
+                  <Button
+                    variant={locationType === "unidad" ? "default" : "outline"}
+                    onClick={() => {
+                      setLocationType("unidad")
+                      setNeighborhood("")
+                      setCustomNeighborhood("")
+                      setSearchTerm("")
+                    }}
+                    className="flex-1"
+                  >
+                    Unidad Residencial
+                  </Button>
                 </div>
               </div>
 
-              <div>
-                <Label htmlFor="neighborhood" className="text-brown-900">
-                  Barrio *
-                </Label>
-                <Input
-                  id="neighborhoodSearch"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Busca tu barrio aquí:"
-                  className="mt-1 mb-2"
-                />
-                {searchTerm.trim() && (
-                  <div className="max-h-40 overflow-y-auto border rounded-md">
-                    {neighborhoodOptions.map((n, index) => (
-                      <div 
-                        key={`${n.name}-${index}`} 
-                        className={`flex items-center space-x-3 p-2 hover:bg-green-50 ${
-                          n.name === NOT_IN_LIST_OPTION.name ? 'bg-orange-50 border-b border-orange-200' : ''
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          id={`${n.name}-${index}`}
-                          name="neighborhood"
-                          value={n.name}
-                          checked={neighborhood === n.name}
-                          onChange={(e) => {
-                            setNeighborhood(e.target.value)
-                            if (e.target.value !== NOT_IN_LIST_OPTION.name) {
-                              setCustomNeighborhood("")
-                            }
-                          }}
-                          className="w-4 h-4 text-green-600"
-                        />
-                        <Label htmlFor={`${n.name}-${index}`} className="cursor-pointer flex-1">
-                          <span className={`text-sm ${
-                            n.name === NOT_IN_LIST_OPTION.name 
-                              ? 'text-orange-800 font-medium' 
-                              : 'text-brown-900'
-                          }`}>
-                            {n.name}
-                          </span>
-                          {n.name !== NOT_IN_LIST_OPTION.name && (
-                            <span className="text-xs text-gray-500 ml-2">
-                              
-                            </span>
-                          )}
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
-                )}
+              {/* Búsqueda de ubicación */}
+              {locationType && (
+                <div>
+                  <Label htmlFor="neighborhood" className="text-brown-900">
+                    {locationType === "barrio" ? "Barrio *" : "Unidad Residencial *"}
+                  </Label>
+                  <Input
+                    id="neighborhoodSearch"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder={`Busca tu ${locationType === "barrio" ? "barrio" : "unidad residencial"} aquí:`}
+                    className="mt-1 mb-2"
+                  />
+                  
+                  {searchTerm.trim() && (
+                    <div className="max-h-60 overflow-y-auto border rounded-md">
+                      {allOptions.map((option, index) => {
+                        // Mostrar solo las opciones relevantes según el tipo seleccionado
+                        if (locationType === "barrio" && option.type !== "barrio" && option.type !== "otro") return null
+                        if (locationType === "unidad" && option.type !== "unidad" && option.type !== "otro") return null
+                        
+                        return (
+                          <div 
+                            key={`${option.name}-${index}`} 
+                            className={`flex items-center space-x-3 p-2 hover:bg-green-50 ${
+                              option.name === NOT_IN_LIST_OPTION.name ? 'bg-orange-50 border-b border-orange-200' : ''
+                            }`}
+                          >
+                            <input
+                              type="radio"
+                              id={`${option.name}-${index}`}
+                              name="neighborhood"
+                              value={option.name}
+                              checked={neighborhood === option.name}
+                              onChange={(e) => {
+                                setNeighborhood(e.target.value)
+                                if (e.target.value !== NOT_IN_LIST_OPTION.name) {
+                                  setCustomNeighborhood("")
+                                }
+                              }}
+                              className="w-4 h-4 text-green-600"
+                            />
+                            <Label htmlFor={`${option.name}-${index}`} className="cursor-pointer flex-1">
+                              <span className={`text-sm ${
+                                option.name === NOT_IN_LIST_OPTION.name 
+                                  ? 'text-orange-800 font-medium' 
+                                  : 'text-brown-900'
+                              }`}>
+                                {option.name}
+                              </span>
+                              {option.name !== NOT_IN_LIST_OPTION.name && (
+                                <span className="text-xs text-gray-500 ml-2">
+                                  {option.type === "unidad" ? "Unidad Residencial" : "Barrio"}
+                                </span>
+                              )}
+                            </Label>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
 
-                {/* Campo para escribir barrio personalizado */}
-                {neighborhood === NOT_IN_LIST_OPTION.name && (
-                  <div className="mt-3">
-                    <Label htmlFor="customNeighborhood" className="text-brown-900">
-                      Escribe el nombre de tu barrio *
-                    </Label>
-                    <Input
-                      id="customNeighborhood"
-                      value={customNeighborhood}
-                      onChange={(e) => setCustomNeighborhood(e.target.value)}
-                      placeholder="Nombre de tu barrio"
-                      className="mt-1"
-                    />
-                  </div>
-                )}
+                  {/* Campo para escribir ubicación personalizada */}
+                  {neighborhood === NOT_IN_LIST_OPTION.name && (
+                    <div className="mt-3">
+                      <Label htmlFor="customNeighborhood" className="text-brown-900">
+                        {locationType === "barrio" 
+                          ? "Escribe el nombre de tu barrio *" 
+                          : "Escribe el nombre de tu unidad residencial *"}
+                      </Label>
+                      <Input
+                        id="customNeighborhood"
+                        value={customNeighborhood}
+                        onChange={(e) => setCustomNeighborhood(e.target.value)}
+                        placeholder={locationType === "barrio" 
+                          ? "Nombre de tu barrio" 
+                          : "Nombre de tu unidad residencial"}
+                        className="mt-1"
+                      />
+                    </div>
+                  )}
 
-                {/* Mostrar información del barrio seleccionado */}
-                {neighborhood && neighborhood !== NOT_IN_LIST_OPTION.name && (
-                  <div className="mt-3 p-3 bg-green-100 border border-green-300 rounded-md">
-                    <p className="text-sm text-green-800 font-medium">
-                      ✅ Barrio seleccionado: <strong>{neighborhood}</strong>
-                    </p>
-                    <p className="text-sm text-green-700">
-                      Costo de domicilio:{" "}
-                      <strong className="text-green-600">
-                        +${neighborhoods.find((n) => n.name === neighborhood)?.price.toLocaleString()}
-                      </strong>
-                    </p>
-                  </div>
-                )}
+                  {/* Mostrar información de la ubicación seleccionada */}
+                  {neighborhood && neighborhood !== NOT_IN_LIST_OPTION.name && (
+                    <div className="mt-3 p-3 bg-green-100 border border-green-300 rounded-md">
+                      <p className="text-sm text-green-800 font-medium">
+                        ✅ {locationType === "barrio" ? "Barrio" : "Unidad Residencial"} seleccionado: <strong>{neighborhood}</strong>
+                      </p>
+                      <p className="text-sm text-green-700">
+                        Costo de domicilio:{" "}
+                        <strong className="text-green-600">
+                          +${[...neighborhoods, ...residentialUnits].find((n) => n.name === neighborhood)?.price.toLocaleString()}
+                        </strong>
+                      </p>
+                    </div>
+                  )}
 
-                {/* Aviso para barrio no en lista */}
-                {neighborhood === NOT_IN_LIST_OPTION.name && customNeighborhood && (
-                  <div className="mt-3 p-3 bg-orange-100 border border-orange-300 rounded-md">
-                    <p className="text-sm text-orange-800 font-medium">
-                      ⏳ Barrio: <strong>{customNeighborhood}</strong>
-                    </p>
-                    <p className="text-sm text-orange-700">
-                      El costo de domicilio será confirmado por WhatsApp (entre $4,000 - $10,000)
-                    </p>
-                  </div>
-                )}
-              </div>
+                  {/* Aviso para ubicación no en lista */}
+                  {neighborhood === NOT_IN_LIST_OPTION.name && customNeighborhood && (
+                    <div className="mt-3 p-3 bg-orange-100 border border-orange-300 rounded-md">
+                      <p className="text-sm text-orange-800 font-medium">
+                        ⏳ {locationType === "barrio" ? "Barrio" : "Unidad Residencial"}: <strong>{customNeighborhood}</strong>
+                      </p>
+                      <p className="text-sm text-orange-700">
+                        El costo de domicilio será confirmado por WhatsApp (entre $4,000 - $12,000)
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
               
               <div>
                 <Label htmlFor="observations" className="text-brown-900">
