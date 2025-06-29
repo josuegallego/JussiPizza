@@ -369,7 +369,7 @@ const allOptions = [
                 className="w-4 h-4 text-green-600"
               />
               <Label htmlFor="pickup" className="cursor-pointer text-lg font-medium text-brown-900">
-                🏪 Recoger en tienda
+                📍 Recoger en tienda
               </Label>
             </div>
           </CardContent>
