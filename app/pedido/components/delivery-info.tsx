@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { ArrowLeft, MapPin, AlertCircle } from "lucide-react"
+import { ArrowLeft, MapPin, AlertCircle, Search, X } from "lucide-react"
 import type { DeliveryInfo as DeliveryInfoType } from "./order-flow"
 
 interface DeliveryInfoProps {
@@ -14,7 +14,12 @@ interface DeliveryInfoProps {
   onContinue: (info: DeliveryInfoType) => void
 }
 
-// Separamos en barrios y unidades residenciales
+interface LocationOption {
+  name: string
+  price: number
+  type: "barrio" | "unidad" | "otro"
+}
+
 const neighborhoods = [
   { name: "ANGEL MARIA CAMACHO", price: 4000, type: "barrio" },
   { name: "ALFEREZ REAL", price: 4000, type: "barrio" },
@@ -58,39 +63,56 @@ const neighborhoods = [
   { name: "RECANTO", price: 3000, type: "barrio" },
   { name: "VENTINO", price: 3000, type: "barrio" },
   { name: "VERONA", price: 4000, type: "barrio" },
+  { name: "ARBOLEDA", price: 4000, type: "barrio" },
+  { name: "SAN BENITO 1", price: 8000, type: "barrio" },
+  { name: "SAN BENITO 2", price: 9000, type: "barrio" },
+  { name: "PARQUES DE CASTILLA", price: 4000, type: "barrio" },
+  { name: "PALO SANTO", price: 4000, type: "barrio" },
+  { name: "BELALCAZAR II", price: 5000, type: "barrio" },
+  { name: "AMIGOS 2000", price: 6000, type: "barrio" },
+  { name: "BELALCAZAR I", price: 4000, type: "barrio" },
+  { name: "CONDADO DEL SUR", price: 5000, type: "barrio" },
+  { name: "JARDIN I", price: 5000, type: "barrio" },
+  { name: "JARDIN II", price: 6000, type: "barrio" },
+  { name: "LA ALBORADA", price: 5000, type: "barrio" },
+  { name: "MANDARINOS", price: 6000, type: "barrio" },
+  { name: "MAKUNAIMA", price: 5000, type: "barrio" },
+  { name: "MARGARITAS", price: 6000, type: "barrio" },
+  { name: "OPORTO", price: 5000, type: "barrio" },
+  { name: "PORTAL DEL JORDAN", price: 4000, type: "barrio" },
+  { name: "PORTAL DE JAMUNDI", price: 4000, type: "barrio" },
+  { name: "PORTAL DEL SAMAN", price: 4000, type: "barrio" },
+  { name: "LAS PALMAS", price: 6000, type: "barrio" },
+  { name: "QUINTAS DE BOLIVAR", price: 5000, type: "barrio" },
+  { name: "VILLA ESTELA", price: 5000, type: "barrio" },
+  { name: "VILLA MAITE", price: 5000, type: "barrio" },
+  { name: "VILLA PAULINA", price: 4000, type: "barrio" },
+  { name: "VILLA PIME 1", price: 5000, type: "barrio" },
+  { name: "VILLA PIME 2", price: 5000, type: "barrio" },
+  { name: "VILLA DEL SOL", price: 5000, type: "barrio" },
+  { name: "VILLA ELVIRA", price: 4000, type: "barrio" },
+  { name: "VILLA MONICA", price: 4000, type: "barrio" },
+  { name: "VILLA TATIANA", price: 4000, type: "barrio" },
+    { name: "MANÀ", price: 8000, type: "barrio" },
+  { name: "CIUDAD DE DIOS I Y II", price: 8000, type: "barrio" },
 ]
 
 const residentialUnits = [
-  { name: "ARBOLEDA", price: 4000, type: "unidad" },
+  { name: "LA ARBOLEDA", price: 4000, type: "unidad" },
   { name: "ALAMEDA DE RIO CLARO (Bloques aptos)", price: 6000, type: "unidad" },
-  { name: "BELALCAZAR II", price: 5000, type: "unidad" },
-  { name: "AMIGOS 2000", price: 6000, type: "unidad" },
-  { name: "BELALCAZAR I", price: 4000, type: "unidad" },
-  { name: "PARQUE NATURA", price: 5000, type: "unidad" },
-  { name: "CONDADO DEL SUR", price: 5000, type: "unidad" },
-  { name: "JARDIN I", price: 5000, type: "unidad" },
-  { name: "JARDIN II", price: 6000, type: "unidad" },
-  { name: "LA ALBORADA", price: 5000, type: "unidad" },
-  { name: "MANDARINOS", price: 6000, type: "unidad" },
-  { name: "MAKUNAIMA", price: 5000, type: "unidad" },
-  { name: "MARGARITAS", price: 6000, type: "unidad" },
-  { name: "OPORTO", price: 5000, type: "unidad" },
-  { name: "PORTAL DEL JORDAN", price: 4000, type: "unidad" },
-  { name: "PORTAL DE JAMUNDI", price: 4000, type: "unidad" },
-  { name: "PARQUES DE CASTILLA", price: 4000, type: "unidad" },
-  { name: "PORTAL DEL SAMAN", price: 4000, type: "unidad" },
-  { name: "PALOSANTO", price: 4000, type: "unidad" },
-  { name: "PALMAS", price: 6000, type: "unidad" },
-  { name: "QUINTAS DE BOLIVAR", price: 5000, type: "unidad" },
-  { name: "VILLA ESTELA", price: 5000, type: "unidad" },
-  { name: "VILLA MAITE", price: 5000, type: "unidad" },
-  { name: "VILLA PAULINA", price: 4000, type: "unidad" },
-  { name: "VILLA PIME 1", price: 5000, type: "unidad" },
-  { name: "VILLA PIME 2", price: 5000, type: "unidad" },
-  { name: "VILLA DEL SOL", price: 5000, type: "unidad" },
-  { name: "VILLA ELVIRA", price: 4000, type: "unidad" },
-  { name: "VILLA MONICA", price: 4000, type: "unidad" },
-  { name: "VILLA TATIANA", price: 4000, type: "unidad" },
+  { name: "PINARES PARQUE NATURA", price: 5000, type: "unidad" },
+  { name: "ARRAYANES PARQUE NATURA", price: 5000, type: "unidad" },
+  { name: "CELESTA PARQUE NATURA", price: 5000, type: "unidad" },
+  { name: "ROSETO PARQUE NATURA", price: 5000, type: "unidad" },
+  { name: "SOLARIA PARQUE NATURA", price: 5000, type: "unidad" },
+  { name: "AMBERES PARQUE NATURA", price: 5000, type: "unidad" },
+  { name: "TRENTO PARQUE NATURA", price: 5000, type: "unidad" },
+  { name: "FIORELI PARQUE NATURA", price: 5000, type: "unidad" },
+  { name: "ALTEA PARQUE NATURA", price: 5000, type: "unidad" },
+  { name: "SOLÉ PARQUE NATURA", price: 5000, type: "unidad" },
+  { name: "CATANIA PARQUE NATURA", price: 5000, type: "unidad" },
+  { name: "BRISSEA PARQUE NATURA", price: 5000, type: "unidad" },
+  { name: "PARQUES DE CASTILLA 1 O 2", price: 4000, type: "unidad" },
   { name: "LOS NARANJOS", price: 4000, type: "unidad" },
   { name: "SOLARES DE SACHAMATE", price: 6000, type: "unidad" },
   { name: "COUNTRY PLAZA II", price: 7000, type: "unidad" },
@@ -103,7 +125,6 @@ const residentialUnits = [
   { name: "SAN CAYETANO", price: 6000, type: "unidad" },
   { name: "TORRES DE JAMUNDI", price: 5000, type: "unidad" },
   { name: "VILLAS DE ALTAGRACIA", price: 4000, type: "unidad" },
-  { name: "EL PINO", price: 4000, type: "unidad" },
   { name: "PRADOS DE ALFAGUARA", price: 4000, type: "unidad" },
   { name: "ALEGRA", price: 5000, type: "unidad" },
   { name: "GUAYACANES DE VERDE ALFAGUARA", price: 8000, type: "unidad" },
@@ -130,11 +151,9 @@ const residentialUnits = [
   { name: "PRADERAS DE VERDE HORIZONTE", price: 12000, type: "unidad" },
   { name: "SENDEROS DE VERDE HORIZONTE", price: 12000, type: "unidad" },
   { name: "RINCON DE LOS GUADUALES", price: 12000, type: "unidad" },
-  { name: "MANÀ", price: 8000, type: "unidad" },
-  { name: "CIUDAD DE DIOS I Y II", price: 8000, type: "unidad" },
+
   { name: "BAMBÙ", price: 4000, type: "unidad" },
   { name: "CARBONERO", price: 4000, type: "unidad" },
-  { name: "LA ARBOLEDA", price: 4000, type: "unidad" },
   { name: "KOA", price: 2000, type: "unidad" },
   { name: "MIRADOR DE FARALLONES", price: 4000, type: "unidad" },
   { name: "FORESTAL AQUA", price: 6000, type: "unidad" },
@@ -148,7 +167,22 @@ const residentialUnits = [
   { name: "SAMANES DE LA MORADA", price: 12000, type: "unidad" },
   { name: "SAN MARINO", price: 6000, type: "unidad" },
   { name: "ARBORE COUNTRY CLUB", price: 12000, type: "unidad" },
-  { name: "CIUDAD COUNTRY", price: 8000, type: "unidad" },
+  { name: "ALONDRA CIUDAD COUNTRY", price: 8000, type: "unidad" },
+  { name: "TURPIAL CIUDAD COUNTRY", price: 8000, type: "unidad" },
+  { name: "AZOR CIUDAD COUNTRY", price: 8000, type: "unidad" },
+  { name: "FALCO CIUDAD COUNTRY", price: 8000, type: "unidad" },
+  { name: "JACAMAR CIUDAD COUNTRY", price: 8000, type: "unidad" },
+  { name: "JILGUERO CIUDAD COUNTRY", price: 8000, type: "unidad" },
+  { name: "MILANO CIUDAD COUNTRY", price: 8000, type: "unidad" },
+  { name: "MORITO CIUDAD COUNTRY", price: 8000, type: "unidad" },
+  { name: "QUETZAL CIUDAD COUNTRY", price: 8000, type: "unidad" },
+  { name: "TUCÁN CIUDAD COUNTRY", price: 8000, type: "unidad" },
+  { name: "KINKINA CIUDAD COUNTRY", price: 8000, type: "unidad" },
+  { name: "COCLÍ CIUDAD COUNTRY", price: 8000, type: "unidad" },
+  { name: "FRAGATA CIUDAD COUNTRY", price: 8000, type: "unidad" },
+  { name: "TÁNGARA CIUDAD COUNTRY", price: 8000, type: "unidad" },
+  { name: "FLAMINGO CIUDAD COUNTRY", price: 8000, type: "unidad" },
+  { name: "CIRUELO CIUDAD COUNTRY", price: 8000, type: "unidad" },
   { name: "PASEO DE PANGOLA", price: 5000, type: "unidad" },
   { name: "PAISAJE DE PANGOLA", price: 5000, type: "unidad" },
   { name: "CAMINOS DE PANGOLA", price: 5000, type: "unidad" },
@@ -156,12 +190,53 @@ const residentialUnits = [
   { name: "PARAÍSO DE PANGOLA", price: 5000, type: "unidad" },
   { name: "HACIENDA EL PINO", price: 4000, type: "unidad" },
 ]
-
 // Opción especial para cuando no encuentran su opción
-const NOT_IN_LIST_OPTION = {
+const NOT_IN_LIST_OPTION: LocationOption = {
   name: "NO ENCUENTRO MI BARRIO O UNIDAD RESIDENCIAL",
   price: 0,
   type: "otro"
+}
+
+// Función para normalizar el texto para búsqueda
+const normalizeSearchText = (text: string) => {
+  return text
+    .toLowerCase()
+    .replace(/^(la|el|los|las|un|uno|una|unos|unas)\s+/i, '')
+    .replace(/[^a-z0-9áéíóúüñ\s]/gi, '')
+    .trim()
+}
+
+// Función de búsqueda mejorada
+const searchLocations = (term: string, locations: LocationOption[]) => {
+  if (!term.trim()) return []
+
+  const normalizedTerm = normalizeSearchText(term)
+  const termParts = normalizedTerm.split(/\s+/)
+
+  return locations.map(location => {
+    const normalizedName = normalizeSearchText(location.name)
+    
+    let score = 0
+    
+    // Coincidencia exacta
+    if (normalizedName === normalizedTerm) score += 100
+    
+    // Término incluido en el nombre
+    if (normalizedName.includes(normalizedTerm)) score += 50
+    
+    // Todas las partes del término coinciden
+    const allPartsMatch = termParts.every(part => normalizedName.includes(part))
+    if (allPartsMatch) score += termParts.length * 10
+    
+    // Algunas partes coinciden
+    const somePartsMatch = termParts.some(part => normalizedName.includes(part))
+    if (somePartsMatch) score += 5
+
+    return { ...location, score }
+  })
+  .filter(item => item.score > 0)
+  .sort((a, b) => b.score - a.score)
+  .map(({ score, ...rest }) => rest)
 }
 
 export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps) {
@@ -175,12 +250,13 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
   const [customNeighborhood, setCustomNeighborhood] = useState("")
   const [searchTerm, setSearchTerm] = useState("")
   const [locationType, setLocationType] = useState<"barrio" | "unidad" | "">("")
+  const [isSearchActive, setIsSearchActive] = useState(false)
 
   const locations = [
     {
       id: "anturios" as const,
       name: "Sede Anturios",
-      address: "Cra 19A #3-03 frente a Los Naranjos",
+      address: "Cra 19A #3-03 frente a Los Naranjos / Parque natura",
       mapUrl: "https://maps.app.goo.gl/33vmvieN2cqjqE5f6",
     },
     {
@@ -190,17 +266,14 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
       mapUrl: "https://maps.app.goo.gl/GnmVHC39gcTEv2Fd8",
     },
   ]
+
   // Filtrar opciones basado en el término de búsqueda
   const filteredNeighborhoods = searchTerm.trim() 
-    ? neighborhoods.filter((n) => 
-        n.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+    ? searchLocations(searchTerm, neighborhoods)
     : []
 
   const filteredResidentialUnits = searchTerm.trim() 
-    ? residentialUnits.filter((u) => 
-        u.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+    ? searchLocations(searchTerm, residentialUnits)
     : []
 
   // Siempre incluir la opción "no está en lista" al principio
@@ -215,7 +288,6 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
 
     if (deliveryType === "delivery") {
       if (!address || !neighborhood) return
-      // Si seleccionó "no está en lista", también necesita escribir el barrio
       if (neighborhood === NOT_IN_LIST_OPTION.name && !customNeighborhood.trim()) return
     } else {
       if (!location) return
@@ -305,7 +377,7 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
           </CardContent>
         </Card>
 
-        {/* Contact Information - Required for both delivery and pickup */}
+        {/* Contact Information */}
         <Card className="mb-6 border-2 border-green-200">
           <CardHeader>
             <CardTitle className="text-brown-900">Datos de contacto</CardTitle>
@@ -358,7 +430,6 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
                 />
               </div>
               
-              {/* Selección de tipo de ubicación */}
               <div>
                 <Label className="text-brown-900 block mb-2">
                   ¿Dónde te encuentras? *
@@ -371,6 +442,7 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
                       setNeighborhood("")
                       setCustomNeighborhood("")
                       setSearchTerm("")
+                      setIsSearchActive(false)
                     }}
                     className="flex-1"
                   >
@@ -383,6 +455,7 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
                       setNeighborhood("")
                       setCustomNeighborhood("")
                       setSearchTerm("")
+                      setIsSearchActive(false)
                     }}
                     className="flex-1"
                   >
@@ -391,70 +464,145 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
                 </div>
               </div>
 
-              {/* Búsqueda de ubicación */}
               {locationType && (
                 <div>
                   <Label htmlFor="neighborhood" className="text-brown-900">
                     {locationType === "barrio" ? "Barrio *" : "Unidad Residencial *"}
                   </Label>
-                  <Input
-                    id="neighborhoodSearch"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder={`Busca tu ${locationType === "barrio" ? "barrio" : "unidad residencial"} aquí:`}
-                    className="mt-1 mb-2"
-                  />
                   
-                  {searchTerm.trim() && (
-                    <div className="max-h-60 overflow-y-auto border rounded-md">
-                      {allOptions.map((option, index) => {
-                        // Mostrar solo las opciones relevantes según el tipo seleccionado
-                        if (locationType === "barrio" && option.type !== "barrio" && option.type !== "otro") return null
-                        if (locationType === "unidad" && option.type !== "unidad" && option.type !== "otro") return null
-                        
-                        return (
-                          <div 
-                            key={`${option.name}-${index}`} 
-                            className={`flex items-center space-x-3 p-2 hover:bg-green-50 ${
-                              option.name === NOT_IN_LIST_OPTION.name ? 'bg-orange-50 border-b border-orange-200' : ''
-                            }`}
-                          >
-                            <input
-                              type="radio"
-                              id={`${option.name}-${index}`}
-                              name="neighborhood"
-                              value={option.name}
-                              checked={neighborhood === option.name}
-                              onChange={(e) => {
-                                setNeighborhood(e.target.value)
-                                if (e.target.value !== NOT_IN_LIST_OPTION.name) {
-                                  setCustomNeighborhood("")
-                                }
-                              }}
-                              className="w-4 h-4 text-green-600"
-                            />
-                            <Label htmlFor={`${option.name}-${index}`} className="cursor-pointer flex-1">
-                              <span className={`text-sm ${
-                                option.name === NOT_IN_LIST_OPTION.name 
-                                  ? 'text-orange-800 font-medium' 
-                                  : 'text-brown-900'
-                              }`}>
-                                {option.name}
-                              </span>
-                              {option.name !== NOT_IN_LIST_OPTION.name && (
-                                <span className="text-xs text-gray-500 ml-2">
-                                  {option.type === "unidad" ? "Unidad Residencial" : "Barrio"}
-                                </span>
-                              )}
-                            </Label>
-                          </div>
-                        )
-                      })}
+                  {/* Mostrar selección actual o botón de búsqueda */}
+                  {!isSearchActive && neighborhood && neighborhood !== NOT_IN_LIST_OPTION.name ? (
+                    <div className="mt-1 p-3 bg-green-100 border border-green-300 rounded-md flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-green-800 font-medium">
+                          ✅ {locationType === "barrio" ? "Barrio" : "Unidad Residencial"}: <strong>{neighborhood}</strong>
+                        </p>
+                        <p className="text-sm text-green-700">
+                          Costo de domicilio: <strong className="text-green-600">
+                            +${[...neighborhoods, ...residentialUnits].find((n) => n.name === neighborhood)?.price.toLocaleString()}
+                          </strong>
+                        </p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setIsSearchActive(true)
+                          setSearchTerm("")
+                        }}
+                        className="ml-2"
+                      >
+                        <Search className="w-4 h-4" />
+                      </Button>
                     </div>
+                  ) : !isSearchActive && neighborhood === NOT_IN_LIST_OPTION.name && customNeighborhood ? (
+                    <div className="mt-1 p-3 bg-orange-100 border border-orange-300 rounded-md flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-orange-800 font-medium">
+                          ⏳ {locationType === "barrio" ? "Barrio" : "Unidad Residencial"}: <strong>{customNeighborhood}</strong>
+                        </p>
+                        <p className="text-sm text-orange-700">
+                          El costo de domicilio será confirmado por WhatsApp (entre $4,000 - $12,000)
+                        </p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setIsSearchActive(true)
+                          setSearchTerm("")
+                        }}
+                        className="ml-2"
+                      >
+                        <Search className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex mt-1">
+                        <Input
+                          id="neighborhoodSearch"
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          placeholder={`Busca tu ${locationType === "barrio" ? "barrio" : "unidad residencial"} aquí`}
+                          className="flex-1"
+                        />
+                        {(isSearchActive || neighborhood) && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setIsSearchActive(false)
+                              setSearchTerm("")
+                            }}
+                            className="ml-2"
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
+                      
+                      {searchTerm.trim() && (
+                        <div className="max-h-60 overflow-y-auto border rounded-md mt-2">
+                          {allOptions.length === 0 ? (
+                            <div className="p-3 text-center text-gray-500">
+                              No encontramos resultados para "{searchTerm}"
+                              <div className="text-sm mt-1">
+                                Prueba con palabras más generales o revisa la ortografía
+                              </div>
+                            </div>
+                          ) : (
+                            allOptions.map((option, index) => {
+                              if (locationType === "barrio" && option.type !== "barrio" && option.type !== "otro") return null
+                              if (locationType === "unidad" && option.type !== "unidad" && option.type !== "otro") return null
+                              
+                              return (
+                                <div 
+                                  key={`${option.name}-${index}`} 
+                                  className={`flex items-center space-x-3 p-2 hover:bg-green-50 ${
+                                    option.name === NOT_IN_LIST_OPTION.name ? 'bg-orange-50 border-b border-orange-200' : ''
+                                  }`}
+                                >
+                                  <input
+                                    type="radio"
+                                    id={`${option.name}-${index}`}
+                                    name="neighborhood"
+                                    value={option.name}
+                                    checked={neighborhood === option.name}
+                                    onChange={(e) => {
+                                      setNeighborhood(e.target.value)
+                                      if (e.target.value !== NOT_IN_LIST_OPTION.name) {
+                                        setCustomNeighborhood("")
+                                        setIsSearchActive(false)
+                                      }
+                                    }}
+                                    className="w-4 h-4 text-green-600"
+                                  />
+                                  <Label htmlFor={`${option.name}-${index}`} className="cursor-pointer flex-1">
+                                    <span className={`text-sm ${
+                                      option.name === NOT_IN_LIST_OPTION.name 
+                                        ? 'text-orange-800 font-medium' 
+                                        : 'text-brown-900'
+                                    }`}>
+                                      {option.name}
+                                    </span>
+                                    {option.name !== NOT_IN_LIST_OPTION.name && (
+                                      <span className="text-xs text-gray-500 ml-2">
+                                        {option.type === "unidad" ? "Unidad Residencial" : "Barrio"}
+                                      </span>
+                                    )}
+                                  </Label>
+                                </div>
+                              )
+                            })
+                          )}
+                        </div>
+                      )}
+                    </>
                   )}
 
-                  {/* Campo para escribir ubicación personalizada */}
-                  {neighborhood === NOT_IN_LIST_OPTION.name && (
+                  {/* Input para barrio/unidad personalizada */}
+                  {neighborhood === NOT_IN_LIST_OPTION.name && isSearchActive && (
                     <div className="mt-3">
                       <Label htmlFor="customNeighborhood" className="text-brown-900">
                         {locationType === "barrio" 
@@ -470,33 +618,18 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
                           : "Nombre de tu unidad residencial"}
                         className="mt-1"
                       />
-                    </div>
-                  )}
-
-                  {/* Mostrar información de la ubicación seleccionada */}
-                  {neighborhood && neighborhood !== NOT_IN_LIST_OPTION.name && (
-                    <div className="mt-3 p-3 bg-green-100 border border-green-300 rounded-md">
-                      <p className="text-sm text-green-800 font-medium">
-                        ✅ {locationType === "barrio" ? "Barrio" : "Unidad Residencial"} seleccionado: <strong>{neighborhood}</strong>
-                      </p>
-                      <p className="text-sm text-green-700">
-                        Costo de domicilio:{" "}
-                        <strong className="text-green-600">
-                          +${[...neighborhoods, ...residentialUnits].find((n) => n.name === neighborhood)?.price.toLocaleString()}
-                        </strong>
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Aviso para ubicación no en lista */}
-                  {neighborhood === NOT_IN_LIST_OPTION.name && customNeighborhood && (
-                    <div className="mt-3 p-3 bg-orange-100 border border-orange-300 rounded-md">
-                      <p className="text-sm text-orange-800 font-medium">
-                        ⏳ {locationType === "barrio" ? "Barrio" : "Unidad Residencial"}: <strong>{customNeighborhood}</strong>
-                      </p>
-                      <p className="text-sm text-orange-700">
-                        El costo de domicilio será confirmado por WhatsApp (entre $4,000 - $12,000)
-                      </p>
+                      <Button
+                        onClick={() => {
+                          if (customNeighborhood.trim()) {
+                            setIsSearchActive(false)
+                          }
+                        }}
+                        disabled={!customNeighborhood.trim()}
+                        className="mt-2 w-full"
+                        size="sm"
+                      >
+                        Confirmar ubicación
+                      </Button>
                     </div>
                   )}
                 </div>

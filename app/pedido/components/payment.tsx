@@ -350,7 +350,7 @@ Muchas gracias!`
                   className="w-full h-14 text-lg font-semibold bg-green-500 hover:bg-green-600 text-white rounded-xl shadow-md"
                 >
                   📍 Sede Anturios
-                  <span className="block text-sm opacity-90">Sector alfagura</span>
+                  <span className="block text-sm opacity-90">Sector parque natura</span>
                 </Button>
                 <Button
                   onClick={() => setShowWhatsAppModal(false)}

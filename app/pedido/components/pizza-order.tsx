@@ -76,28 +76,112 @@ export function PizzaOrder({ onBack, onAddItem }: PizzaOrderProps) {
 
   const flavors = [
     // Traditional
-    { name: "Hawaiana", type: "traditional" },
-    { name: "Jamón y Queso", type: "traditional" },
-    { name: "Pepperoni", type: "traditional" },
+    { 
+      name: "Hawaiana", 
+      type: "traditional",
+      ingredients: "Queso, piña, jamón"
+    },
+    { 
+      name: "Jamón y Queso", 
+      type: "traditional",
+      ingredients: "Queso, jamón"
+    },
+    { 
+      name: "Pepperoni", 
+      type: "traditional",
+      ingredients: "Queso, pepperoni"
+    },
     // Special
-    { name: "De la Casa", type: "special" },
-    { name: "Especial", type: "special" },
-    { name: "Zamba", type: "special" },
-    { name: "Cárnica", type: "special" },
-    { name: "Pocha", type: "special" },
-    { name: "Vegetariana", type: "special" },
-    { name: "Casual", type: "special" },
-    { name: "Americana", type: "special" },
-    { name: "Napoly", type: "special" },
-    { name: "BBQ", type: "special" },
-    { name: "Primavera", type: "special" },
-    { name: "Tropical", type: "special" },
-    { name: "Tollo", type: "special" },
-    { name: "Madurito", type: "special" },
-    { name: "Clásica", type: "special" },
-    { name: "Picardía", type: "special" },
-    { name: "Mexicana", type: "special" },
-    { name: "Napolitana", type: "special" },
+    { 
+      name: "De la Casa", 
+      type: "special",
+      ingredients: "Queso, cebolla, cabano, salami, champiñones, jamón y pimentón"
+    },
+    { 
+      name: "Especial", 
+      type: "special",
+      ingredients: "Queso, maíz, tomate, tocineta, aceite de oliva y albahaca"
+    },
+    { 
+      name: "Zamba", 
+      type: "special",
+      ingredients: "Queso, maduro, chorizo, tocineta y maíz"
+    },
+    { 
+      name: "Cárnica", 
+      type: "special",
+      ingredients: "Queso, cabano, salami, jamón y carne boloñesa"
+    },
+    { 
+      name: "Pocha", 
+      type: "special",
+      ingredients: "Queso, pollo y champiñones"
+    },
+    { 
+      name: "Vegetariana", 
+      type: "special",
+      ingredients: "Queso, cebolla, champiñones, tomate, aceitunas, pimentón y ajo en polvo"
+    },
+    { 
+      name: "Casual", 
+      type: "special",
+      ingredients: "Queso, pollo, tomate y tocineta"
+    },
+    { 
+      name: "Americana", 
+      type: "special",
+      ingredients: "Queso, piña, salchicha americana y maíz"
+    },
+    { 
+      name: "Napoly", 
+      type: "special",
+      ingredients: "Queso, cabano, carne boloñesa y champiñones"
+    },
+    { 
+      name: "BBQ", 
+      type: "special",
+      ingredients: "Queso, pollo, piña, tocineta y salsa BBQ dulce"
+    },
+    { 
+      name: "Primavera", 
+      type: "special",
+      ingredients: "Queso, carne boloñesa, tomate picado y orégano"
+    },
+    { 
+      name: "Tropical", 
+      type: "special",
+      ingredients: "Queso, cebolla, cabano, piña y jamón"
+    },
+    { 
+      name: "Tollo", 
+      type: "special",
+      ingredients: "Queso, pollo, piña y jamón"
+    },
+    { 
+      name: "Madurito", 
+      type: "special",
+      ingredients: "Queso, maduro y tocineta"
+    },
+    { 
+      name: "Clásica", 
+      type: "special",
+      ingredients: "Queso, piña, jamón y tocineta"
+    },
+    { 
+      name: "Picardía", 
+      type: "special",
+      ingredients: "Queso, salami, piña, carne boloñesa y pimienta limón"
+    },
+    { 
+      name: "Mexicana", 
+      type: "special",
+      ingredients: "Queso, cebolla, tomate, carne boloñesa, pimentón y jalapeños"
+    },
+    { 
+      name: "Napolitana", 
+      type: "special",
+      ingredients: "Queso, tomate, albahaca y aceite de oliva"
+    },
   ]
 
   const handleFlavorChange = (flavor: string, checked: boolean) => {
@@ -284,25 +368,31 @@ export function PizzaOrder({ onBack, onAddItem }: PizzaOrderProps) {
             <CardTitle className="text-brown-900">
               Seleccionar sabores ({selectedFlavors.length}/{size === "Porción" ? "1" : "2"})
             </CardTitle>
+            {size && size !== "Porción" && (
+              <p className="text-sm text-gray-600 mt-2">
+                Puedes elegir hasta 2 sabores para tu pizza mitad y mitad!
+              </p>
+            )}
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-4">
             {flavors.map((flavor) => {
               const isDisabled = size === "Porción" && flavor.type === "special"
 
               return (
-                <div key={flavor.name} className="flex items-center space-x-3">
+                <div key={flavor.name} className="flex items-start space-x-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50">
                   <Checkbox
                     id={flavor.name}
                     checked={selectedFlavors.includes(flavor.name)}
                     onCheckedChange={(checked) => handleFlavorChange(flavor.name, checked as boolean)}
                     disabled={isDisabled}
+                    className="mt-1"
                   />
                   <Label
                     htmlFor={flavor.name}
-                    className={`cursor-pointer text-brown-900 flex-1 ${isDisabled ? "opacity-50" : ""}`}
+                    className={`cursor-pointer flex-1 ${isDisabled ? "opacity-50" : ""}`}
                   >
-                    <div className="flex justify-between items-center">
-                      <span>{flavor.name}</span>
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="font-bold text-lg text-brown-500">{flavor.name}</span>
                       <Badge
                         variant="secondary"
                         className={
@@ -311,6 +401,9 @@ export function PizzaOrder({ onBack, onAddItem }: PizzaOrderProps) {
                       >
                         {flavor.type === "traditional" ? "Tradicional" : "Especial"}
                       </Badge>
+                    </div>
+                    <div className="text-sm text-gray-600 leading-relaxed">
+                      {flavor.ingredients}
                     </div>
                   </Label>
                 </div>
