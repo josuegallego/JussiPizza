@@ -276,13 +276,11 @@ export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps)
     ? searchLocations(searchTerm, residentialUnits)
     : []
 
-  // Siempre incluir la opción "no está en lista" al principio
-  const allOptions = [
-    NOT_IN_LIST_OPTION,
-    ...filteredNeighborhoods,
-    ...filteredResidentialUnits
-  ]
-
+const allOptions = [
+  ...filteredNeighborhoods,
+  ...filteredResidentialUnits,
+  NOT_IN_LIST_OPTION  // Ahora aparece al final
+]
   const handleContinue = () => {
     if (!deliveryType || !name || !phone) return
 
