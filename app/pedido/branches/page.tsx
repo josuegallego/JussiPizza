@@ -131,7 +131,7 @@ export default function BranchesPage() {
               <div>
                 <h4 className="font-semibold text-brown-900 mb-1">🕐 Horarios</h4>
                 <p className="text-brown-700">Miércoles a lunes: 6:00 PM - 10:30 PM</p>
-                <p className="text-brown-700">Martes cerrado</p>
+                <p className="text-brown-700">Martes cerrado!</p>
               </div>
               <div>
                 <h4 className="font-semibold text-brown-900 mb-1">🚚 Domicilios</h4>
