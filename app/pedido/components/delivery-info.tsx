@@ -29,7 +29,7 @@ const neighborhoods = [
   { name: "ACACIAS", price: 4000, type: "barrio" },
   { name: "BRISAS DEL ROSARIO", price: 4000, type: "barrio" },
   { name: "BELLO HORIZONTE", price: 4000, type: "barrio" },
-  { name: "ANTURIOS", price: 2000, type: "barrio" },
+  { name: "ANTURIOS", price: 3000, type: "barrio" },
   { name: "CENTENARIO", price: 4000, type: "barrio" },
   { name: "CANTABRIA", price: 4000, type: "barrio" },
   { name: "CIRO VELASCO", price: 4000, type: "barrio" },
@@ -154,7 +154,7 @@ const residentialUnits = [
 
   { name: "BAMBÙ", price: 4000, type: "unidad" },
   { name: "CARBONERO", price: 4000, type: "unidad" },
-  { name: "KOA", price: 2000, type: "unidad" },
+  { name: "KOA", price: 3000, type: "unidad" },
   { name: "MIRADOR DE FARALLONES", price: 4000, type: "unidad" },
   { name: "FORESTAL AQUA", price: 6000, type: "unidad" },
   { name: "VILLAS DEL PARQUE", price: 7000, type: "unidad" },
