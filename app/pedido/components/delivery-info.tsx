@@ -127,6 +127,7 @@ const residentialUnits = [
   { name: "VILLAS DE ALTAGRACIA", price: 4000, type: "unidad" },
   { name: "PRADOS DE ALFAGUARA", price: 4000, type: "unidad" },
   { name: "ALEGRA", price: 5000, type: "unidad" },
+  { name: "VERDI", price: 7000, type: "unidad" },
   { name: "GUAYACANES DE VERDE ALFAGUARA", price: 8000, type: "unidad" },
   { name: "ALMENDROS DE VERDE ALFAGUARA", price: 8000, type: "unidad" },
   { name: "PALMERAS DE VERDE ALFAGUARA", price: 8000, type: "unidad" },

@@ -130,7 +130,7 @@ export default function BranchesPage() {
             <div className="grid md:grid-cols-2 gap-3 text-left text-sm">
               <div>
                 <h4 className="font-semibold text-brown-900 mb-1">🕐 Horarios</h4>
-                <p className="text-brown-700">Miércoles a lunes: 6:00 PM - 10:30 PM</p>
+                <p className="text-brown-700">Miércoles a lunes: 5:30 PM - 10:30 PM</p>
                 <p className="text-brown-700">Martes cerrado!</p>
               </div>
               <div>
