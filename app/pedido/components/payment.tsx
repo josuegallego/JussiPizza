@@ -24,6 +24,44 @@ export function Payment({ orderItems, deliveryInfo, totalPrice, deliveryCost, on
   const [showWhatsAppModal, setShowWhatsAppModal] = useState(false)
 
   const finalTotal = totalPrice + deliveryCost
+  
+  // Barrios que cubre Anturios
+  const anturiosNeighborhoods = [
+    "ANTURIOS",
+    "RECANTO", 
+    "VENTINO",
+    "KOA",
+    "HACIENDA EL PINO",
+    // Todos los de Parque Natura
+    "PINARES PARQUE NATURA",
+    "ARRAYANES PARQUE NATURA",
+    "CELESTA PARQUE NATURA",
+    "ROSETO PARQUE NATURA",
+    "SOLARIA PARQUE NATURA",
+    "AMBERES PARQUE NATURA",
+    "TRENTO PARQUE NATURA",
+    "FIORELI PARQUE NATURA",
+    "ALTEA PARQUE NATURA",
+    "SOLÉ PARQUE NATURA",
+    "CATANIA PARQUE NATURA",
+    "BRISSEA PARQUE NATURA"
+  ]
+
+  // Función para determinar automáticamente la sede basada en el barrio
+  const getSedeForNeighborhood = (neighborhood: string): "anturios" | "sachamate" => {
+    const normalizedNeighborhood = neighborhood.toUpperCase().trim()
+    
+    // Verificar si es un barrio de Anturios
+    const isAnturios = anturiosNeighborhoods.some(anturiosBarrio => 
+      normalizedNeighborhood.includes(anturiosBarrio) || 
+      anturiosBarrio.includes(normalizedNeighborhood)
+    )
+    
+    // También verificar si contiene "PARQUE NATURA" en el nombre
+    const isParqueNatura = normalizedNeighborhood.includes("PARQUE NATURA")
+    
+    return (isAnturios || isParqueNatura) ? "anturios" : "sachamate"
+  }
 
   // Function to parse cash amount with different formats
 // Function to parse cash amount with different formats (Colombian format)
@@ -86,18 +124,22 @@ export function Payment({ orderItems, deliveryInfo, totalPrice, deliveryCost, on
   const currentCashAmount = parseCashAmount(cashAmount)
 
   const handleWhatsApp = () => {
-    if (paymentMethod === "cash" && (!cashAmount || currentCashAmount < finalTotal)) {
-      return // Don't proceed if cash amount is invalid
-    }
+      if (paymentMethod === "cash" && (!cashAmount || currentCashAmount < finalTotal)) {
+        return // Don't proceed if cash amount is invalid
+      }
 
-    // If it's pickup, use the selected location directly
-    if (deliveryInfo.type === "pickup" && deliveryInfo.location) {
-      handleWhatsAppSend(deliveryInfo.location)
-    } else {
-      // If it's delivery, show the modal to select which location to send to
-      setShowWhatsAppModal(true)
+      // If it's pickup, use the selected location directly
+      if (deliveryInfo.type === "pickup" && deliveryInfo.location) {
+        handleWhatsAppSend(deliveryInfo.location)
+      } else if (deliveryInfo.type === "delivery" && deliveryInfo.neighborhood) {
+        // For delivery, automatically determine the sede based on the neighborhood
+        const targetSede = getSedeForNeighborhood(deliveryInfo.neighborhood)
+        handleWhatsAppSend(targetSede)
+      } else {
+        // Fallback: show modal if we can't determine automatically
+        setShowWhatsAppModal(true)
+      }
     }
-  }
 
   const handleWhatsAppSend = (selectedLocation: "anturios" | "sachamate") => {
     const orderSummary = orderItems
@@ -328,8 +370,8 @@ Muchas gracias!`
         </div>
       </div>
 
-      {/* WhatsApp Selection Modal - Only for delivery */}
-      {showWhatsAppModal && deliveryInfo.type === "delivery" && (
+      {/* WhatsApp Selection Modal - Solo se muestra como fallback */}
+      {showWhatsAppModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <Card className="w-full max-w-sm border-2 border-green-200 shadow-2xl">
             <CardHeader className="text-center bg-gradient-to-r from-green-500 to-green-600 text-white rounded-t-lg">

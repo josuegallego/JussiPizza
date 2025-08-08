@@ -32,12 +32,75 @@ export default function Home() {
   }
 
   // Función para WhatsApp (solo para los botones de contacto)
+  // Función para WhatsApp (solo para los botones de contacto)
   const handleWhatsAppClick = () => {
-    const message = encodeURIComponent("¡Hola! Me gustaría hacer un pedido de pizza 🍕")
-    window.open(
-      `https://api.whatsapp.com/send/?phone=573172697230&text=${message}&type=phone_number&app_absent=0`,
-      "_blank",
-    )
+    // Create modal overlay
+    const modalOverlay = document.createElement("div")
+    modalOverlay.className = "fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+    modalOverlay.style.animation = "fadeIn 0.3s ease-out"
+
+    // Create modal content
+    const modalContent = document.createElement("div")
+    modalContent.className = "bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl transform"
+    modalContent.style.animation = "slideUp 0.3s ease-out"
+    modalContent.innerHTML = `
+      <div class="text-center">
+        <div class="w-16 h-16 bg-[#F22233] rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-[#231107] mb-2">¿En cuál sede deseas ordenar?</h3>
+        <p class="text-[#231107]/70 mb-6">Selecciona la ubicación más cercana a ti</p>
+        
+        <div class="space-y-3 mb-6">
+          <button id="sachamate-btn" class="w-full bg-[#4EBF4B] hover:bg-[#4EBF4B]/90 text-white p-4 rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-lg">
+            <div class="text-left">
+              <div class="font-bold">Sede Sachamate</div>
+              <div class="text-sm opacity-90">Barrio al lado del parque Sachamate</div>
+            </div>
+          </button>
+          
+          <button id="anturios-btn" class="w-full bg-[#F27F1B] hover:bg-[#F27F1B]/90 text-white p-4 rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-lg">
+            <div class="text-left">
+              <div class="font-bold">Sede Anturios</div>
+              <div class="text-sm opacity-90">Sector de Alfafuara/Parque natura</div>
+            </div>
+          </button>
+        </div>
+        
+        <button id="close-modal" class="text-[#231107]/50 hover:text-[#231107] transition-colors">
+          Cancelar
+        </button>
+      </div>
+    `
+
+    modalOverlay.appendChild(modalContent)
+    document.body.appendChild(modalOverlay)
+
+    // Add event listeners for the buttons
+    const sachmateBt = modalContent.querySelector("#sachamate-btn")
+    const anturiosBtn = modalContent.querySelector("#anturios-btn")
+    const closeBtn = modalContent.querySelector("#close-modal")
+
+    const openWhatsApp = (location: string) => {
+      const message = encodeURIComponent(`¡Hola! Me gustaría hacer un pedido de pizza 🍕 para la ${location}`)
+      window.open(
+        `https://api.whatsapp.com/send/?phone=573172697230&text=${message}&type=phone_number&app_absent=0`,
+        "_blank",
+      )
+      document.body.removeChild(modalOverlay)
+    }
+
+    sachmateBt?.addEventListener("click", () => openWhatsApp("Sede Sachamate"))
+    anturiosBtn?.addEventListener("click", () => openWhatsApp("Sede Anturios"))
+    closeBtn?.addEventListener("click", () => document.body.removeChild(modalOverlay))
+    modalOverlay.addEventListener("click", (e) => {
+      if (e.target === modalOverlay) {
+        document.body.removeChild(modalOverlay)
+      }
+    })
   }
 
   // Función para Instagram

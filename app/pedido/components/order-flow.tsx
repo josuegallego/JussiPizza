@@ -47,73 +47,75 @@ export function OrderFlow({ onBack }: OrderFlowProps) {
   const [deliveryInfo, setDeliveryInfo] = useState<DeliveryInfo | null>(null)
   const [isOutOfService, setIsOutOfService] = useState(false)
   const [outOfServiceMessage, setOutOfServiceMessage] = useState("")
-   const checkBusinessHours = () => {
-    const now = new Date()
-    const currentDay = now.getDay() // 0 = Sunday, 1 = Monday, 2 = Tuesday, etc.
-    const currentHour = now.getHours()
-    const currentMinute = now.getMinutes()
-    const currentTime = currentHour + currentMinute / 60
+   
+  
+  // const checkBusinessHours = () => {
+  //   const now = new Date()
+  //   const currentDay = now.getDay() // 0 = Sunday, 1 = Monday, 2 = Tuesday, etc.
+  //   const currentHour = now.getHours()
+  //   const currentMinute = now.getMinutes()
+  //   const currentTime = currentHour + currentMinute / 60
 
-    // Check if it's Tuesday (day 2)
-    if (currentDay === 2) {
-      setIsOutOfService(true)
-      setOutOfServiceMessage("🚫 Los martes no tenemos servicio. ¡Te esperamos mañana a partir de las 5:30 PM!")
-      return false
-    }
+  //   // Check if it's Tuesday (day 2)
+  //   if (currentDay === 2) {
+  //     setIsOutOfService(true)
+  //     setOutOfServiceMessage("🚫 Los martes no tenemos servicio. ¡Te esperamos mañana a partir de las 5:30 PM!")
+  //     return false
+  //   }
 
-    // Check if it's before 5:30 PM (17:30)
-    if (currentTime < 17.5) {
-      setIsOutOfService(true)
-      setOutOfServiceMessage("⏰ Aún no estamos abiertos. Nuestro horario de atención es de 5:30 PM a 10:00 PM")
-      return false
-    }
+  //   // Check if it's before 5:30 PM (17:30)
+  //   if (currentTime < 17.5) {
+  //     setIsOutOfService(true)
+  //     setOutOfServiceMessage("⏰ Aún no estamos abiertos. Nuestro horario de atención es de 5:30 PM a 10:00 PM")
+  //     return false
+  //   }
 
-    // Check if it's after 10:00 PM (22:00)
-    if (currentTime >= 22) {
-      setIsOutOfService(true)
-      setOutOfServiceMessage("🌙 Ya cerramos por hoy. Nuestro horario de atención es de 5:30 PM a 10:00 PM")
-      return false
-    }
+  //   // Check if it's after 10:00 PM (22:00)
+  //   if (currentTime >= 22) {
+  //     setIsOutOfService(true)
+  //     setOutOfServiceMessage("🌙 Ya cerramos por hoy. Nuestro horario de atención es de 5:30 PM a 10:00 PM")
+  //     return false
+  //   }
 
-    setIsOutOfService(false)
-    return true
-  }
+  //   setIsOutOfService(false)
+  //   return true
+  // }
 
-  useEffect(() => {
-    checkBusinessHours()
-  }, [])
+  // useEffect(() => {
+  //   checkBusinessHours()
+  // }, [])
 
-  // Out of Service Modal
-  if (isOutOfService) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md border-2 border-red-200 shadow-2xl">
-          <CardHeader className="text-center bg-gradient-to-r from-red-500 to-red-600 text-white rounded-t-lg">
-            <CardTitle className="text-2xl">🍕 Jussi Pizza</CardTitle>
-          </CardHeader>
-          <CardContent className="p-8 text-center">
-            <div className="text-6xl mb-4">😴</div>
-            <h2 className="text-2xl font-bold text-red-800 mb-4">Fuera de Servicio</h2>
-            <p className="text-red-700 mb-6 text-lg leading-relaxed">{outOfServiceMessage}</p>
-            <div className="bg-orange-100 border border-orange-300 rounded-lg p-4 mb-6">
-              <h3 className="font-bold text-orange-800 mb-2">📅 Horarios de Atención:</h3>
-              <p className="text-orange-700">
-                <strong>Lunes a Domingo:</strong> 5:30 PM - 10:00 PM
-                <br />
-                <strong>Martes:</strong> Cerrado
-              </p>
-            </div>
-            <Button
-              onClick={onBack}
-              className="w-full h-12 text-lg font-semibold bg-red-500 hover:bg-red-600 text-white rounded-xl shadow-lg"
-            >
-              Volver al Inicio
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
+  // // Out of Service Modal
+  // if (isOutOfService) {
+  //   return (
+  //     <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center p-4">
+  //       <Card className="w-full max-w-md border-2 border-red-200 shadow-2xl">
+  //         <CardHeader className="text-center bg-gradient-to-r from-red-500 to-red-600 text-white rounded-t-lg">
+  //           <CardTitle className="text-2xl">🍕 Jussi Pizza</CardTitle>
+  //         </CardHeader>
+  //         <CardContent className="p-8 text-center">
+  //           <div className="text-6xl mb-4">😴</div>
+  //           <h2 className="text-2xl font-bold text-red-800 mb-4">Fuera de Servicio</h2>
+  //           <p className="text-red-700 mb-6 text-lg leading-relaxed">{outOfServiceMessage}</p>
+  //           <div className="bg-orange-100 border border-orange-300 rounded-lg p-4 mb-6">
+  //             <h3 className="font-bold text-orange-800 mb-2">📅 Horarios de Atención:</h3>
+  //             <p className="text-orange-700">
+  //               <strong>Lunes a Domingo:</strong> 5:30 PM - 10:00 PM
+  //               <br />
+  //               <strong>Martes:</strong> Cerrado
+  //             </p>
+  //           </div>
+  //           <Button
+  //             onClick={onBack}
+  //             className="w-full h-12 text-lg font-semibold bg-red-500 hover:bg-red-600 text-white rounded-xl shadow-lg"
+  //           >
+  //             Volver al Inicio
+  //           </Button>
+  //         </CardContent>
+  //       </Card>
+  //     </div>
+  //   )
+  // }
 
   const addItem = (item: OrderItem) => {
     setOrderItems((prev) => [...prev, { ...item, id: Date.now().toString() }])
