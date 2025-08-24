@@ -461,11 +461,6 @@ const handleWhatsAppClick = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
                 </svg>
               </button>
-
-              {/* Mobile Swipe Indicator */}
-              <div className="md:hidden absolute top-4 right-4 bg-black/30 backdrop-blur-sm rounded-full px-3 py-1">
-                <span className="text-white text-sm">Desliza →</span>
-              </div>
             </div>
 
             {/* Dots Indicator */}
