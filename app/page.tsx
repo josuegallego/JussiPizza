@@ -15,7 +15,7 @@ const locations = [
   },
   {
     name: "Sede Anturios",
-    address: "Cra 19A #3-03 frente a Los Naranjos",
+    address: "Jussi Pizza Cra. 19 A #3-03",
     mapSrc:
       "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3983.3354983682593!2d-76.54898070321042!3d3.266644999999991!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e309983d6c3c0e7%3A0x556bfa1aac6aae29!2sJussi%20Pizza!5e0!3m2!1sen!2sco!4v1750386509586!5m2!1sen!2sco",
   },
@@ -526,21 +526,25 @@ const handleWhatsAppClick = () => {
                     <p className="text-lg opacity-90 mb-4">{location.address}</p>
                     <div className="flex space-x-3">
                       <Button
-                        onClick={handleWhatsAppClick}
-                        className="bg-[#25D366] hover:bg-[#25D366]/90 text-white px-4 py-2 rounded-xl text-sm flex items-center space-x-2"
-                      >
-                        <Phone className="w-4 h-4" />
-                        <span>Llamar</span>
-                      </Button>
-                      <Button
-                        onClick={() =>
-                          window.open(`https://maps.google.com/?q=${encodeURIComponent(location.address)}`, "_blank")
-                        }
-                        className="bg-[#4EBF4B] hover:bg-[#4EBF4B]/90 text-white px-4 py-2 rounded-xl text-sm flex items-center space-x-2"
-                      >
-                        <MapPin className="w-4 h-4" />
-                        <span>Cómo llegar</span>
-                      </Button>
+  onClick={handleWhatsAppClick}
+  className="group relative overflow-hidden bg-gradient-to-r from-[#4EBF4B] via-[#4EBF4B] to-[#2E8B57] hover:from-[#2E8B57] hover:via-[#4EBF4B] hover:to-[#4EBF4B] text-white px-4 py-2 rounded-xl text-sm flex items-center space-x-2 transition-all duration-500 hover:scale-105 hover:shadow-xl shadow-md backdrop-blur-sm border border-white/20 hover:border-white/40"
+>
+  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+  <Phone className="w-4 h-4 relative z-10" />
+  <span className="relative z-10">Llamar</span>
+</Button>
+
+<Button
+  onClick={() =>
+    window.open(`https://maps.google.com/?q=${encodeURIComponent(location.address)}`, "_blank")
+  }
+  className="group relative overflow-hidden bg-gradient-to-r from-[#4EBF4B] via-[#4EBF4B] to-[#2E8B57] hover:from-[#2E8B57] hover:via-[#4EBF4B] hover:to-[#4EBF4B] text-white px-4 py-2 rounded-xl text-sm flex items-center space-x-2 transition-all duration-500 hover:scale-105 hover:shadow-xl shadow-md backdrop-blur-sm border border-white/20 hover:border-white/40"
+>
+  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+  <MapPin className="w-4 h-4 relative z-10" />
+  <span className="relative z-10">Cómo llegar</span>
+</Button>
+
                     </div>
                   </div>
 
@@ -572,24 +576,28 @@ const handleWhatsAppClick = () => {
           <p className="text-xl mb-12 max-w-2xl mx-auto opacity-90">
             Haz tu pedido en segundos desde nuestro enlace o escríbenos directo. ¡Estamos para servirte!
           </p>
+<div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-lg mx-auto mb-12">
+  {/* Botón WhatsApp */}
+  <Button
+    onClick={handleWhatsAppClick}
+    className="group relative w-full sm:w-auto overflow-hidden bg-gradient-to-r from-[#25D366] via-[#20BD5C] to-[#128C7E] hover:from-[#128C7E] hover:via-[#20BD5C] hover:to-[#25D366] text-white px-8 py-4 rounded-xl text-lg font-semibold flex items-center space-x-3 transition-all duration-500 hover:scale-105 shadow-xl backdrop-blur-sm border border-white/20 hover:border-white/40"
+  >
+    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+    <MessageCircle className="w-6 h-6 relative z-10" />
+    <span className="relative z-10">Pedir por WhatsApp</span>
+  </Button>
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-lg mx-auto mb-12">
-            <Button
-              onClick={handleWhatsAppClick}
-              className="w-full sm:w-auto bg-[#25D366] hover:bg-[#25D366]/90 text-white px-8 py-4 rounded-xl text-lg font-semibold flex items-center space-x-3 transition-all duration-300 hover:scale-105 shadow-lg"
-            >
-              <MessageCircle className="w-6 h-6" />
-              <span>Pedir por WhatsApp</span>
-            </Button>
+  {/* Botón Instagram */}
+  <Button
+    onClick={handleInstagramClick}
+    className="group relative w-full sm:w-auto overflow-hidden bg-gradient-to-r from-[#E4405F] via-[#F56040] to-[#FF7E5F] hover:from-[#FF7E5F] hover:via-[#F56040] hover:to-[#E4405F] text-white px-8 py-4 rounded-xl text-lg font-semibold flex items-center space-x-3 transition-all duration-500 hover:scale-105 shadow-xl backdrop-blur-sm border border-white/20 hover:border-white/40"
+  >
+    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+    <Instagram className="w-6 h-6 relative z-10" />
+    <span className="relative z-10">Ver Instagram</span>
+  </Button>
+</div>
 
-            <Button
-              onClick={handleInstagramClick}
-              className="w-full sm:w-auto bg-gradient-to-r from-[#E4405F] to-[#F56040] hover:from-[#E4405F]/90 hover:to-[#F56040]/90 text-white px-8 py-4 rounded-xl text-lg font-semibold flex items-center space-x-3 transition-all duration-300 hover:scale-105 shadow-lg"
-            >
-              <Instagram className="w-6 h-6" />
-              <span>Ver Instagram</span>
-            </Button>
-          </div>
 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             <div className="text-center">
               <Clock className="w-12 h-12 text-[#F27F1B] mx-auto mb-4" />

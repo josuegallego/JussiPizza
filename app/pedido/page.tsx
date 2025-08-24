@@ -65,7 +65,7 @@ export default function HomePage() {
         {/* Footer */}
         <div className="text-center text-brown-600 pb-2">
           <p className="text-sm font-bold">Horario de atención:</p>
-          <p className="text-sm">Miércoles a lunes: 6:00 - 10:30 PM</p>
+          <p className="text-sm">Miércoles a lunes: 5:30 - 10:30 PM</p>
           <p className="text-sm font-medium">Martes no tenemos servicio!</p>
         </div>
       </div>
