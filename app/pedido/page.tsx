@@ -19,11 +19,14 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-[100svh] bg-gradient-to-br from-amber-50 to-orange-50 p-4 flex flex-col">
+<div className="relative min-h-[100svh] bg-gradient-to-br from-amber-50 to-orange-50 overflow-hidden">
+  <div className="absolute -top-20 -left-20 w-72 h-72 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-pulse"></div>
+  <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-yellow-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
+  
       <div className="max-w-md mx-auto flex flex-col justify-between h-[calc(100svh-2rem)]"> {/* Restamos el padding (2rem = 32px) */}
         
         {/* Header optimizado */}
-        <div className="text-center">
+        <div className="text-center mt-6">
           <div className="w-28 h-28 mx-auto mb-4 bg-white rounded-full flex items-center justify-center shadow-xl border-4 border-green-400 hover:scale-105 transition-transform duration-300">
             <img src="/logo.png" alt="Jussi Pizza Logo" className="w-24 h-24 object-contain rounded-full" />
           </div>

@@ -20,11 +20,44 @@ const locations = [
       "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3983.3354983682593!2d-76.54898070321042!3d3.266644999999991!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e309983d6c3c0e7%3A0x556bfa1aac6aae29!2sJussi%20Pizza!5e0!3m2!1sen!2sco!4v1750386509586!5m2!1sen!2sco",
   },
 ]
-
+const galleryImages = [
+  {
+    src: "/JUSSI PIZZA JAMUNDI 2020 (2).jpg",
+    alt: "",
+    title: "Nuestras Pizzas",
+    description: "Cada pizza es preparada con amor y los mejores ingredientes",
+  },
+  {
+    src: "/JUSSI PIZZA JAMUNDI 2020 (4).jpg",
+    alt: "Interior acogedor del restaurante",
+    title: "Ambiente Familiar",
+    description: "Un lugar perfecto para compartir en familia",
+  },
+  {
+    src: "/JUSSI PIZZA JAMUNDI 2020 (12).jpg",
+    alt: "Chef preparando masa de pizza",
+    title: "Proceso Artesanal",
+    description: "Masa fresca preparada diariamente",
+  },
+  {
+    src: "/JUSSI PIZZA JAMUNDI 2020 (34).jpg",
+    alt: "Ingredientes frescos para pizza",
+    title: "Ingredientes Frescos",
+    description: "Solo utilizamos los mejores ingredientes",
+  },
+  {
+    src: "/IMG_0096.jpg",
+    alt: "Familia disfrutando pizza",
+    title: "Momentos Especiales",
+    description: "Creando recuerdos deliciosos desde 2015",
+  },
+]
 export default function Home() {
   const router = useRouter()
   const [activeSection, setActiveSection] = useState("home")
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true)
 
   // Función para redirigir a la página de pedidos
   const handleOrderClick = () => {
@@ -139,6 +172,39 @@ const handleWhatsAppClick = () => {
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
+  // Auto-play carousel
+  useEffect(() => {
+    if (!isAutoPlaying) return
+
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length)
+    }, 4000)
+
+    return () => clearInterval(interval)
+  }, [isAutoPlaying])
+
+  // Touch handlers for mobile swipe
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touchStartX = e.touches[0].clientX
+    e.currentTarget.setAttribute("data-touch-start", touchStartX.toString())
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const touchStartX = Number.parseFloat(e.currentTarget.getAttribute("data-touch-start") || "0")
+    const touchEndX = e.changedTouches[0].clientX
+    const diff = touchStartX - touchEndX
+
+    if (Math.abs(diff) > 50) {
+      // Minimum swipe distance
+      if (diff > 0) {
+        // Swipe left - next image
+        setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length)
+      } else {
+        // Swipe right - previous image
+        setCurrentImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length)
+      }
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[#F3EDD6]">
@@ -281,11 +347,11 @@ const handleWhatsAppClick = () => {
 
 
           <div className="flex items-center justify-center space-x-2 md:space-x-3 mb-8 md:mb-10 animate-fade-in delay-300 px-4">
-            <Heart className="w-6 h-6 md:w-8 md:h-8 text-[#F22233] animate-pulse drop-shadow-lg" />
+            
             <p className="text-lg md:text-2xl text-white italic font-bold bg-white/20 backdrop-blur-sm px-4 md:px-6 py-2 md:py-3 rounded-full border border-white/30 drop-shadow-lg">
-              "En las manos de Dios"
+              En las manos de Dios
             </p>
-            <Heart className="w-6 h-6 md:w-8 md:h-8 text-[#F22233] animate-pulse drop-shadow-lg" />
+            
           </div>
 
           <p className="text-base md:text-xl lg:text-2xl text-white/95 mb-8 md:mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in delay-500 bg-black/20 backdrop-blur-sm rounded-2xl p-4 md:p-8 border border-white/20 drop-shadow-xl">
@@ -294,25 +360,152 @@ const handleWhatsAppClick = () => {
             dedicación, pasión... y mucho amor.
           </p>
 
-          <div className="flex flex-col gap-4 md:gap-6 justify-center animate-fade-in delay-1000 px-4">
-            <Button
-              onClick={() => scrollToSection("locations")}
-              className="w-full md:w-auto bg-gradient-to-r from-[#25D366] to-[#25D366]/90 hover:from-[#25D366]/90 hover:to-[#25D366] text-white px-8 md:px-12 py-4 md:py-6 rounded-2xl text-lg md:text-xl font-bold transition-all duration-300 hover:scale-110 hover:shadow-2xl shadow-lg flex items-center justify-center space-x-3 transform hover:-translate-y-2 backdrop-blur-sm border border-white/20"
+<div className="flex flex-col gap-4 md:gap-6 justify-center animate-fade-in delay-1000 px-4">
+  {/* Botón Ver Ubicaciones */}
+  <Button
+    onClick={() => scrollToSection("locations")}
+    className="group relative w-full md:w-auto overflow-hidden bg-gradient-to-r from-[#4EBF4B] via-[#4EBF4B] to-[#2E8B57] hover:from-[#2E8B57] hover:via-[#4EBF4B] hover:to-[#4EBF4B] text-white px-8 md:px-12 py-4 md:py-6 rounded-3xl text-lg md:text-xl font-bold transition-all duration-500 hover:scale-105 hover:shadow-2xl shadow-lg flex items-center justify-center space-x-3 transform hover:-translate-y-1 backdrop-blur-sm border-2 border-white/30 hover:border-white/50"
+  >
+    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+    <MapPin className="w-6 h-6 md:w-7 md:h-7 relative z-10" />
+    <span className="relative z-10">Ver Ubicaciones</span>
+  </Button>
+
+      {/* Botón Pedir Ahora */}
+      <Button
+        onClick={handleOrderClick}
+        className="group relative w-full md:w-auto overflow-hidden bg-gradient-to-r from-[#4EBF4B] via-[#4EBF4B] to-[#2E8B57] hover:from-[#2E8B57] hover:via-[#4EBF4B] hover:to-[#4EBF4B] text-white px-8 md:px-12 py-4 md:py-6 rounded-3xl text-lg md:text-xl font-bold transition-all duration-500 hover:scale-105 hover:shadow-2xl shadow-lg flex items-center justify-center space-x-3 transform hover:-translate-y-1 backdrop-blur-sm border-2 border-white/30 hover:border-white/50"
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+        <MessageCircle className="w-6 h-6 md:w-7 md:h-7 relative z-10" />
+        <span className="relative z-10">¡Pedir Ahora!</span>
+      </Button>
+    </div>
+
+        </div>
+      </section>
+{/* Gallery Carousel Section */}
+      <section className="py-20 px-4 md:px-6 bg-gradient-to-br from-[#F3EDD6] via-white to-[#F3EDD6]">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h3 className="text-4xl md:text-5xl font-bold text-[#231107] mb-4">¡Ven y descubrenos!</h3>
+            <p className="text-xl text-[#231107]/70 max-w-2xl mx-auto">
+              Experimenta el ambiente y calidad que tanto nos caracteriza!
+            </p>
+          </div>
+
+          <div className="relative max-w-4xl mx-auto">
+            {/* Main Carousel Container */}
+            <div
+              className="relative overflow-hidden rounded-3xl shadow-2xl bg-white"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+              onMouseEnter={() => setIsAutoPlaying(false)}
+              onMouseLeave={() => setIsAutoPlaying(true)}
             >
-              <MapPin className="w-6 h-6 md:w-7 md:h-7" />
-              <span>Ver Ubicaciones</span>
-            </Button>
-            <Button
-              onClick={handleOrderClick}
-              className="w-full md:w-auto bg-gradient-to-r from-[#25D366] to-[#25D366]/90 hover:from-[#25D366]/90 hover:to-[#25D366] text-white px-8 md:px-12 py-4 md:py-6 rounded-2xl text-lg md:text-xl font-bold transition-all duration-300 hover:scale-110 hover:shadow-2xl shadow-lg flex items-center justify-center space-x-3 transform hover:-translate-y-2 backdrop-blur-sm border border-white/20"
-            >
-              <MessageCircle className="w-6 h-6 md:w-7 md:h-7" />
-              <span>¡Pedir Ahora!</span>
-            </Button>
+              {/* Images Container */}
+              <div
+                className="flex transition-transform duration-700 ease-in-out"
+                style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
+              >
+                {galleryImages.map((image, index) => (
+                  <div key={index} className="w-full flex-shrink-0 relative">
+                    <div className="aspect-[16/10] md:aspect-[16/9] relative overflow-hidden">
+                      <img
+                        src={image.src || "/placeholder.svg"}
+                        alt={image.alt}
+                        className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                      />
+                      {/* Gradient Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+
+                      {/* Text Overlay */}
+                      <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white">
+                        <h4 className="text-2xl md:text-3xl font-bold mb-2 transform translate-y-0 transition-transform duration-500">
+                          {image.title}
+                        </h4>
+                        <p className="text-lg md:text-xl opacity-90 transform translate-y-0 transition-transform duration-500 delay-100">
+                          {image.description}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Navigation Arrows - Desktop */}
+              <button
+                onClick={() => setCurrentImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length)}
+                className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/20 backdrop-blur-sm hover:bg-white/30 rounded-full items-center justify-center transition-all duration-300 hover:scale-110 group"
+              >
+                <svg
+                  className="w-6 h-6 text-white group-hover:text-[#F22233] transition-colors"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+              </button>
+
+              <button
+                onClick={() => setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length)}
+                className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/20 backdrop-blur-sm hover:bg-white/30 rounded-full items-center justify-center transition-all duration-300 hover:scale-110 group"
+              >
+                <svg
+                  className="w-6 h-6 text-white group-hover:text-[#F22233] transition-colors"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </button>
+
+              {/* Mobile Swipe Indicator */}
+              <div className="md:hidden absolute top-4 right-4 bg-black/30 backdrop-blur-sm rounded-full px-3 py-1">
+                <span className="text-white text-sm">Desliza →</span>
+              </div>
+            </div>
+
+            {/* Dots Indicator */}
+            <div className="flex justify-center mt-8 space-x-3">
+              {galleryImages.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentImageIndex(index)}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                    index === currentImageIndex
+                      ? "bg-[#F22233] scale-125 shadow-lg"
+                      : "bg-[#231107]/30 hover:bg-[#231107]/50"
+                  }`}
+                />
+              ))}
+            </div>
+
+            {/* Thumbnails - Desktop Only */}
+            <div className="hidden lg:flex justify-center mt-8 space-x-4 overflow-x-auto pb-4">
+              {galleryImages.map((image, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentImageIndex(index)}
+                  className={`flex-shrink-0 w-20 h-16 rounded-xl overflow-hidden transition-all duration-300 ${
+                    index === currentImageIndex
+                      ? "ring-4 ring-[#F22233] scale-110 shadow-lg"
+                      : "opacity-60 hover:opacity-100 hover:scale-105"
+                  }`}
+                >
+                  <img src={image.src || "/placeholder.svg"} alt={image.alt} className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+
+            {/* Auto-play Control */}
+            <div className="flex justify-center mt-6">
+            </div>
           </div>
         </div>
       </section>
-
  {/* Locations Section */}
       <section id="locations" className="py-20 px-6 bg-[#F3EDD6]">
         <div className="container mx-auto">
