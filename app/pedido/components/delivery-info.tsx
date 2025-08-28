@@ -80,7 +80,7 @@ const neighborhoods = [
   { name: "MARGARITAS", price: 6000, type: "barrio" },
   { name: "OPORTO", price: 5000, type: "barrio" },
   { name: "PORTAL DEL JORDAN", price: 4000, type: "barrio" },
-  { name: "PORTAL DE JAMUNDI", price: 4000, type: "barrio" },
+  { name: "PORTAL DE JAMUNDI", price: 5000, type: "barrio" },
   { name: "PORTAL DEL SAMAN", price: 4000, type: "barrio" },
   { name: "LAS PALMAS", price: 6000, type: "barrio" },
   { name: "QUINTAS DE BOLIVAR", price: 5000, type: "barrio" },
@@ -92,9 +92,10 @@ const neighborhoods = [
   { name: "VILLA DEL SOL", price: 5000, type: "barrio" },
   { name: "VILLA ELVIRA", price: 4000, type: "barrio" },
   { name: "VILLA MONICA", price: 4000, type: "barrio" },
-  { name: "VILLA TATIANA", price: 4000, type: "barrio" },
+  { name: "VILLA TATIANA", price: 5000, type: "barrio" },
   { name: "MANÀ", price: 8000, type: "barrio" },
-  { name: "CIUDAD DE DIOS I Y II", price: 8000, type: "barrio" },
+  { name: "CIUDAD DE DIOS I", price: 9000, type: "barrio" },
+  { name: "CIUDAD DE DIOS II", price: 10000, type: "barrio" },
 ]
 
 const residentialUnits = [
