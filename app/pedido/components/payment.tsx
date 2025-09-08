@@ -32,6 +32,8 @@ export function Payment({ orderItems, deliveryInfo, totalPrice, deliveryCost, on
     "VENTINO",
     "KOA",
     "HACIENDA EL PINO",
+    "CONDADO DEL SUR",
+
     // Todos los de Parque Natura
     "PINARES PARQUE NATURA",
     "ARRAYANES PARQUE NATURA",

@@ -25,7 +25,7 @@ export default function HomePage() {
       <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-yellow-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse z-0"></div>
 
       {/* Contenido principal al frente */}
-      <div className="relative z-10 max-w-md mx-auto flex flex-col justify-between h-[calc(100svh-2rem)]">
+      <div className="relative z-10 max-w-md mx-auto flex flex-col justify-between h-[calc(100svh-2rem)] px-4 md:px-0">
         
         {/* Header */}
         <div className="text-center mt-6">
@@ -37,9 +37,9 @@ export default function HomePage() {
           <p className="text-brown-600 mt-1">¡Ganadores del pizza fest 2021!</p>
         </div>
 
-        {/* Acciones principales */}
-        <div className="space-y-4 my-4">
-          <Card className="border-2 border-green-200 shadow-lg hover:shadow-xl transition-shadow">
+        {/* Acciones principales - Contenedor con márgenes */}
+        <div className="space-y-4 my-4 w-full">
+          <Card className="border-2 border-green-200 shadow-lg hover:shadow-xl transition-shadow mx-auto max-w-sm">
             <CardContent className="p-4">
               <Button
                 onClick={() => setCurrentView("menu")}
@@ -50,7 +50,7 @@ export default function HomePage() {
             </CardContent>
           </Card>
 
-          <Card className="border-2 border-red-200 shadow-lg hover:shadow-xl transition-shadow">
+          <Card className="border-2 border-red-200 shadow-lg hover:shadow-xl transition-shadow mx-auto max-w-sm">
             <CardContent className="p-4">
               <Button
                 onClick={() => setCurrentView("order")}
@@ -62,8 +62,8 @@ export default function HomePage() {
           </Card>
         </div>
 
-        {/* Footer */}
-        <div className="text-center text-brown-600 pb-2">
+        {/* Footer con márgenes */}
+        <div className="text-center text-brown-600 pb-4 px-2">
           <p className="text-sm font-bold">Horario de atención:</p>
           <p className="text-sm">Miércoles a lunes: 5:30 - 10:30 PM</p>
           <p className="text-sm font-medium">Martes no tenemos servicio!</p>
