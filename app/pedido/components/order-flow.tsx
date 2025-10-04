@@ -85,7 +85,7 @@ export function OrderFlow({ onBack }: OrderFlowProps) {
     checkBusinessHours()
   }, [])
 
-  // Out of Service Modal
+  // // Out of Service Modal
   if (isOutOfService) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center p-4">

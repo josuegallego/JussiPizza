@@ -43,24 +43,24 @@ export function PizzaOrder({ onBack, onAddItem }: PizzaOrderProps) {
     if (isTraditional) {
       switch (size) {
         case "Porción":
-          return 9000
+          return 10000
         case "Personal":
-          return 18000
+          return 19000
         case "Pequeña":
-          return 32000
+          return 34000
         case "Mediana":
-          return 42000
+          return 44000
         default:
           return 0
       }
     } else {
       switch (size) {
         case "Personal":
-          return 22000
+          return 23000
         case "Pequeña":
-          return 37000
+          return 39000
         case "Mediana":
-          return 46000
+          return 48000
         default:
           return 0
       }
