@@ -66,14 +66,14 @@ export function OrderFlow({ onBack }: OrderFlowProps) {
     // Check if it's before 5:30 PM (17:30)
     if (currentTime < 17.5) {
       setIsOutOfService(true)
-      setOutOfServiceMessage("⏰ Aún no estamos abiertos. Nuestro horario de atención es de 5:30 PM a 10:00 PM")
+      setOutOfServiceMessage("⏰ Aún no estamos abiertos. Nuestro horario de atención a domicilio es de 5:30 PM a 9:40 PM")
       return false
     }
 
-    // Check if it's after 10:00 PM (22:00)
-    if (currentTime >= 22) {
+    // Check if it's after 9:40 PM (21:40)
+    if (currentTime >= 21.667) {
       setIsOutOfService(true)
-      setOutOfServiceMessage("🌙 Ya cerramos por hoy. Nuestro horario de atención es de 5:30 PM a 10:00 PM")
+      setOutOfServiceMessage("🌙 Ya cerramos por hoy. Nuestro horario de atención a domicilio es de 5:30 PM a 9:40 PM")
       return false
     }
 
@@ -100,7 +100,7 @@ export function OrderFlow({ onBack }: OrderFlowProps) {
             <div className="bg-orange-100 border border-orange-300 rounded-lg p-4 mb-6">
               <h3 className="font-bold text-orange-800 mb-2">📅 Horarios de Atención:</h3>
               <p className="text-orange-700">
-                <strong>Lunes a Domingo:</strong> 5:30 PM - 10:00 PM
+                <strong>Lunes a Domingo:</strong> 5:30 PM - 9:40 PM
                 <br />
                 <strong>Martes:</strong> Cerrado
               </p>

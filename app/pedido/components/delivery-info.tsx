@@ -26,7 +26,7 @@ const neighborhoods = [
   { name: "ADRIANITA", price: 4000, type: "barrio" },
   { name: "ALBORADA", price: 4000, type: "barrio" },
   { name: "AURORA", price: 5000, type: "barrio" },
-  { name: "ACACIAS", price: 4000, type: "barrio" },
+  { name: "ACACIAS", price: 5000, type: "barrio" },
   { name: "BRISAS DEL ROSARIO", price: 4000, type: "barrio" },
   { name: "BELLO HORIZONTE", price: 4000, type: "barrio" },
   { name: "ANTURIOS", price: 3000, type: "barrio" },

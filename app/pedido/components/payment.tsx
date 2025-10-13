@@ -22,6 +22,7 @@ export function Payment({ orderItems, deliveryInfo, totalPrice, deliveryCost, on
   const [cashAmount, setCashAmount] = useState("")
   const [showSuccess, setShowSuccess] = useState(false)
   const [showWhatsAppModal, setShowWhatsAppModal] = useState(false)
+  const [showLocationModal, setShowLocationModal] = useState(false)
 
   const finalTotal = totalPrice + deliveryCost
   
@@ -49,9 +50,25 @@ export function Payment({ orderItems, deliveryInfo, totalPrice, deliveryCost, on
     "BRISSEA PARQUE NATURA"
   ]
 
+  // Barrios especiales que requieren confirmación
+  const specialNeighborhoods = [
+    "LOS NARANJOS",
+    "PANGOLA"
+  ]
+
   // Función para determinar automáticamente la sede basada en el barrio
-  const getSedeForNeighborhood = (neighborhood: string): "anturios" | "sachamate" => {
+  const getSedeForNeighborhood = (neighborhood: string): "anturios" | "sachamate" | "ask" => {
     const normalizedNeighborhood = neighborhood.toUpperCase().trim()
+    
+    // Verificar si es un barrio especial que requiere confirmación
+    const isSpecial = specialNeighborhoods.some(specialBarrio => 
+      normalizedNeighborhood.includes(specialBarrio) || 
+      specialBarrio.includes(normalizedNeighborhood)
+    )
+    
+    if (isSpecial) {
+      return "ask"
+    }
     
     // Verificar si es un barrio de Anturios
     const isAnturios = anturiosNeighborhoods.some(anturiosBarrio => 
@@ -65,51 +82,31 @@ export function Payment({ orderItems, deliveryInfo, totalPrice, deliveryCost, on
     return (isAnturios || isParqueNatura) ? "anturios" : "sachamate"
   }
 
-  // Function to parse cash amount with different formats
-// Function to parse cash amount with different formats (Colombian format)
+  // Function to parse cash amount with different formats (Colombian format)
   const parseCashAmount = (value: string): number => {
     if (!value) return 0
     
-    // Remove all spaces
     let cleaned = value.replace(/\s/g, "")
     
-    // Check if there's a comma (likely decimal separator)
     if (cleaned.includes(",") && cleaned.includes(".")) {
-      // Both comma and dot present - treat dot as thousands, comma as decimal
-      // Example: 1.000,50 -> 1000.50
       cleaned = cleaned.replace(/\./g, "").replace(",", ".")
     } else if (cleaned.includes(",")) {
-      // Only comma present - could be decimal separator if after last group
-      // Example: 1000,50 -> 1000.50 or 1,000 -> 1000
       const commaIndex = cleaned.lastIndexOf(",")
       const afterComma = cleaned.substring(commaIndex + 1)
       
-      // If there are 1-2 digits after comma, treat as decimal
       if (afterComma.length <= 2 && /^\d+$/.test(afterComma)) {
         cleaned = cleaned.replace(",", ".")
       } else {
-        // Otherwise treat as thousands separator
         cleaned = cleaned.replace(/,/g, "")
       }
     } else if (cleaned.includes(".")) {
-      // Only dots present - treat as thousands separators in Colombian format
-      // Example: 10.000 -> 10000, 1.000.000 -> 1000000
       const dotCount = (cleaned.match(/\./g) || []).length
       const lastDotIndex = cleaned.lastIndexOf(".")
       const afterLastDot = cleaned.substring(lastDotIndex + 1)
       
-      // If only one dot and 1-2 digits after it, could be decimal
-      // But in Colombian context, this is more likely thousands separator
-      // So we'll treat all dots as thousands separators unless it's clearly decimal
       if (dotCount === 1 && afterLastDot.length <= 2 && afterLastDot.length > 0 && parseInt(afterLastDot) < 100) {
-        // Could be decimal, but let's check the number before dot
-        const beforeDot = cleaned.substring(0, lastDotIndex)
-        // If the number before dot is less than 1000, might be decimal
-        // But in Colombian context, 10.000 is more common than 10.50
-        // So we'll assume it's thousands separator
         cleaned = cleaned.replace(/\./g, "")
       } else {
-        // Multiple dots or clearly thousands format
         cleaned = cleaned.replace(/\./g, "")
       }
     }
@@ -118,7 +115,6 @@ export function Payment({ orderItems, deliveryInfo, totalPrice, deliveryCost, on
   }
 
   const handleCashAmountChange = (value: string) => {
-    // Allow numbers, dots, commas, and spaces
     const sanitized = value.replace(/[^0-9.,\s]/g, "")
     setCashAmount(sanitized)
   }
@@ -126,22 +122,26 @@ export function Payment({ orderItems, deliveryInfo, totalPrice, deliveryCost, on
   const currentCashAmount = parseCashAmount(cashAmount)
 
   const handleWhatsApp = () => {
-      if (paymentMethod === "cash" && (!cashAmount || currentCashAmount < finalTotal)) {
-        return // Don't proceed if cash amount is invalid
-      }
-
-      // If it's pickup, use the selected location directly
-      if (deliveryInfo.type === "pickup" && deliveryInfo.location) {
-        handleWhatsAppSend(deliveryInfo.location)
-      } else if (deliveryInfo.type === "delivery" && deliveryInfo.neighborhood) {
-        // For delivery, automatically determine the sede based on the neighborhood
-        const targetSede = getSedeForNeighborhood(deliveryInfo.neighborhood)
-        handleWhatsAppSend(targetSede)
-      } else {
-        // Fallback: show modal if we can't determine automatically
-        setShowWhatsAppModal(true)
-      }
+    if (paymentMethod === "cash" && (!cashAmount || currentCashAmount < finalTotal)) {
+      return
     }
+
+    // Determinar la sede
+    if (deliveryInfo.type === "pickup" && deliveryInfo.location) {
+      handleWhatsAppSend(deliveryInfo.location)
+    } else if (deliveryInfo.type === "delivery" && deliveryInfo.neighborhood) {
+      const sedeResult = getSedeForNeighborhood(deliveryInfo.neighborhood)
+      
+      if (sedeResult === "ask") {
+        // Mostrar modal de selección
+        setShowLocationModal(true)
+      } else {
+        handleWhatsAppSend(sedeResult)
+      }
+    } else {
+      setShowWhatsAppModal(true)
+    }
+  }
 
   const handleWhatsAppSend = (selectedLocation: "anturios" | "sachamate") => {
     const orderSummary = orderItems
@@ -185,6 +185,7 @@ Muchas gracias!`
     const phoneNumber = selectedLocation === "anturios" ? "573168403329" : "573172697230"
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
     window.open(whatsappUrl, "_blank")
+    setShowLocationModal(false)
     setShowWhatsAppModal(false)
   }
 
@@ -195,22 +196,73 @@ Muchas gracias!`
     }, 3000)
   }
 
-  if (showSuccess) {
-      return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center p-4">
-          <Card className="max-w-md w-full border-2 border-green-300 shadow-lg">
-            <CardContent className="p-8 text-center">
-              <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-green-800 mb-2">¡Pedido Cancelado!</h2>
-              <p className="text-green-700 mb-4">
-                Esperamos poder servirte en una próxima ocasión, hasta luego!
-              </p>
-              <p className="text-sm text-green-600">Redirigiendo al inicio...</p>
-            </CardContent>
-          </Card>
+  // Modal para seleccionar sede en barrios especiales
+  const renderLocationModal = () => {
+    if (!showLocationModal) return null
+
+    return (
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl transform animate-in fade-in zoom-in-95">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-[#F22233] rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-[#231107] mb-2">¿En cuál sede deseas ordenar?</h3>
+            <p className="text-[#231107]/70 mb-6">Selecciona la ubicación más cercana a ti</p>
+            
+            <div className="space-y-3 mb-6">
+              <button
+                onClick={() => handleWhatsAppSend("sachamate")}
+                className="w-full bg-[#4EBF4B] hover:bg-[#4EBF4B]/90 text-white p-4 rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-lg"
+              >
+                <div className="text-left">
+                  <div className="font-bold">Sede Sachamate</div>
+                  <div className="text-sm opacity-90">Barrio al lado del parque Sachamate</div>
+                </div>
+              </button>
+              
+              <button
+                onClick={() => handleWhatsAppSend("anturios")}
+                className="w-full bg-[#F27F1B] hover:bg-[#F27F1B]/90 text-white p-4 rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-lg"
+              >
+                <div className="text-left">
+                  <div className="font-bold">Sede Anturios</div>
+                  <div className="text-sm opacity-90">Sector de Alfafuara/Parque natura</div>
+                </div>
+              </button>
+            </div>
+            
+            <button
+              onClick={() => setShowLocationModal(false)}
+              className="text-[#231107]/50 hover:text-[#231107] transition-colors"
+            >
+              Cancelar
+            </button>
+          </div>
         </div>
-      )
-    }
+      </div>
+    )
+  }
+
+  if (showSuccess) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center p-4">
+        <Card className="max-w-md w-full border-2 border-green-300 shadow-lg">
+          <CardContent className="p-8 text-center">
+            <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-green-800 mb-2">¡Pedido Cancelado!</h2>
+            <p className="text-green-700 mb-4">
+              Esperamos poder servirte en una próxima ocasión, hasta luego!
+            </p>
+            <p className="text-sm text-green-600">Redirigiendo al inicio...</p>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
@@ -219,7 +271,6 @@ Muchas gracias!`
         <div className="flex items-center justify-between max-w-md mx-auto">
           <Button variant="ghost" onClick={onBack} className="text-brown-700 hover:bg-green-100">
             <ArrowLeft className="w-5 h-5 mr-2" />
-            
           </Button>
           <h1 className="text-xl font-bold text-brown-900">Pago</h1>
           <div className="w-16"></div>
@@ -330,7 +381,6 @@ Muchas gracias!`
                     * Campo obligatorio: Para saber cuánto cambio tenerte listo
                   </p>
                 )}
-                <p className="text-gray-500 text-xs mt-1"></p>
               </div>
             </CardContent>
           </Card>
@@ -372,7 +422,10 @@ Muchas gracias!`
         </div>
       </div>
 
-      {/* WhatsApp Selection Modal - Solo se muestra como fallback */}
+      {/* Location Selection Modal */}
+      {renderLocationModal()}
+
+      {/* WhatsApp Selection Modal - Fallback */}
       {showWhatsAppModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <Card className="w-full max-w-sm border-2 border-green-200 shadow-2xl">
