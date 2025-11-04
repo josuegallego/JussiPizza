@@ -102,7 +102,7 @@ export function OrderFlow({ onBack }: OrderFlowProps) {
               <p className="text-orange-700">
                 <strong>Lunes a Domingo:</strong> 5:30 PM - 9:40 PM
                 <br />
-                <strong>Martes:</strong> Cerrado
+                <strong>Martes:</strong> Cerrado!
               </p>
             </div>
             <Button
