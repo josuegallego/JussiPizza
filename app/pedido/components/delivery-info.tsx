@@ -165,6 +165,7 @@ const residentialUnits = [
   { name: "KOA", price: 3000, type: "unidad" },
   { name: "MIRADOR DE FARALLONES PARQUE NATURA", price: 4000, type: "unidad" },
   { name: "FORESTAL AQUA", price: 6000, type: "unidad" },
+  
   { name: "VILLAS DEL PARQUE", price: 9000, type: "unidad" },
   { name: "SENDEROS DE LA MORADA", price: 12000, type: "unidad" },
   { name: "RESERVAS DE RIO CLARO", price: 12000, type: "unidad" },
