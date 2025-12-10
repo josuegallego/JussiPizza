@@ -24,7 +24,7 @@ const neighborhoods = [
   { name: "ANGEL MARIA CAMACHO", price: 4000, type: "barrio" },
   { name: "ALFEREZ REAL", price: 4000, type: "barrio" },
   { name: "ADRIANITA", price: 4000, type: "barrio" },
-  { name: "ALBORADA", price: 4000, type: "barrio" },
+  { name: "ALBORADA", price: 5000, type: "barrio" },
   { name: "AURORA", price: 5000, type: "barrio" },
   { name: "ACACIAS", price: 5000, type: "barrio" },
   { name: "BRISAS DEL ROSARIO", price: 4000, type: "barrio" },
@@ -165,7 +165,7 @@ const residentialUnits = [
   { name: "KOA", price: 3000, type: "unidad" },
   { name: "MIRADOR DE FARALLONES PARQUE NATURA", price: 4000, type: "unidad" },
   { name: "FORESTAL AQUA", price: 6000, type: "unidad" },
-  { name: "VILLAS DEL PARQUE", price: 7000, type: "unidad" },
+  { name: "VILLAS DEL PARQUE", price: 9000, type: "unidad" },
   { name: "SENDEROS DE LA MORADA", price: 12000, type: "unidad" },
   { name: "RESERVAS DE RIO CLARO", price: 12000, type: "unidad" },
   { name: "CLUB DE CAMPO LA MORADA", price: 12000, type: "unidad" },
@@ -197,6 +197,8 @@ const residentialUnits = [
   { name: "CAMPOS DE PANGOLA", price: 5000, type: "unidad" },
   { name: "PARAÍSO DE PANGOLA", price: 5000, type: "unidad" },
   { name: "HACIENDA EL PINO", price: 4000, type: "unidad" },
+  { name: "PALMETUM PARK", price: 4000, type: "unidad" },
+ 
 ]
 // Opción especial para cuando no encuentran su opción
 const NOT_IN_LIST_OPTION: LocationOption = {
