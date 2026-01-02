@@ -50,11 +50,28 @@ export function OrderFlow({ onBack }: OrderFlowProps) {
    
   
   const checkBusinessHours = () => {
-    const now = new Date()
-    const currentDay = now.getDay() // 0 = Sunday, 1 = Monday, 2 = Tuesday, etc.
-    const currentHour = now.getHours()
-    const currentMinute = now.getMinutes()
-    const currentTime = currentHour + currentMinute / 60
+  const now = new Date()
+
+  // 🎉 Vacaciones de Año Nuevo (02 al 06 de enero 2026)
+  const vacationStart = new Date(2026, 0, 2) // 0 = Enero
+  const vacationEnd = new Date(2026, 0, 6, 23, 59, 59)
+
+  if (now >= vacationStart && now <= vacationEnd) {
+    setIsOutOfService(true)
+    setOutOfServiceMessage(
+      "🎉 ¡Estamos de vacaciones! 🎉\n" +
+      "Gracias por acompañarnos durante el año.\n" +
+      "Volvemos a atender el 7 de enero a partir de las 5:30 PM.\n" +
+      "¡Feliz Año Nuevo! 🥳🍕"
+    )
+    return false
+  }
+
+  const currentDay = now.getDay()
+  const currentHour = now.getHours()
+  const currentMinute = now.getMinutes()
+  const currentTime = currentHour + currentMinute / 60
+
 
     // Check if it's Tuesday (day 2)
     if (currentDay === 2) {
