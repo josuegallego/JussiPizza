@@ -11,6 +11,56 @@ interface MenuViewProps {
 }
 
 export function MenuView({ onStartOrder, onBack }: MenuViewProps) {
+  // Precios definidos como variables
+  const PRICES = {
+    traditional: {
+      portion: 11000,
+      personal: 20000,
+      small: 36000,
+      medium: 46000,
+    },
+    special: {
+      personal: 24000,
+      small: 41000,
+      medium: 52000,
+    },
+    lasagna: {
+      mini: 15000,
+      personal: 24000,
+    },
+    cornOrPlantain: 22000,
+  }
+
+  // Función para formatear precios en formato colombiano
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price)
+  }
+
+  // Función para generar los tamaños según el tipo de pizza
+  const getPizzaSizes = (type: 'traditional' | 'special') => {
+    const prices = PRICES[type]
+    
+    if (type === 'traditional') {
+      return [
+        `Porción (${formatPrice(prices.portion)})`,
+        `Personal (4 mini porciones ${formatPrice(prices.personal)})`,
+        `Pequeña (6 porciones ${formatPrice(prices.small)})`,
+        `Mediana (8-10 porciones ${formatPrice(prices.medium)})`,
+      ]
+    } else {
+      return [
+        `Personal (4 mini porciones ${formatPrice(prices.personal)})`,
+        `Pequeña (6 porciones ${formatPrice(prices.small)})`,
+        `Mediana (8-10 porciones ${formatPrice(prices.medium)})`,
+      ]
+    }
+  }
+
   const menuCategories = [
     {
       id: "pizzas",
@@ -20,131 +70,113 @@ export function MenuView({ onStartOrder, onBack }: MenuViewProps) {
         {
           name: "Hawaiana",
           ingredients: "Queso, piña, jamón",
-          type: "traditional",
-          sizes: ["Porción ($10.000)", "Personal (4 mini porciones $19.000)", "Pequeña (6 porciones $34.000)", "Mediana (8-10 porciones $44.000)"],
+          type: "traditional" as const,
         },
         {
           name: "Jamón y Queso",
           ingredients: "Queso, jamón",
-          type: "traditional",
-          sizes: ["Porción ($10.000)", "Personal (4 mini porciones $19.000)", "Pequeña (6 porciones $34.000)", "Mediana (8-10 porciones $44.000)"],
+          type: "traditional" as const,
         },
         {
           name: "Pepperoni",
           ingredients: "Queso, pepperoni",
-          type: "traditional",
-          sizes: ["Porción ($10.000)", "Personal (4 mini porciones $19.000)", "Pequeña (6 porciones $34.000)", "Mediana (8-10 porciones $44.000)"],
+          type: "traditional" as const,
         },
         // Special flavors
         {
           name: "De la Casa",
           ingredients: "Queso, cebolla, cabano, salami, champiñones, jamón y pimentón",
-          type: "special",
-          sizes: ["Personal (4 mini porciones $23.000)", "Pequeña (6 porciones $39.000)", "Mediana (8-10 porciones $48.000)"],
+          type: "special" as const,
         },
         {
           name: "Especial",
           ingredients: "Queso, maíz, tomate, tocineta, aceite de oliva y albahaca",
-          type: "special",
-          sizes: ["Personal (4 mini porciones $23.000)", "Pequeña (6 porciones $39.000)", "Mediana (8-10 porciones $48.000)"],
+          type: "special" as const,
         },
         {
           name: "Zamba",
           ingredients: "Queso, maduro, chorizo, tocineta y maíz",
-          type: "special",
-          sizes: ["Personal (4 mini porciones $23.000)", "Pequeña (6 porciones $39.000)", "Mediana (8-10 porciones $48.000)"],
+          type: "special" as const,
         },
         {
           name: "Cárnica",
           ingredients: "Queso, cabano, salami, jamón y carne boloñesa",
-          type: "special",
-          sizes: ["Personal (4 mini porciones $23.000)", "Pequeña (6 porciones $39.000)", "Mediana (8-10 porciones $48.000)"],
+          type: "special" as const,
         },
         {
           name: "Pocha",
           ingredients: "Queso, pollo y champiñones",
-          type: "special",
-          sizes: ["Personal (4 mini porciones $23.000)", "Pequeña (6 porciones $39.000)", "Mediana (8-10 porciones $48.000)"],
+          type: "special" as const,
         },
         {
           name: "Vegetariana",
           ingredients: "Queso, cebolla, champiñones, tomate, aceitunas, pimentón y ajo en polvo",
-          type: "special",
-          sizes: ["Personal (4 mini porciones $23.000)", "Pequeña (6 porciones $39.000)", "Mediana (8-10 porciones $48.000)"],
+          type: "special" as const,
         },
         {
           name: "Casual",
           ingredients: "Queso, pollo, tomate y tocineta",
-          type: "special",
-          sizes: ["Personal (4 mini porciones $23.000)", "Pequeña (6 porciones $39.000)", "Mediana (8-10 porciones $48.000)"],
+          type: "special" as const,
         },
         {
           name: "Americana",
           ingredients: "Queso, piña, salchicha americana y maíz",
-          type: "special",
-          sizes: ["Personal (4 mini porciones $23.000)", "Pequeña (6 porciones $39.000)", "Mediana (8-10 porciones $48.000)"],
+          type: "special" as const,
         },
         {
           name: "Napoly",
           ingredients: "Queso, cabano, carne boloñesa y champiñones",
-          type: "special",
-          sizes: ["Personal (4 mini porciones $23.000)", "Pequeña (6 porciones $39.000)", "Mediana (8-10 porciones $48.000)"],
+          type: "special" as const,
         },
         {
           name: "BBQ",
           ingredients: "Queso, pollo, piña, tocineta y salsa BBQ dulce",
-          type: "special",
-          sizes: ["Personal (4 mini porciones $23.000)", "Pequeña (6 porciones $39.000)", "Mediana (8-10 porciones $48.000)"],
+          type: "special" as const,
         },
         {
           name: "Primavera",
           ingredients: "Queso, carne boloñesa, tomate picado y orégano",
-          type: "special",
-          sizes: ["Personal (4 mini porciones $23.000)", "Pequeña (6 porciones $39.000)", "Mediana (8-10 porciones $48.000)"],
+          type: "special" as const,
         },
         {
           name: "Tropical",
           ingredients: "Queso, cebolla, cabano, piña y jamón",
-          type: "special",
-          sizes: ["Personal (4 mini porciones $23.000)", "Pequeña (6 porciones $39.000)", "Mediana (8-10 porciones $48.000)"],
+          type: "special" as const,
         },
         {
           name: "Tollo",
           ingredients: "Queso, pollo, piña y jamón",
-          type: "special",
-          sizes: ["Personal (4 mini porciones $23.000)", "Pequeña (6 porciones $39.000)", "Mediana (8-10 porciones $48.000)"],
+          type: "special" as const,
         },
         {
           name: "Madurito",
           ingredients: "Queso, maduro y tocineta",
-          type: "special",
-          sizes: ["Personal (4 mini porciones $23.000)", "Pequeña (6 porciones $39.000)", "Mediana (8-10 porciones $48.000)"],
+          type: "special" as const,
         },
         {
           name: "Clásica",
           ingredients: "Queso, piña, jamón y tocineta",
-          type: "special",
-          sizes: ["Personal (4 mini porciones $23.000)", "Pequeña (6 porciones $39.000)", "Mediana (8-10 porciones $48.000)"],
+          type: "special" as const,
         },
         {
           name: "Picardía",
           ingredients: "Queso, salami, piña, carne boloñesa y pimienta limón",
-          type: "special",
-          sizes: ["Personal (4 mini porciones $23.000)", "Pequeña (6 porciones $39.000)", "Mediana (8-10 porciones $48.000)"],
+          type: "special" as const,
         },
         {
           name: "Mexicana",
           ingredients: "Queso, cebolla, tomate, carne boloñesa, pimentón y jalapeños",
-          type: "special",
-          sizes: ["Personal (4 mini porciones $23.000)", "Pequeña (6 porciones $39.000)", "Mediana (8-10 porciones $48.000)"],
+          type: "special" as const,
         },
         {
           name: "Napolitana",
           ingredients: "Queso, tomate, albahaca y aceite de oliva",
-          type: "special",
-          sizes: ["Personal (4 mini porciones $23.000)", "Pequeña (6 porciones $39.000)", "Mediana (8-10 porciones $48.000)"],
+          type: "special" as const,
         },
-      ],
+      ].map(item => ({
+        ...item,
+        sizes: getPizzaSizes(item.type),
+      })),
     },
     {
       id: "lasanas",
@@ -153,7 +185,10 @@ export function MenuView({ onStartOrder, onBack }: MenuViewProps) {
         {
           name: "Lasaña Mixta",
           ingredients: "Pasta, queso, carne boloñesa y pollo",
-          sizes: ["Mini ($14,000)", "Personal ($22,000)"],
+          sizes: [
+            `Mini (${formatPrice(PRICES.lasagna.mini)})`,
+            `Personal (${formatPrice(PRICES.lasagna.personal)})`,
+          ],
         },
       ],
     },
@@ -163,17 +198,17 @@ export function MenuView({ onStartOrder, onBack }: MenuViewProps) {
       items: [
         {
           name: "Desgranado Ranchero",
-          ingredients: "Queso, tocineta y pollo (Con maíz o maduro)",
+          ingredients: `Queso, tocineta y pollo (Con maíz o maduro ${formatPrice(PRICES.cornOrPlantain)})`,
           flavors: ["Ranchero", "Campesino", "Americano"],
         },
         {
           name: "Desgranado Campesino",
-          ingredients: "Queso, pollo, tocineta y chorizo de ternera (Con maíz o maduro)",
+          ingredients: `Queso, pollo, tocineta y chorizo de ternera (Con maíz o maduro ${formatPrice(PRICES.cornOrPlantain)})`,
           flavors: ["Ranchero", "Campesino", "Americano"],
         },
         {
           name: "Desgranado Americano",
-          ingredients: "Queso, pollo y salchicha americana (Con maíz o maduro)",
+          ingredients: `Queso, pollo y salchicha americana (Con maíz o maduro ${formatPrice(PRICES.cornOrPlantain)})`,
           flavors: ["Ranchero", "Campesino", "Americano"],
         },
       ],
@@ -218,7 +253,6 @@ export function MenuView({ onStartOrder, onBack }: MenuViewProps) {
         <div className="flex items-center justify-between max-w-md mx-auto">
           <Button variant="ghost" onClick={onBack} className="text-brown-700 hover:bg-green-100">
             <ArrowLeft className="w-5 h-5 mr-2" />
-            
           </Button>
           <h1 className="text-xl font-bold text-brown-900">Nuestro Menú</h1>
           <div className="w-16"></div>

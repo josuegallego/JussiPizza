@@ -19,8 +19,8 @@ export function DesgranandoOrder({ onBack, onAddItem }: DesgranandoOrderProps) {
   const [flavor, setFlavor] = useState("")
 
   const bases = [
-    { name: "Maíz", price: 20000 },
-    { name: "Maduro", price: 20000 },
+    { name: "Maíz", price: 22000 },
+    { name: "Maduro", price: 22000 },
   ]
 
   const flavors = [

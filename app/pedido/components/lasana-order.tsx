@@ -18,8 +18,8 @@ export function LasanaOrder({ onBack, onAddItem }: LasanaOrderProps) {
   const [size, setSize] = useState("")
 
   const sizes = [
-    { name: "Mini", price: 14000 },
-    { name: "Personal", price: 22000 },
+    { name: "Mini", price: 15000 },
+    { name: "Personal", price: 24000 },
   ]
 
   const handleAddToOrder = () => {
