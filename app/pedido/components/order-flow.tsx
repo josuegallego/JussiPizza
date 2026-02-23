@@ -52,6 +52,19 @@ export function OrderFlow({ onBack }: OrderFlowProps) {
   const checkBusinessHours = () => {
   const now = new Date()
 
+  // 🚫 Día especial sin servicio (23 de febrero de 2026)
+const specialCloseStart = new Date(2026, 1, 23, 0, 0, 0) // Febrero = 1
+const specialCloseEnd = new Date(2026, 1, 23, 23, 59, 59)
+
+if (now >= specialCloseStart && now <= specialCloseEnd) {
+  setIsOutOfService(true)
+  setOutOfServiceMessage(
+    "🚫 Hoy 23 de febrero no tenemos servicio.\n" +
+    "Gracias por la comprensión.\n" +
+    "Volvemos el miércoles 25 de febrero a partir de las 5:30 PM. 🍕"
+  )
+  return false
+}
   // 🎉 Vacaciones de Año Nuevo (02 al 06 de enero 2026)
   const vacationStart = new Date(2026, 0, 2) // 0 = Enero
   const vacationEnd = new Date(2026, 0, 6, 23, 59, 59)
@@ -88,8 +101,7 @@ export function OrderFlow({ onBack }: OrderFlowProps) {
     }
 
     // Check if it's after 9:40 PM (21:40)
-    //if (currentTime >= 21.667) {
-      if (currentTime >= 24) {
+    if (currentTime >= 21.667) {
       setIsOutOfService(true)
       setOutOfServiceMessage("🌙 Ya cerramos por hoy. Nuestro horario de atención a domicilio es de 5:30 PM a 9:40 PM")
       return false
