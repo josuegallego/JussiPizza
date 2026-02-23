@@ -88,7 +88,8 @@ export function OrderFlow({ onBack }: OrderFlowProps) {
     }
 
     // Check if it's after 9:40 PM (21:40)
-    if (currentTime >= 21.667) {
+    //if (currentTime >= 21.667) {
+      if (currentTime >= 24) {
       setIsOutOfService(true)
       setOutOfServiceMessage("🌙 Ya cerramos por hoy. Nuestro horario de atención a domicilio es de 5:30 PM a 9:40 PM")
       return false
