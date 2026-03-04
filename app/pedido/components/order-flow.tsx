@@ -53,15 +53,15 @@ export function OrderFlow({ onBack }: OrderFlowProps) {
   const now = new Date()
 
   // 🚫 Día especial sin servicio (23 de febrero de 2026)
-const specialCloseStart = new Date(2026, 1, 23, 0, 0, 0) // Febrero = 1
-const specialCloseEnd = new Date(2026, 1, 23, 23, 59, 59)
+const specialCloseStart = new Date(2026, 2, 4, 0, 0, 0) // Febrero = 1
+const specialCloseEnd = new Date(2026, 2, 5, 23, 59, 59)
 
 if (now >= specialCloseStart && now <= specialCloseEnd) {
   setIsOutOfService(true)
   setOutOfServiceMessage(
-    "🚫 Hoy 23 de febrero no tenemos servicio.\n" +
+    "🚫 Hoy 4 de marzo no tenemos servicio por mantenimiento de nuestras instalaciones.\n" +
     "Gracias por la comprensión.\n" +
-    "Volvemos el miércoles 25 de febrero a partir de las 5:30 PM. 🍕"
+    "Volvemos el jueves 5 de marzo a partir de las 5:30 PM. 🍕"
   )
   return false
 }
