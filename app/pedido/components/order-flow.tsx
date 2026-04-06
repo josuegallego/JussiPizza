@@ -52,34 +52,20 @@ export function OrderFlow({ onBack }: OrderFlowProps) {
   const checkBusinessHours = () => {
   const now = new Date()
 
-  // 🚫 Día especial sin servicio (23 de febrero de 2026)
-const specialCloseStart = new Date(2026, 2, 4, 0, 0, 0) // Febrero = 1
-const specialCloseEnd = new Date(2026, 2, 5, 23, 59, 59)
+// 🚫 Día especial sin servicio (06 de abril de 2026)
+  const specialCloseStart = new Date(2026, 3, 6, 0, 0, 0) // 3 = Abril
+  const specialCloseEnd = new Date(2026, 3, 6, 23, 59, 59)
 
-if (now >= specialCloseStart && now <= specialCloseEnd) {
-  setIsOutOfService(true)
-  setOutOfServiceMessage(
-    "🚫 Hoy 4 de marzo no tenemos servicio por mantenimiento de nuestras instalaciones.\n" +
-    "Gracias por la comprensión.\n" +
-    "Volvemos el jueves 5 de marzo a partir de las 5:30 PM. 🍕"
-  )
-  return false
-}
-  // 🎉 Vacaciones de Año Nuevo (02 al 06 de enero 2026)
-  const vacationStart = new Date(2026, 0, 2) // 0 = Enero
-  const vacationEnd = new Date(2026, 0, 6, 23, 59, 59)
-
-  if (now >= vacationStart && now <= vacationEnd) {
+  if (now >= specialCloseStart && now <= specialCloseEnd) {
     setIsOutOfService(true)
     setOutOfServiceMessage(
-      "🎉 ¡Estamos de vacaciones! 🎉\n" +
-      "Gracias por acompañarnos durante el año.\n" +
-      "Volvemos a atender el 7 de enero a partir de las 5:30 PM.\n" +
-      "¡Feliz Año Nuevo! 🥳🍕"
+      "🚫 Hoy 6 de abril no tenemos servicio por motivos de fuerza mayor.\n" +
+      "Gracias por la comprensión.\n" +
+      "Volvemos mañana martes... ¡Espera, los martes cerramos! 😅\n" +
+      "Nos vemos el miércoles 8 de abril a partir de las 5:30 PM. 🍕"
     )
     return false
   }
-
   const currentDay = now.getDay()
   const currentHour = now.getHours()
   const currentMinute = now.getMinutes()
