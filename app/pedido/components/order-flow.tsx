@@ -52,17 +52,16 @@ export function OrderFlow({ onBack }: OrderFlowProps) {
   const checkBusinessHours = () => {
   const now = new Date()
 
-// 🚫 Día especial sin servicio (06 de abril de 2026)
-  const specialCloseStart = new Date(2026, 3, 6, 0, 0, 0) // 3 = Abril
-  const specialCloseEnd = new Date(2026, 3, 6, 23, 59, 59)
+// 🚫 Días especiales sin servicio (05 y 06 de julio de 2026)
+  const specialCloseStart = new Date(2026, 6, 5, 0, 0, 0) // 6 = Julio
+  const specialCloseEnd = new Date(2026, 6, 6, 23, 59, 59)
 
   if (now >= specialCloseStart && now <= specialCloseEnd) {
     setIsOutOfService(true)
     setOutOfServiceMessage(
-      "🚫 Hoy 6 de abril no tenemos servicio por motivos de fuerza mayor.\n" +
-      "Gracias por la comprensión.\n" +
-      "Volvemos mañana martes... ¡Espera, los martes cerramos! 😅\n" +
-      "Nos vemos el miércoles 8 de abril a partir de las 5:30 PM. 🍕"
+      "🚫 Hoy no tenemos servicio por motivos de fuerza mayor.\n" +
+      "Nos vemos el miércoles 8 de julio a partir de las 5:30 PM. 🍕\n" +
+      "Gracias por su comprensión. 🙏"
     )
     return false
   }
