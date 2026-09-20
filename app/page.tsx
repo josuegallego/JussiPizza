@@ -117,7 +117,9 @@ export default function Home() {
     <div className="min-h-screen bg-jussi-beige text-jussi-brown">
       {/* Header flotante */}
       <header className="fixed left-0 right-0 top-3 z-50 px-3 md:top-5 md:px-6">
-        <div className="mx-auto max-w-5xl rounded-full border-2 border-jussi-brown bg-jussi-beige shadow-pop">
+        <div
+          className="mx-auto max-w-5xl rounded-[1.75rem] border-2 border-jussi-brown bg-jussi-beige shadow-pop md:rounded-full"
+        >
           <div className="flex items-center justify-between py-2 pl-2 pr-2 md:pl-3 md:pr-3">
             <button onClick={() => scrollToSection("home")} className="flex items-center gap-3" aria-label="Ir al inicio">
               <span className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border-2 border-jussi-brown bg-jussi-red">
@@ -275,15 +277,15 @@ export default function Home() {
             </p>
           </Reveal>
 
-          <div className="mt-14 grid grid-cols-3 gap-4 border-t border-jussi-brown/20 pt-8">
+          <div className="mt-14 hidden grid-cols-3 gap-4 border-t border-jussi-brown/20 pt-8 md:grid">
             {[
               { n: "2", l: "sedes en Jamundí" },
               { n: "2021", l: "Ganadores Pizza Fest" },
               { n: "2015", l: "sirviendo sabor" },
             ].map((s, i) => (
               <Reveal key={s.l} delay={i * 120}>
-                <div className="font-display text-4xl font-extrabold md:text-6xl">{s.n}</div>
-                <div className="mt-1 text-sm font-semibold opacity-70 md:text-base">{s.l}</div>
+                <div className="font-display text-6xl font-extrabold">{s.n}</div>
+                <div className="mt-1 text-base font-semibold opacity-80">{s.l}</div>
               </Reveal>
             ))}
           </div>

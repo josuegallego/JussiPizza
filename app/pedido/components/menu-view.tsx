@@ -196,18 +196,18 @@ export function MenuView({ onStartOrder, onBack }: MenuViewProps) {
       items: [
         {
           name: "Desgranado Ranchero",
-          ingredients: `Queso, tocineta y pollo (Con maíz o maduro ${formatPrice(PRICES.cornOrPlantain)})`,
-          flavors: ["Ranchero", "Campesino", "Americano"],
+          ingredients: "Queso, tocineta y pollo",
+          flavors: [`Con maíz (${formatPrice(PRICES.cornOrPlantain)})`, `Con maduro (${formatPrice(PRICES.cornOrPlantain)})`],
         },
         {
           name: "Desgranado Campesino",
-          ingredients: `Queso, pollo, tocineta y chorizo de ternera (Con maíz o maduro ${formatPrice(PRICES.cornOrPlantain)})`,
-          flavors: ["Ranchero", "Campesino", "Americano"],
+          ingredients: "Queso, pollo, tocineta y chorizo de ternera",
+          flavors: [`Con maíz (${formatPrice(PRICES.cornOrPlantain)})`, `Con maduro (${formatPrice(PRICES.cornOrPlantain)})`],
         },
         {
           name: "Desgranado Americano",
-          ingredients: `Queso, pollo y salchicha americana (Con maíz o maduro ${formatPrice(PRICES.cornOrPlantain)})`,
-          flavors: ["Ranchero", "Campesino", "Americano"],
+          ingredients: "Queso, pollo y salchicha americana",
+          flavors: [`Con maíz (${formatPrice(PRICES.cornOrPlantain)})`, `Con maduro (${formatPrice(PRICES.cornOrPlantain)})`],
         },
       ],
     },
@@ -218,12 +218,12 @@ export function MenuView({ onStartOrder, onBack }: MenuViewProps) {
         {
           name: "Jugos Naturales",
           ingredients: "En agua o en leche",
-          flavors: ["Mora", "Lulo", "Maracuyá", "Mango", "Guanábana", "Lulo", "Fresa"],
+          flavors: ["Mora", "Lulo", "Maracuyá", "Mango", "Guanábana", "Fresa"],
         },
         {
           name: "Frappés",
           ingredients: "Bebida granizada",
-          flavors: ["Mora", "Lulo", "Maracuyá", "Mango", "Guanábana", "Lulo", "Fresa"],
+          flavors: ["Mora", "Lulo", "Maracuyá", "Mango", "Guanábana", "Fresa"],
         },
         {
           name: "Limonadas",
@@ -297,7 +297,7 @@ export function MenuView({ onStartOrder, onBack }: MenuViewProps) {
                   {item.flavors && item.flavors.length > 0 && (
                     <div className="mt-4">
                       <p className="mb-2 text-sm font-bold uppercase tracking-widest opacity-80">
-                        {category.id === "bebidas" ? "Opciones" : "Sabores"}
+                        {category.id === "bebidas" || category.id === "desgranados" ? "Opciones" : "Sabores"}
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {item.flavors.map((flavor, flavorIndex) => (
