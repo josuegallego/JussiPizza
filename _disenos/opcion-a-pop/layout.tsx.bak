@@ -1,17 +1,17 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Unbounded, Manrope } from "next/font/google"
+import { Bricolage_Grotesque, DM_Sans } from "next/font/google"
 import "./globals.css"
 
-// Titulares: sans-serif ancha y divertida
-const display = Unbounded({
+// Titulares: sans-serif con carácter, divertida pero legible
+const display = Bricolage_Grotesque({
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",
 })
 
-// Texto corrido y UI: sans-serif limpia y muy legible
-const body = Manrope({
+// Texto corrido y UI: sans-serif geométrica muy legible
+const body = DM_Sans({
   subsets: ["latin"],
   variable: "--font-body",
   display: "swap",

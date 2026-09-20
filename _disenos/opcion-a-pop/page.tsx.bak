@@ -1,0 +1,515 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import {
+  MapPin,
+  Instagram,
+  MessageCircle,
+  Award,
+  Pizza,
+  Clock,
+  Users,
+  Phone,
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  Menu,
+  X,
+} from "lucide-react"
+import { useRouter } from "next/navigation"
+
+const locations = [
+  {
+    name: "Sede Sachamate",
+    address: "Cra 18 #12-22 Barrio Sachamate",
+    hint: "Barrio al lado del parque Sachamate",
+    phone: "573172697230",
+    accent: "bg-jussi-green",
+    mapSrc:
+      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3983.3354983682593!2d-76.54898070321042!3d3.266644999999991!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e309eb5f479442f%3A0xb90023a4b91e072d!2sJussi%20Pizza!5e0!3m2!1sen!2sco!4v1750386486959!5m2!1sen!2sco",
+  },
+  {
+    name: "Sede Anturios",
+    address: "Jussi Pizza Cra. 19 A #3-03",
+    hint: "Sector de Alfaguara / Parque Natura",
+    phone: "573168403329",
+    accent: "bg-jussi-orange",
+    mapSrc:
+      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3983.3354983682593!2d-76.54898070321042!3d3.266644999999991!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e309983d6c3c0e7%3A0x556bfa1aac6aae29!2sJussi%20Pizza!5e0!3m2!1sen!2sco!4v1750386509586!5m2!1sen!2sco",
+  },
+]
+
+const galleryImages = [
+  {
+    src: "/JUSSI PIZZA JAMUNDI 2020 (2).jpg",
+    alt: "",
+    title: "Nuestras Pizzas",
+    description: "Cada pizza es preparada con amor y los mejores ingredientes",
+  },
+  {
+    src: "/JUSSI PIZZA JAMUNDI 2020 (4).jpg",
+    alt: "Interior acogedor del restaurante",
+    title: "Ambiente Familiar",
+    description: "Un lugar perfecto para compartir en familia",
+  },
+  {
+    src: "/JUSSI PIZZA JAMUNDI 2020 (12).jpg",
+    alt: "Chef preparando masa de pizza",
+    title: "Proceso Artesanal",
+    description: "Masa fresca preparada diariamente",
+  },
+  {
+    src: "/JUSSI PIZZA JAMUNDI 2020 (34).jpg",
+    alt: "Ingredientes frescos para pizza",
+    title: "Ingredientes Frescos",
+    description: "Solo utilizamos los mejores ingredientes",
+  },
+  {
+    src: "/IMG_0096.jpg",
+    alt: "Familia disfrutando pizza",
+    title: "Momentos Especiales",
+    description: "Creando recuerdos deliciosos desde 2015",
+  },
+]
+
+const navItems = [
+  { id: "home", label: "Inicio" },
+  { id: "locations", label: "Ubicaciones" },
+  { id: "contact", label: "Contacto" },
+]
+
+const marqueeItems = [
+  "Pizza crocante",
+  "En las manos de Dios",
+  "Ingredientes frescos",
+  "Ganadores Pizza Fest 2021",
+  "Receta tradicional",
+  "Hecha con mucho amor",
+]
+
+export default function Home() {
+  const router = useRouter()
+  const [activeSection, setActiveSection] = useState("home")
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true)
+  const [sedeModalOpen, setSedeModalOpen] = useState(false)
+  const [touchStartX, setTouchStartX] = useState(0)
+
+  const handleOrderClick = () => {
+    router.push("/pedido")
+  }
+
+  const openWhatsApp = (location: (typeof locations)[number]) => {
+    const message = encodeURIComponent(`¡Hola! Me gustaría hacer un pedido de pizza 🍕 para la ${location.name}`)
+    window.open(
+      `https://api.whatsapp.com/send/?phone=${location.phone}&text=${message}&type=phone_number&app_absent=0`,
+      "_blank",
+    )
+    setSedeModalOpen(false)
+  }
+
+  const handleInstagramClick = () => {
+    window.open("https://instagram.com/jussipizza_", "_blank")
+  }
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" })
+      setActiveSection(sectionId)
+      setMobileMenuOpen(false)
+    }
+  }
+
+  // Sección activa según el scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 120
+      for (const item of navItems) {
+        const element = document.getElementById(item.id)
+        if (element) {
+          const { offsetTop, offsetHeight } = element
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(item.id)
+            break
+          }
+        }
+      }
+    }
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  // Carrusel automático
+  useEffect(() => {
+    if (!isAutoPlaying) return
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length)
+    }, 4000)
+    return () => clearInterval(interval)
+  }, [isAutoPlaying])
+
+  // Cerrar modal con Escape
+  useEffect(() => {
+    if (!sedeModalOpen) return
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setSedeModalOpen(false)
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [sedeModalOpen])
+
+  const nextImage = () => setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length)
+  const prevImage = () => setCurrentImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length)
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const diff = touchStartX - e.changedTouches[0].clientX
+    if (Math.abs(diff) > 50) {
+      diff > 0 ? nextImage() : prevImage()
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-jussi-beige text-jussi-brown">
+      {/* Header flotante */}
+      <header className="fixed left-0 right-0 top-3 z-50 px-3 md:top-5 md:px-6">
+        <div className="mx-auto max-w-5xl rounded-full border-2 border-jussi-brown bg-jussi-beige shadow-pop">
+          <div className="flex items-center justify-between py-2 pl-2 pr-2 md:pl-3 md:pr-3">
+            <button onClick={() => scrollToSection("home")} className="flex items-center gap-3" aria-label="Ir al inicio">
+              <span className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border-2 border-jussi-brown bg-jussi-red">
+                <img src="/logo beige.png" alt="Jussi Pizza" className="h-8 w-8 object-contain" />
+              </span>
+              <span className="text-left leading-tight">
+                <span className="block font-display text-lg font-extrabold">Jussi Pizza</span>
+                <span className="hidden text-xs font-medium opacity-70 sm:block">Jamundí, Valle del Cauca</span>
+              </span>
+            </button>
+
+            <nav className="hidden items-center gap-1 md:flex">
+              {navItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className={`rounded-full px-4 py-2 font-display text-sm font-bold transition-colors ${
+                    activeSection === item.id ? "bg-jussi-brown text-jussi-beige" : "hover:bg-jussi-brown/10"
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+              <button
+                onClick={handleOrderClick}
+                className="btn-pop-red ml-2 !px-5 !py-2 text-sm"
+              >
+                Pedir ahora
+              </button>
+            </nav>
+
+            <button
+              className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-jussi-brown bg-jussi-orange md:hidden"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
+              aria-expanded={mobileMenuOpen}
+            >
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+
+          {mobileMenuOpen && (
+            <nav className="flex flex-col gap-2 border-t-2 border-jussi-brown p-4 md:hidden">
+              {navItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className={`rounded-full px-4 py-3 text-left font-display font-bold ${
+                    activeSection === item.id ? "bg-jussi-brown text-jussi-beige" : "bg-white/60"
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+              <button onClick={handleOrderClick} className="btn-pop-red mt-1 w-full">
+                Pedir ahora
+              </button>
+            </nav>
+          )}
+        </div>
+      </header>
+
+      {/* Hero */}
+      <section
+        id="home"
+        className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 pb-24 pt-32 text-center md:px-6"
+        style={{ clipPath: "inset(0)" }}
+      >
+        {/* Parallax: la imagen queda fija y el clip-path del hero la recorta a su área */}
+        <div className="fixed inset-0 z-0">
+          <img src="/IMG_0096.jpg" alt="Pizza Background" className="h-full w-full object-cover object-center" />
+        </div>
+        <div className="absolute inset-0 z-10 bg-jussi-brown/60" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-jussi-brown/80 via-transparent to-transparent" />
+
+        <div className="container relative z-20 mx-auto">
+          <span className="sticker mb-8 -rotate-3 bg-jussi-orange animate-fade-in">
+            <Award className="h-4 w-4" />
+            Ganadores del Pizza Fest 2021
+          </span>
+
+          <h1 className="animate-fade-in font-display text-[5.5rem] font-extrabold uppercase leading-[0.85] tracking-tight text-jussi-beige sm:text-[8rem] md:text-[11rem] lg:text-[13rem]">
+            Jussi
+            <span className="block text-jussi-green [text-shadow:4px_4px_0_#231107] md:[text-shadow:6px_6px_0_#231107]">
+              Pizza
+            </span>
+          </h1>
+
+          <p className="mx-auto mt-6 inline-block rotate-1 rounded-full border-2 border-jussi-brown bg-jussi-red px-5 py-2 font-display text-lg font-bold italic text-white shadow-pop md:text-2xl">
+            En las manos de Dios
+          </p>
+
+          <p className="mx-auto mt-8 max-w-2xl text-base leading-relaxed text-jussi-beige md:text-xl">
+            Auténtica y deliciosa pizza en el corazón de Jamundí. Ingredientes frescos, tradición italiana y el sabor
+            único colombiano. Cada porción hecha con dedicación, pasión… y mucho amor.
+          </p>
+
+          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <button onClick={handleOrderClick} className="btn-pop-green btn-pop-lg w-full sm:w-auto">
+              <MessageCircle className="h-5 w-5" />
+              ¡Pedir ahora!
+              <ArrowRight className="h-5 w-5" />
+            </button>
+            <button onClick={() => scrollToSection("locations")} className="btn-pop-beige btn-pop-lg w-full sm:w-auto">
+              <MapPin className="h-5 w-5" />
+              Ver ubicaciones
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Cinta en movimiento */}
+      <div className="relative z-10 -rotate-1 overflow-hidden border-y-2 border-jussi-brown bg-jussi-orange py-3">
+        <div className="animate-marquee flex w-max whitespace-nowrap">
+          {[...marqueeItems, ...marqueeItems, ...marqueeItems, ...marqueeItems].map((item, i) => (
+            <span key={i} className="mx-6 flex items-center gap-6 font-display text-xl font-extrabold uppercase md:text-2xl">
+              {item}
+              <Pizza className="h-6 w-6" aria-hidden />
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Galería */}
+      <section className="relative z-10 bg-jussi-beige px-4 py-20 md:px-6 md:py-28">
+        <div className="container mx-auto">
+          <div className="mb-12 text-center">
+            <span className="eyebrow">Conócenos</span>
+            <h2 className="font-display text-4xl font-extrabold md:text-6xl">¡Ven y descúbrenos!</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-lg opacity-75 md:text-xl">
+              Vive el ambiente y la calidad que tanto nos caracterizan.
+            </p>
+          </div>
+
+          <div className="mx-auto max-w-4xl">
+            <div
+              className="card-pop relative overflow-hidden !rounded-[2rem] bg-jussi-brown"
+              onTouchStart={(e) => setTouchStartX(e.touches[0].clientX)}
+              onTouchEnd={handleTouchEnd}
+              onMouseEnter={() => setIsAutoPlaying(false)}
+              onMouseLeave={() => setIsAutoPlaying(true)}
+            >
+              <div
+                className="flex transition-transform duration-700 ease-in-out"
+                style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
+              >
+                {galleryImages.map((image, index) => (
+                  <div key={index} className="relative aspect-[4/3] w-full flex-shrink-0 md:aspect-[16/9]">
+                    <img src={image.src} alt={image.alt} className="h-full w-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-jussi-brown/80 via-transparent to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 p-5 text-jussi-beige md:p-8">
+                      <h3 className="font-display text-2xl font-extrabold md:text-4xl">{image.title}</h3>
+                      <p className="mt-1 text-base opacity-90 md:text-lg">{image.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={prevImage}
+                aria-label="Anterior"
+                className="absolute left-3 top-1/2 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border-2 border-jussi-brown bg-jussi-beige shadow-pop-sm transition-transform hover:scale-110 md:flex"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </button>
+              <button
+                onClick={nextImage}
+                aria-label="Siguiente"
+                className="absolute right-3 top-1/2 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border-2 border-jussi-brown bg-jussi-beige shadow-pop-sm transition-transform hover:scale-110 md:flex"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </button>
+            </div>
+
+            <div className="mt-8 flex justify-center gap-2">
+              {galleryImages.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentImageIndex(index)}
+                  aria-label={`Ir a la imagen ${index + 1}`}
+                  className={`h-3 rounded-full border-2 border-jussi-brown transition-all duration-300 ${
+                    index === currentImageIndex ? "w-10 bg-jussi-red" : "w-3 bg-transparent hover:bg-jussi-brown/30"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Ubicaciones */}
+      <section id="locations" className="bg-jussi-green px-4 py-20 md:px-6 md:py-28">
+        <div className="container mx-auto">
+          <div className="mb-12 text-center">
+            <span className="eyebrow bg-jussi-beige">Dónde estamos</span>
+            <h2 className="font-display text-4xl font-extrabold md:text-6xl">Nuestras sedes</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-lg md:text-xl">
+              Dos sedes en Jamundí para servirte mejor. ¡Visítanos o pide a domicilio!
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-10">
+            {locations.map((location) => (
+              <article key={location.name} className="card-pop overflow-hidden !rounded-[2rem]">
+                <div className={`${location.accent} border-b-2 border-jussi-brown p-6`}>
+                  <div className="flex items-start gap-3">
+                    <span className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border-2 border-jussi-brown bg-jussi-beige">
+                      <MapPin className="h-5 w-5" />
+                    </span>
+                    <div>
+                      <h3 className="font-display text-2xl font-extrabold md:text-3xl">{location.name}</h3>
+                      <p className="font-medium">{location.address}</p>
+                      <p className="text-sm opacity-80">{location.hint}</p>
+                    </div>
+                  </div>
+                  <div className="mt-5 flex flex-wrap gap-3">
+                    <button onClick={() => setSedeModalOpen(true)} className="btn-pop-beige !px-5 !py-2 text-sm">
+                      <Phone className="h-4 w-4" />
+                      Escribir
+                    </button>
+                    <button
+                      onClick={() =>
+                        window.open(`https://maps.google.com/?q=${encodeURIComponent(location.address)}`, "_blank")
+                      }
+                      className="btn-pop-beige !px-5 !py-2 text-sm"
+                    >
+                      <MapPin className="h-4 w-4" />
+                      Cómo llegar
+                    </button>
+                  </div>
+                </div>
+                <iframe
+                  src={location.mapSrc}
+                  title={`Mapa ${location.name}`}
+                  width="100%"
+                  height="300"
+                  style={{ border: 0, display: "block" }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contacto */}
+      <section id="contact" className="bg-jussi-brown px-4 py-20 text-jussi-beige md:px-6 md:py-28">
+        <div className="container mx-auto text-center">
+          <span className="eyebrow">Pide ya</span>
+          <h2 className="font-display text-5xl font-extrabold md:text-7xl">
+            ¡Haz tu <span className="text-jussi-orange">pedido!</span>
+          </h2>
+          <p className="mx-auto mb-10 mt-4 max-w-2xl text-lg opacity-90 md:text-xl">
+            Pídelo en segundos desde nuestro enlace o escríbenos directo. ¡Estamos para servirte!
+          </p>
+
+          <div className="mx-auto mb-16 flex max-w-xl flex-col items-center justify-center gap-4 sm:flex-row">
+            <button onClick={() => setSedeModalOpen(true)} className="btn-pop-green btn-pop-lg w-full !border-jussi-beige !shadow-[4px_4px_0_0_#F3EDD6] sm:w-auto">
+              <MessageCircle className="h-5 w-5" />
+              Pedir por WhatsApp
+            </button>
+            <button onClick={handleInstagramClick} className="btn-pop-orange btn-pop-lg w-full !border-jussi-beige !shadow-[4px_4px_0_0_#F3EDD6] sm:w-auto">
+              <Instagram className="h-5 w-5" />
+              Ver Instagram
+            </button>
+          </div>
+
+          <div className="mb-14 grid grid-cols-1 gap-5 text-left md:grid-cols-3">
+            {[
+              { Icon: Clock, title: "Horarios", lines: ["Miércoles a Lunes", "6:00 PM - 10:30 PM"], bg: "bg-jussi-orange" },
+              { Icon: Users, title: "Servicio", lines: ["Domicilio", "Para llevar", "Consumo en sitio"], bg: "bg-jussi-green" },
+              { Icon: Pizza, title: "Especialidad", lines: ["Pizza crocante", "Ingredientes frescos", "Receta tradicional"], bg: "bg-jussi-red" },
+            ].map(({ Icon, title, lines, bg }) => (
+              <div key={title} className="rounded-3xl border-2 border-jussi-beige/80 p-6">
+                <span className={`mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-jussi-beige ${bg} text-jussi-brown`}>
+                  <Icon className={`h-7 w-7 ${bg === "bg-jussi-red" ? "text-white" : ""}`} />
+                </span>
+                <h3 className="mb-2 font-display text-2xl font-extrabold">{title}</h3>
+                <p className="opacity-80">
+                  {lines.map((line, i) => (
+                    <span key={i} className="block">
+                      {line}
+                    </span>
+                  ))}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="border-t-2 border-jussi-beige/20 pt-8 text-sm opacity-70">
+            <p>© 2025 Jussi Pizza · Jamundí, Valle del Cauca, Colombia</p>
+            <p className="mt-1">Ganadores Pizza Fest 2021 🏆</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Modal de sede para WhatsApp */}
+      {sedeModalOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-end justify-center bg-jussi-brown/70 p-4 backdrop-blur-sm sm:items-center"
+          onClick={() => setSedeModalOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Elegir sede"
+        >
+          <div className="card-pop w-full max-w-md animate-fade-in bg-jussi-beige p-6 md:p-8" onClick={(e) => e.stopPropagation()}>
+            <div className="mb-6 text-center">
+              <span className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border-2 border-jussi-brown bg-jussi-red text-white">
+                <MapPin className="h-7 w-7" />
+              </span>
+              <h3 className="font-display text-2xl font-extrabold">¿En cuál sede deseas ordenar?</h3>
+              <p className="mt-1 opacity-70">Elige la ubicación más cercana a ti</p>
+            </div>
+
+            <div className="mb-4 space-y-3">
+              {locations.map((location) => (
+                <button
+                  key={location.name}
+                  onClick={() => openWhatsApp(location)}
+                  className={`${location.accent} btn-pop w-full !justify-start !rounded-2xl !py-4 text-left`}
+                >
+                  <span>
+                    <span className="block text-lg font-extrabold">{location.name}</span>
+                    <span className="block text-sm font-medium opacity-80">{location.hint}</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            <button onClick={() => setSedeModalOpen(false)} className="w-full py-2 font-display font-bold opacity-60 hover:opacity-100">
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}

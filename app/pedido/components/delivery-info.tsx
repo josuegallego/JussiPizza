@@ -1,13 +1,8 @@
 "use client"
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { ArrowLeft, MapPin, AlertCircle, Search, X } from "lucide-react"
+import { MapPin, Search, X, ArrowRight } from "lucide-react"
 import type { DeliveryInfo as DeliveryInfoType } from "./order-flow"
+import { PedidoHeader, PedidoPage, Section, OptionCard, PedidoActionBar, Field, useDraft, useToast } from "./pedido-ui"
 
 interface DeliveryInfoProps {
   onBack: () => void
@@ -80,6 +75,8 @@ const neighborhoods = [
   { name: "MARGARITAS", price: 6000, type: "barrio" },
   { name: "OPORTO", price: 5000, type: "barrio" },
   { name: "PORTAL DEL JORDAN", price: 4000, type: "barrio" },
+  { name: "PORTAL DE JAMUNDI 3", price: 6000, type: "barrio" },
+  { name: "PORTAL DE JAMUNDI 2", price: 6000, type: "barrio" },
   { name: "PORTAL DE JAMUNDI", price: 5000, type: "barrio" },
   { name: "PORTAL DEL SAMAN", price: 4000, type: "barrio" },
   { name: "LAS PALMAS", price: 6000, type: "barrio" },
@@ -197,6 +194,7 @@ const residentialUnits = [
   { name: "CAMINOS DE PANGOLA", price: 6000, type: "unidad" },
   { name: "CAMPOS DE PANGOLA", price: 6000, type: "unidad" },
   { name: "PARAÍSO DE PANGOLA", price: 6000, type: "unidad" },
+  { name: "SURCOS DE PANGOLA", price: 6000, type: "unidad" },
   { name: "HACIENDA EL PINO", price: 4000, type: "unidad" },
   { name: "PALMETUM PARK", price: 4000, type: "unidad" },
  
@@ -206,6 +204,20 @@ const NOT_IN_LIST_OPTION: LocationOption = {
   name: "NO ENCUENTRO MI BARRIO O UNIDAD RESIDENCIAL",
   price: 0,
   type: "otro"
+}
+
+// Celular colombiano: solo dígitos; se quita el prefijo +57 si lo pegan completo; máximo 10 dígitos
+const normalizePhone = (value: string) => {
+  let digits = value.replace(/\D/g, "")
+  if (digits.length > 10 && digits.startsWith("57")) digits = digits.slice(2)
+  return digits.slice(0, 10)
+}
+
+const getPhoneError = (phone: string) => {
+  if (!phone) return undefined
+  if (phone[0] !== "3") return "Los celulares en Colombia empiezan por 3."
+  if (phone.length < 10) return `Faltan ${10 - phone.length} dígitos (son 10 en total).`
+  return undefined
 }
 
 // Función para normalizar el texto para búsqueda
@@ -251,17 +263,18 @@ const searchLocations = (term: string, locations: LocationOption[]) => {
 }
 
 export function DeliveryInfoComponent({ onBack, onContinue }: DeliveryInfoProps) {
-  const [deliveryType, setDeliveryType] = useState<"delivery" | "pickup" | "">("")
-  const [name, setName] = useState("")
-  const [phone, setPhone] = useState("")
-  const [address, setAddress] = useState("")
-  const [observations, setObservations] = useState("")
-  const [location, setLocation] = useState<"anturios" | "sachamate" | undefined>(undefined)
-  const [neighborhood, setNeighborhood] = useState("")
-  const [customNeighborhood, setCustomNeighborhood] = useState("")
-  const [searchTerm, setSearchTerm] = useState("")
-  const [locationType, setLocationType] = useState<"barrio" | "unidad" | "">("")
-  const [isSearchActive, setIsSearchActive] = useState(false)
+  const toast = useToast()
+  const [deliveryType, setDeliveryType] = useDraft<"delivery" | "pickup" | "">("delivery.deliveryType", "")
+  const [name, setName] = useDraft("delivery.name", "")
+  const [phone, setPhone] = useDraft("delivery.phone", "")
+  const [address, setAddress] = useDraft("delivery.address", "")
+  const [observations, setObservations] = useDraft("delivery.observations", "")
+  const [location, setLocation] = useDraft<"anturios" | "sachamate" | undefined>("delivery.location", undefined)
+  const [neighborhood, setNeighborhood] = useDraft("delivery.neighborhood", "")
+  const [customNeighborhood, setCustomNeighborhood] = useDraft("delivery.customNeighborhood", "")
+  const [searchTerm, setSearchTerm] = useDraft("delivery.searchTerm", "")
+  const [locationType, setLocationType] = useDraft<"barrio" | "unidad" | "">("delivery.locationType", "")
+  const [isSearchActive, setIsSearchActive] = useDraft("delivery.isSearchActive", false)
 
   const locations = [
     {
@@ -293,13 +306,20 @@ const allOptions = [
   NOT_IN_LIST_OPTION  // Ahora aparece al final
 ]
   const handleContinue = () => {
-    if (!deliveryType || !name || !phone) return
+    if (!deliveryType) return toast("Elige si es a domicilio o para recoger en tienda.")
+    if (!name.trim()) return toast("Escribe tu nombre completo.")
+    if (!phone.trim()) return toast("Escribe tu número de celular.")
+    if (getPhoneError(phone)) return toast(`Revisa tu celular: ${getPhoneError(phone)}`, "error")
 
     if (deliveryType === "delivery") {
-      if (!address || !neighborhood) return
-      if (neighborhood === NOT_IN_LIST_OPTION.name && !customNeighborhood.trim()) return
+      if (!address.trim()) return toast("Escribe tu dirección completa.")
+      if (!locationType) return toast("Indica si estás en un barrio o en una unidad residencial.")
+      if (!neighborhood) return toast(`Busca y elige tu ${locationType === "barrio" ? "barrio" : "unidad residencial"}.`)
+      if (neighborhood === NOT_IN_LIST_OPTION.name && !customNeighborhood.trim()) {
+        return toast(`Escribe el nombre de tu ${locationType === "barrio" ? "barrio" : "unidad residencial"}.`)
+      }
     } else {
-      if (!location) return
+      if (!location) return toast("Elige la sede donde vas a recoger tu pedido.")
     }
 
     const selectedOption = [...neighborhoods, ...residentialUnits].find((n) => n.name === neighborhood)
@@ -319,289 +339,211 @@ const allOptions = [
     onContinue(info)
   }
 
-  const canContinue = deliveryType && name && phone && 
+  const canContinue = deliveryType && name && phone && !getPhoneError(phone) && 
     (deliveryType === "pickup" 
       ? location 
       : address && neighborhood && (neighborhood !== NOT_IN_LIST_OPTION.name || customNeighborhood.trim())
     )
 
+  const kindLabel = locationType === "barrio" ? "Barrio" : "Unidad Residencial"
+
+  const resetLocation = (type: "barrio" | "unidad") => {
+    setLocationType(type)
+    setNeighborhood("")
+    setCustomNeighborhood("")
+    setSearchTerm("")
+    setIsSearchActive(false)
+  }
+
+  const reopenSearch = () => {
+    setIsSearchActive(true)
+    setSearchTerm("")
+  }
+
+  const smallIconBtn =
+    "flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full ring-1 ring-jussi-brown/15 bg-white transition-colors hover:bg-jussi-orange"
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
-      {/* Header */}
-      <div className="sticky top-0 bg-white/90 backdrop-blur-sm border-b border-green-200 p-4 z-10">
-        <div className="flex items-center justify-between max-w-md mx-auto">
-          <Button variant="ghost" onClick={onBack} className="text-brown-700 hover:bg-green-100">
-            <ArrowLeft className="w-5 h-5 mr-2" />
-          </Button>
-          <h1 className="text-xl font-bold text-brown-900">Información de Entrega</h1>
-          <div className="w-16"></div>
-        </div>
-      </div>
+    <PedidoPage>
+      <PedidoHeader title="Datos de entrega" onBack={onBack} step={3} />
 
-      <div className="max-w-md mx-auto p-4 pb-24">
-        <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-brown-900 mb-2">¿Es para domicilio o para recoger?</h2>
-        </div>
+      <main className="mx-auto max-w-md px-4 pb-40 pt-6 md:max-w-2xl">
+        <h2 className="mb-6 font-display text-3xl font-extrabold leading-tight">
+          ¿Domicilio o <span className="text-jussi-red">para recoger</span>?
+        </h2>
 
-        {/* Delivery Type Selection */}
-        <Card className="mb-6 border-2 border-green-200">
-          <CardContent className="p-6 space-y-4">
-            <div className="flex items-center space-x-3">
-              <input
-                type="radio"
-                id="delivery"
-                name="deliveryType"
-                value="delivery"
-                checked={deliveryType === "delivery"}
-                onChange={(e) => {
-                  setDeliveryType(e.target.value as "delivery")
+        <div className="mb-6 grid grid-cols-2 gap-4" role="radiogroup" aria-label="Tipo de entrega">
+          {[
+            { id: "delivery" as const, emoji: "🏠", label: "Domicilio" },
+            { id: "pickup" as const, emoji: "📍", label: "Recoger en tienda" },
+          ].map((opt) => (
+            <button
+              key={opt.id}
+              type="button"
+              role="radio"
+              aria-checked={deliveryType === opt.id}
+              onClick={() => {
+                setDeliveryType(opt.id)
+                if (opt.id === "delivery") {
                   setLocation(undefined)
-                }}
-                className="w-4 h-4 text-green-600"
-              />
-              <Label htmlFor="delivery" className="cursor-pointer text-lg font-medium text-brown-900">
-                🏠 Domicilio
-              </Label>
-            </div>
-            <div className="flex items-center space-x-3">
-              <input
-                type="radio"
-                id="pickup"
-                name="deliveryType"
-                value="pickup"
-                checked={deliveryType === "pickup"}
-                onChange={(e) => {
-                  setDeliveryType(e.target.value as "pickup")
+                } else {
                   setAddress("")
                   setObservations("")
                   setNeighborhood("")
                   setCustomNeighborhood("")
-                }}
-                className="w-4 h-4 text-green-600"
-              />
-              <Label htmlFor="pickup" className="cursor-pointer text-lg font-medium text-brown-900">
-                📍 Recoger en tienda
-              </Label>
-            </div>
-          </CardContent>
-        </Card>
+                }
+              }}
+              className={`card-soft flex flex-col items-center gap-2 p-5 text-center font-display text-lg font-extrabold transition-all duration-150 ${
+                deliveryType === opt.id ? "bg-jussi-brown text-jussi-beige" : "bg-white hover:-translate-y-0.5"
+              }`}
+            >
+              <span className="text-4xl">{opt.emoji}</span>
+              {opt.label}
+            </button>
+          ))}
+        </div>
 
-        {/* Contact Information */}
-        <Card className="mb-6 border-2 border-green-200">
-          <CardHeader>
-            <CardTitle className="text-brown-900">Datos de contacto</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <Label htmlFor="name" className="text-brown-900">
-                Nombre completo *
-              </Label>
-              <Input
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Tu nombre completo"
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="phone" className="text-brown-900">
-                Número de celular *
-              </Label>
-              <Input
-                id="phone"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="3001234567"
-                className="mt-1"
-              />
-            </div>
-          </CardContent>
-        </Card>
+        <Section title="Datos de contacto">
+          <div className="space-y-4">
+            <Field id="name" label="Nombre completo *" value={name} onChange={setName} />
+            <Field
+              id="phone"
+              label="Número de celular *"
+              type="tel"
+              inputMode="numeric"
+              maxLength={14}
+              value={phone}
+              onChange={(v) => setPhone(normalizePhone(v))}
+              error={getPhoneError(phone)}
+              hint="Ej: 3001234567 (10 dígitos)"
+            />
+          </div>
+        </Section>
 
-        {/* Delivery Form */}
         {deliveryType === "delivery" && (
-          <Card className="mb-6 border-2 border-green-200">
-            <CardHeader>
-              <CardTitle className="text-brown-900">Datos de entrega</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+          <Section title="Datos de entrega">
+            <div className="space-y-5">
+              <Field id="address" label="Dirección completa *" value={address} onChange={setAddress} hint="Calle, carrera, casa / torre, apto" />
+
               <div>
-                <Label htmlFor="address" className="text-brown-900">
-                  Dirección completa *
-                </Label>
-                <Input
-                  id="address"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder="Calle, carrera, casa / torre, apto"
-                  className="mt-1"
-                />
-              </div>
-              
-              <div>
-                <Label className="text-brown-900 block mb-2">
-                  ¿Dónde te encuentras? *
-                </Label>
-                <div className="flex space-x-4 mb-4">
-                  <Button
-                    variant={locationType === "barrio" ? "default" : "outline"}
-                    onClick={() => {
-                      setLocationType("barrio")
-                      setNeighborhood("")
-                      setCustomNeighborhood("")
-                      setSearchTerm("")
-                      setIsSearchActive(false)
-                    }}
-                    className="flex-1"
-                  >
-                    Barrio
-                  </Button>
-                  <Button
-                    variant={locationType === "unidad" ? "default" : "outline"}
-                    onClick={() => {
-                      setLocationType("unidad")
-                      setNeighborhood("")
-                      setCustomNeighborhood("")
-                      setSearchTerm("")
-                      setIsSearchActive(false)
-                    }}
-                    className="flex-1"
-                  >
-                    Unidad Residencial
-                  </Button>
+                <p className="mb-2 text-base font-bold">¿Dónde te encuentras? *</p>
+                <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label="Tipo de ubicación">
+                  {(
+                    [
+                      { id: "barrio", label: "Barrio" },
+                      { id: "unidad", label: "Unidad Residencial" },
+                    ] as const
+                  ).map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      role="radio"
+                      aria-checked={locationType === opt.id}
+                      onClick={() => resetLocation(opt.id)}
+                      className={`rounded-2xl ring-1 ring-jussi-brown/15 px-2 py-3 font-display font-bold transition-all ${
+                        locationType === opt.id ? "bg-jussi-brown text-jussi-beige shadow-pop-sm" : "bg-jussi-beige/40 hover:-translate-y-0.5"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
                 </div>
               </div>
 
               {locationType && (
                 <div>
-                  <Label htmlFor="neighborhood" className="text-brown-900">
-                    {locationType === "barrio" ? "Barrio *" : "Unidad Residencial *"}
-                  </Label>
-                  
-                  {/* Mostrar selección actual o botón de búsqueda */}
-                  {!isSearchActive && neighborhood && neighborhood !== NOT_IN_LIST_OPTION.name ? (
-                    <div className="mt-1 p-3 bg-green-100 border border-green-300 rounded-md flex items-center justify-between">
+                                    {!isSearchActive && neighborhood && neighborhood !== NOT_IN_LIST_OPTION.name ? (
+                    <div className="flex items-center justify-between gap-3 rounded-2xl ring-2 ring-jussi-brown bg-jussi-beige p-4">
                       <div>
-                        <p className="text-sm text-green-800 font-medium">
-                          ✅ {locationType === "barrio" ? "Barrio" : "Unidad Residencial"}: <strong>{neighborhood}</strong>
-                        </p>
-                        <p className="text-sm text-green-700">
-                          Costo de domicilio: <strong className="text-green-600">
-                            +${[...neighborhoods, ...residentialUnits].find((n) => n.name === neighborhood)?.price.toLocaleString()}
-                          </strong>
+                        <p className="font-display font-bold">✅ {neighborhood}</p>
+                        <p className="text-base font-medium">
+                          Costo de domicilio: <strong>+${[...neighborhoods, ...residentialUnits].find((n) => n.name === neighborhood)?.price.toLocaleString()}</strong>
                         </p>
                       </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setIsSearchActive(true)
-                          setSearchTerm("")
-                        }}
-                        className="ml-2"
-                      >
-                        <Search className="w-4 h-4" />
-                      </Button>
+                      <button onClick={reopenSearch} aria-label="Cambiar" className={smallIconBtn}>
+                        <Search className="h-4 w-4" />
+                      </button>
                     </div>
                   ) : !isSearchActive && neighborhood === NOT_IN_LIST_OPTION.name && customNeighborhood ? (
-                    <div className="mt-1 p-3 bg-orange-100 border border-orange-300 rounded-md flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-3 rounded-2xl ring-1 ring-jussi-brown/15 bg-jussi-orange p-4">
                       <div>
-                        <p className="text-sm text-orange-800 font-medium">
-                          ⏳ {locationType === "barrio" ? "Barrio" : "Unidad Residencial"}: <strong>{customNeighborhood}</strong>
-                        </p>
-                        <p className="text-sm text-orange-700">
+                        <p className="font-display font-bold">⏳ {customNeighborhood}</p>
+                        <p className="text-base font-medium">
                           El costo de domicilio será confirmado por WhatsApp (entre $4,000 - $12,000)
                         </p>
                       </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setIsSearchActive(true)
-                          setSearchTerm("")
-                        }}
-                        className="ml-2"
-                      >
-                        <Search className="w-4 h-4" />
-                      </Button>
+                      <button onClick={reopenSearch} aria-label="Cambiar" className={smallIconBtn}>
+                        <Search className="h-4 w-4" />
+                      </button>
                     </div>
                   ) : (
                     <>
-                      <div className="flex mt-1">
-                        <Input
-                          id="neighborhoodSearch"
-                          value={searchTerm}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                          placeholder={`Busca tu ${locationType === "barrio" ? "barrio" : "unidad residencial"} aquí`}
-                          className="flex-1"
-                        />
+                      <div className="flex gap-2">
+                        <div className="flex-1">
+                          <Field
+                            id="neighborhoodSearch"
+                            label={`Busca tu ${locationType === "barrio" ? "barrio" : "unidad residencial"} *`}
+                            value={searchTerm}
+                            onChange={setSearchTerm}
+                          />
+                        </div>
                         {(isSearchActive || neighborhood) && (
-                          <Button
-                            variant="outline"
-                            size="sm"
+                          <button
                             onClick={() => {
                               setIsSearchActive(false)
                               setSearchTerm("")
                             }}
-                            className="ml-2"
+                            aria-label="Cancelar búsqueda"
+                            className={smallIconBtn + " !h-16 !w-16"}
                           >
-                            <X className="w-4 h-4" />
-                          </Button>
+                            <X className="h-4 w-4" />
+                          </button>
                         )}
                       </div>
-                      
+
                       {searchTerm.trim() && (
-                        <div className="max-h-60 overflow-y-auto border rounded-md mt-2">
+                        <div className="mt-3 max-h-64 space-y-2 overflow-y-auto rounded-2xl ring-1 ring-jussi-brown/15 bg-white p-2">
                           {allOptions.length === 0 ? (
-                            <div className="p-3 text-center text-gray-500">
+                            <div className="p-3 text-center opacity-80">
                               No encontramos resultados para "{searchTerm}"
-                              <div className="text-sm mt-1">
-                                Prueba con palabras más generales o revisa la ortografía
-                              </div>
+                              <div className="mt-1 text-base">Prueba con palabras más generales o revisa la ortografía</div>
                             </div>
                           ) : (
                             allOptions.map((option, index) => {
                               if (locationType === "barrio" && option.type !== "barrio" && option.type !== "otro") return null
                               if (locationType === "unidad" && option.type !== "unidad" && option.type !== "otro") return null
-                              
+
+                              const isOther = option.name === NOT_IN_LIST_OPTION.name
+                              const selected = neighborhood === option.name
+
                               return (
-                                <div 
-                                  key={`${option.name}-${index}`} 
-                                  className={`flex items-center space-x-3 p-2 hover:bg-green-50 ${
-                                    option.name === NOT_IN_LIST_OPTION.name ? 'bg-orange-50 border-b border-orange-200' : ''
+                                <button
+                                  type="button"
+                                  key={`${option.name}-${index}`}
+                                  role="radio"
+                                  aria-checked={selected}
+                                  onClick={() => {
+                                    setNeighborhood(option.name)
+                                    if (!isOther) {
+                                      setCustomNeighborhood("")
+                                      setIsSearchActive(false)
+                                    }
+                                  }}
+                                  className={`flex w-full items-center justify-between gap-2 rounded-xl px-3 py-3 text-left text-base transition-colors ${
+                                    isOther
+                                      ? "bg-jussi-orange/40 font-bold"
+                                      : selected
+                                        ? "bg-jussi-brown text-jussi-beige"
+                                        : "hover:bg-jussi-beige"
                                   }`}
                                 >
-                                  <input
-                                    type="radio"
-                                    id={`${option.name}-${index}`}
-                                    name="neighborhood"
-                                    value={option.name}
-                                    checked={neighborhood === option.name}
-                                    onChange={(e) => {
-                                      setNeighborhood(e.target.value)
-                                      if (e.target.value !== NOT_IN_LIST_OPTION.name) {
-                                        setCustomNeighborhood("")
-                                        setIsSearchActive(false)
-                                      }
-                                    }}
-                                    className="w-4 h-4 text-green-600"
-                                  />
-                                  <Label htmlFor={`${option.name}-${index}`} className="cursor-pointer flex-1">
-                                    <span className={`text-sm ${
-                                      option.name === NOT_IN_LIST_OPTION.name 
-                                        ? 'text-orange-800 font-medium' 
-                                        : 'text-brown-900'
-                                    }`}>
-                                      {option.name}
+                                  <span className="font-semibold">{option.name}</span>
+                                  {!isOther && (
+                                    <span className="flex-shrink-0 text-sm opacity-80">
+                                      {option.type === "unidad" ? "Unidad" : "Barrio"}
                                     </span>
-                                    {option.name !== NOT_IN_LIST_OPTION.name && (
-                                      <span className="text-xs text-gray-500 ml-2">
-                                        {option.type === "unidad" ? "Unidad Residencial" : "Barrio"}
-                                      </span>
-                                    )}
-                                  </Label>
-                                </div>
+                                  )}
+                                </button>
                               )
                             })
                           )}
@@ -610,122 +552,77 @@ const allOptions = [
                     </>
                   )}
 
-                  {/* Input para barrio/unidad personalizada */}
                   {neighborhood === NOT_IN_LIST_OPTION.name && isSearchActive && (
-                    <div className="mt-3">
-                      <Label htmlFor="customNeighborhood" className="text-brown-900">
-                        {locationType === "barrio" 
-                          ? "Escribe el nombre de tu barrio *" 
-                          : "Escribe el nombre de tu unidad residencial *"}
-                      </Label>
-                      <Input
+                    <div className="mt-4">
+                      <Field
                         id="customNeighborhood"
+                        label={locationType === "barrio" ? "Nombre de tu barrio *" : "Nombre de tu unidad residencial *"}
                         value={customNeighborhood}
-                        onChange={(e) => setCustomNeighborhood(e.target.value)}
-                        placeholder={locationType === "barrio" 
-                          ? "Nombre de tu barrio" 
-                          : "Nombre de tu unidad residencial"}
-                        className="mt-1"
+                        onChange={setCustomNeighborhood}
                       />
-                      <Button
+                      <button
                         onClick={() => {
                           if (customNeighborhood.trim()) {
                             setIsSearchActive(false)
+                          } else {
+                            toast(locationType === "barrio" ? "Escribe el nombre de tu barrio." : "Escribe el nombre de tu unidad residencial.")
                           }
                         }}
-                        disabled={!customNeighborhood.trim()}
-                        className="mt-2 w-full"
-                        size="sm"
+                        aria-disabled={!customNeighborhood.trim()}
+                        className={`btn-pop btn-pop-dark mt-3 w-full ${customNeighborhood.trim() ? "" : "opacity-60"}`}
                       >
                         Confirmar ubicación
-                      </Button>
+                      </button>
                     </div>
                   )}
                 </div>
               )}
-              
-              <div>
-                <Label htmlFor="observations" className="text-brown-900">
-                  Observaciones
-                </Label>
-                <Textarea
-                  id="observations"
-                  value={observations}
-                  onChange={(e) => setObservations(e.target.value)}
-                  placeholder="Referencias adicionales"
-                  className="mt-1"
-                  rows={3}
-                />
-              </div>
-            </CardContent>
-          </Card>
+
+              <Field id="observations" label="Observaciones (referencias adicionales)" multiline value={observations} onChange={setObservations} />
+            </div>
+          </Section>
         )}
 
-        {/* Pickup Location Selection */}
         {deliveryType === "pickup" && (
-          <Card className="mb-6 border-2 border-green-200">
-            <CardHeader>
-              <CardTitle className="text-brown-900">¿En cuál sede deseas recoger tu pedido?</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+          <Section title="¿En cuál sede recoges tu pedido?">
+            <div className="space-y-4" role="radiogroup" aria-label="Sede">
               {locations.map((loc) => (
-                <div
-                  key={loc.id}
-                  className="border-2 rounded-lg p-4 hover:bg-green-50 transition-colors border-green-200"
-                >
-                  <div className="flex items-start space-x-3">
-                    <input
-                      type="radio"
-                      id={loc.id}
-                      name="location"
-                      value={loc.id}
-                      checked={location === loc.id}
-                      onChange={(e) => setLocation(e.target.value as "anturios" | "sachamate")}
-                      className="w-4 h-4 text-green-600 mt-1"
-                    />
-                    <div className="flex-1">
-                      <Label htmlFor={loc.id} className="cursor-pointer">
-                        <div className="font-bold text-brown-900 text-lg mb-1">{loc.name}</div>
-                        <div className="text-brown-600 text-sm">{loc.address}</div>
-                      </Label>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => window.open(loc.mapUrl, "_blank")}
-                        className="mt-3 text-green-600 border-green-300 hover:bg-green-50"
-                      >
-                        <MapPin className="w-4 h-4 mr-1" />
-                        Ver ubicación en mapa
-                      </Button>
-                    </div>
-                  </div>
+                <div key={loc.id}>
+                  <OptionCard
+                    selected={location === loc.id}
+                    onSelect={() => setLocation(loc.id)}
+                    title={loc.name}
+                    description={loc.address}
+                  />
+                  <button
+                    onClick={() => window.open(loc.mapUrl, "_blank")}
+                    className="btn-pop btn-pop-beige btn-pop-sm mt-2"
+                  >
+                    <MapPin className="h-4 w-4" />
+                    Ver en el mapa
+                  </button>
                 </div>
               ))}
-              {deliveryType === "pickup" && (
-                <div className="mt-4 p-3 bg-blue-100 border border-blue-300 rounded-md">
-                  <p className="text-sm text-blue-800 font-medium">
-                    📞 Te contactaremos cuando tu pedido esté listo para recoger
-                  </p>
-                  <p className="text-sm text-blue-700 mt-1">Tiempo estimado de preparación: 20-30 minutos</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        )}
-      </div>
 
-      {/* Fixed Continue Button */}
-      <div className="fixed bottom-4 left-4 right-4 z-20">
-        <div className="max-w-md mx-auto">
-          <Button
-            onClick={handleContinue}
-            disabled={!canContinue}
-            className="w-full h-14 text-lg font-semibold bg-red-500 hover:bg-red-600 disabled:bg-gray-400 text-white rounded-xl shadow-lg"
-          >
-            Continuar al pago
-          </Button>
-        </div>
-      </div>
-    </div>
+              <div className="rounded-2xl border-2 border-dashed border-jussi-brown/40 bg-jussi-orange/30 p-4">
+                <p className="font-display font-bold">📞 Te contactaremos cuando esté listo</p>
+                <p className="mt-1 text-base">Tiempo estimado de preparación: 20-30 minutos</p>
+              </div>
+            </div>
+          </Section>
+        )}
+      </main>
+
+      <PedidoActionBar>
+        <button
+          onClick={handleContinue}
+          aria-disabled={!canContinue}
+          className={`btn-pop btn-pop-red btn-pop-lg w-full ${canContinue ? "" : "opacity-60"}`}
+        >
+          Continuar al pago
+          <ArrowRight className="h-5 w-5" />
+        </button>
+      </PedidoActionBar>
+    </PedidoPage>
   )
 }

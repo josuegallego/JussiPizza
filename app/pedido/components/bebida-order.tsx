@@ -1,12 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { ArrowLeft } from "lucide-react"
 import type { OrderItem } from "./order-flow"
+import { PedidoHeader, PedidoPage, Section, Stepper, OptionCard, AddToOrderBar, useDraft, useToast } from "./pedido-ui"
 
 interface BebidaOrderProps {
   onBack: () => void
@@ -14,10 +9,11 @@ interface BebidaOrderProps {
 }
 
 export function BebidaOrder({ onBack, onAddItem }: BebidaOrderProps) {
-  const [quantity, setQuantity] = useState(1)
-  const [type, setType] = useState("")
-  const [base, setBase] = useState("")
-  const [flavor, setFlavor] = useState("")
+  const toast = useToast()
+  const [quantity, setQuantity] = useDraft("bebida.quantity", 1)
+  const [type, setType] = useDraft("bebida.type", "")
+  const [base, setBase] = useDraft("bebida.base", "")
+  const [flavor, setFlavor] = useDraft("bebida.flavor", "")
 
   const types = [
     { name: "Jugo", price: 0 }, // Precio variable según base
@@ -70,8 +66,9 @@ export function BebidaOrder({ onBack, onAddItem }: BebidaOrderProps) {
   }
 
   const handleAddToOrder = () => {
-    if (!type || !flavor) return
-    if (type === "Jugo" && !base) return
+    if (!type) return toast("Elige qué quieres tomar.")
+    if (type === "Jugo" && !base) return toast("Elige si tu jugo va en agua o en leche.")
+    if (!flavor) return toast(type === "Gaseosa" ? "Elige la gaseosa." : type === "Limonada" ? "Elige el tipo de limonada." : "Elige el sabor.")
 
     let itemName = ""
 
@@ -100,232 +97,105 @@ export function BebidaOrder({ onBack, onAddItem }: BebidaOrderProps) {
 
   const canAddToOrder = type && flavor && (type !== "Jugo" || base)
 
+  const flavorTitle: Record<string, string> = {
+    Jugo: "Elige el sabor",
+    "Frappé": "Elige el sabor de frappé",
+    Limonada: "Elige el tipo de limonada",
+    Gaseosa: "Elige la gaseosa",
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
-      {/* Header */}
-      <div className="sticky top-0 bg-white/90 backdrop-blur-sm border-b border-green-200 p-4 z-10">
-        <div className="flex items-center justify-between max-w-md mx-auto">
-          <Button variant="ghost" onClick={onBack} className="text-brown-700 hover:bg-green-100">
-            <ArrowLeft className="w-5 h-5 mr-2" />
-            
-          </Button>
-          <h1 className="text-xl font-bold text-brown-900">🥤 Bebida</h1>
-          <div className="w-16"></div>
-        </div>
-      </div>
+    <PedidoPage>
+      <PedidoHeader title="🥤 Bebida" onBack={onBack} step={1} />
 
-      <div className="max-w-md mx-auto p-4 pb-24">
-        {/* Quantity */}
-        <Card className="mb-6 border-2 border-green-200">
-          <CardHeader>
-            <CardTitle className="text-brown-900">Cantidad</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center space-x-4">
-              <Button
-                variant="outline"
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="w-10 h-10 rounded-full"
-              >
-                -
-              </Button>
-              <Input
-                type="number"
-                value={quantity}
-                onChange={(e) => setQuantity(Math.max(1, Number.parseInt(e.target.value) || 1))}
-                className="w-20 text-center"
-                min="1"
-              />
-              <Button variant="outline" onClick={() => setQuantity(quantity + 1)} className="w-10 h-10 rounded-full">
-                +
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+      <main className="mx-auto max-w-md px-4 pb-40 pt-6 md:max-w-2xl">
+        <Section title="Cantidad">
+          <Stepper value={quantity} onChange={setQuantity} />
+        </Section>
 
-        {/* Type Selection */}
-        <Card className="mb-6 border-2 border-green-200">
-          <CardHeader>
-            <CardTitle className="text-brown-900">Elegir tipo</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
+        <Section title="¿Qué quieres tomar?">
+          <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label="Tipo de bebida">
             {types.map((typeOption) => (
-              <div key={typeOption.name} className="flex items-center space-x-3">
-                <input
-                  type="radio"
-                  id={typeOption.name}
-                  name="type"
-                  value={typeOption.name}
-                  checked={type === typeOption.name}
-                  onChange={(e) => {
-                    setType(e.target.value)
-                    setBase("")
-                    setFlavor("")
-                  }}
-                  className="w-4 h-4 text-green-600"
-                />
-                <Label htmlFor={typeOption.name} className="flex-1 cursor-pointer">
-                  <div className="flex justify-between items-center">
-                    <div className="font-medium text-brown-900">{typeOption.name}</div>
-                    {typeOption.price > 0 && (
-                      <div className="text-lg font-bold text-green-600"></div>
-                    )}
-                  </div>
-                </Label>
-              </div>
+              <button
+                key={typeOption.name}
+                type="button"
+                role="radio"
+                aria-checked={type === typeOption.name}
+                onClick={() => {
+                  setType(typeOption.name)
+                  setBase("")
+                  setFlavor("")
+                }}
+                className={`rounded-2xl ring-1 ring-jussi-brown/15 py-4 font-display text-lg font-extrabold transition-all ${
+                  type === typeOption.name ? "bg-jussi-brown text-jussi-beige shadow-pop-sm" : "bg-jussi-beige/40 hover:-translate-y-0.5 hover:bg-jussi-beige"
+                }`}
+              >
+                {typeOption.name}
+              </button>
             ))}
-          </CardContent>
-        </Card>
+          </div>
+        </Section>
 
-        {/* Base Selection for Juices */}
         {type === "Jugo" && (
-          <Card className="mb-6 border-2 border-green-200">
-            <CardHeader>
-              <CardTitle className="text-brown-900">¿En agua o en leche?</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
+          <Section title="¿En agua o en leche?">
+            <div className="space-y-3" role="radiogroup" aria-label="Base">
               {juiceBases.map((baseOption) => (
-                <div key={baseOption.name} className="flex items-center space-x-3">
-                  <input
-                    type="radio"
-                    id={baseOption.name}
-                    name="base"
-                    value={baseOption.name}
-                    checked={base === baseOption.name}
-                    onChange={(e) => setBase(e.target.value)}
-                    className="w-4 h-4 text-green-600"
-                  />
-                  <Label htmlFor={baseOption.name} className="flex-1 cursor-pointer">
-                    <div className="flex justify-between items-center">
-                      <div className="font-medium text-brown-900">{baseOption.name}</div>
-                      <div className="text-lg font-bold text-green-600">${baseOption.price.toLocaleString()}</div>
-                    </div>
-                  </Label>
-                </div>
+                <OptionCard
+                  key={baseOption.name}
+                  selected={base === baseOption.name}
+                  onSelect={() => setBase(baseOption.name)}
+                  title={baseOption.name}
+                  price={baseOption.price}
+                />
               ))}
-            </CardContent>
-        </Card>
+            </div>
+          </Section>
         )}
 
-        {/* Flavor/Option Selection */}
         {type && (
-          <Card className="mb-6 border-2 border-green-200">
-            <CardHeader>
-              <CardTitle className="text-brown-900">
-                {type === "Jugo" && "Elegir sabor"}
-                {type === "Frappé" && "Elegir sabor de frappé"}
-                {type === "Limonada" && "Elegir tipo de limonada"}
-                {type === "Gaseosa" && "Elegir gaseosa"}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {/* Juice Flavors */}
+          <Section title={flavorTitle[type]}>
+            <div className="space-y-3" role="radiogroup" aria-label="Opciones">
               {type === "Jugo" &&
-                juiceFlavors.map((flavorOption) => (
-                  <div key={flavorOption} className="flex items-center space-x-3">
-                    <input
-                      type="radio"
-                      id={flavorOption}
-                      name="flavor"
-                      value={flavorOption}
-                      checked={flavor === flavorOption}
-                      onChange={(e) => setFlavor(e.target.value)}
-                      className="w-4 h-4 text-green-600"
-                    />
-                    <Label htmlFor={flavorOption} className="cursor-pointer text-brown-900">
-                      {flavorOption}
-                    </Label>
-                  </div>
+                juiceFlavors.map((option) => (
+                  <OptionCard key={option} selected={flavor === option} onSelect={() => setFlavor(option)} title={option} />
                 ))}
 
-              {/* Frappé Flavors */}
               {type === "Frappé" &&
-                frappeFlavors.map((flavorOption) => (
-                  <div key={flavorOption} className="flex items-center space-x-3">
-                    <input
-                      type="radio"
-                      id={`frappe-${flavorOption}`}
-                      name="flavor"
-                      value={flavorOption}
-                      checked={flavor === flavorOption}
-                      onChange={(e) => setFlavor(e.target.value)}
-                      className="w-4 h-4 text-green-600"
-                    />
-                    <Label htmlFor={`frappe-${flavorOption}`} className="cursor-pointer text-brown-900">
-                      {flavorOption}
-                    </Label>
-                  </div>
+                frappeFlavors.map((option) => (
+                  <OptionCard key={option} selected={flavor === option} onSelect={() => setFlavor(option)} title={option} />
                 ))}
 
-              {/* Limonada Options */}
               {type === "Limonada" &&
-                limonadaFlavors.map((limonadaOption) => (
-                  <div key={limonadaOption.name} className="flex items-center space-x-3">
-                    <input
-                      type="radio"
-                      id={limonadaOption.name}
-                      name="flavor"
-                      value={limonadaOption.name}
-                      checked={flavor === limonadaOption.name}
-                      onChange={(e) => setFlavor(e.target.value)}
-                      className="w-4 h-4 text-green-600"
-                    />
-                    <Label htmlFor={limonadaOption.name} className="flex-1 cursor-pointer">
-                      <div className="flex justify-between items-center">
-                        <div className="font-medium text-brown-900">{limonadaOption.name}</div>
-                        <div className="text-lg font-bold text-green-600">${limonadaOption.price.toLocaleString()}</div>
-                      </div>
-                    </Label>
-                  </div>
+                limonadaFlavors.map((option) => (
+                  <OptionCard
+                    key={option.name}
+                    selected={flavor === option.name}
+                    onSelect={() => setFlavor(option.name)}
+                    title={option.name}
+                    price={option.price}
+                  />
                 ))}
 
-              {/* Gaseosa Options */}
               {type === "Gaseosa" &&
-                gaseosaOptions.map((gaseosaOption) => {
-                  const optionId = `${gaseosaOption.brand} ${gaseosaOption.size}`
+                gaseosaOptions.map((option) => {
+                  const optionId = `${option.brand} ${option.size}`
                   return (
-                    <div key={optionId} className="flex items-center space-x-3">
-                      <input
-                        type="radio"
-                        id={optionId}
-                        name="flavor"
-                        value={optionId}
-                        checked={flavor === optionId}
-                        onChange={(e) => setFlavor(e.target.value)}
-                        className="w-4 h-4 text-green-600"
-                      />
-                      <Label htmlFor={optionId} className="flex-1 cursor-pointer">
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <div className="font-medium text-brown-900">{gaseosaOption.brand}</div>
-                            <div className="text-sm text-brown-600">{gaseosaOption.size}</div>
-                          </div>
-                          <div className="text-lg font-bold text-green-600">
-                            ${gaseosaOption.price.toLocaleString()}
-                          </div>
-                        </div>
-                      </Label>
-                    </div>
+                    <OptionCard
+                      key={optionId}
+                      selected={flavor === optionId}
+                      onSelect={() => setFlavor(optionId)}
+                      title={option.brand}
+                      description={option.size}
+                      price={option.price}
+                    />
                   )
                 })}
-            </CardContent>
-          </Card>
+            </div>
+          </Section>
         )}
-      </div>
+      </main>
 
-      {/* Fixed Add Button */}
-      <div className="fixed bottom-4 left-4 right-4 z-20">
-        <div className="max-w-md mx-auto">
-          <Button
-            onClick={handleAddToOrder}
-            disabled={!canAddToOrder}
-            className="w-full h-14 text-lg font-semibold bg-red-500 hover:bg-red-600 disabled:bg-gray-400 text-white rounded-xl shadow-lg"
-          >
-            Añadir al pedido
-            {canAddToOrder && <span className="ml-2">- ${(getPrice() * quantity).toLocaleString()}</span>}
-          </Button>
-        </div>
-      </div>
-    </div>
+      <AddToOrderBar onClick={handleAddToOrder} disabled={!canAddToOrder} total={getPrice() * quantity} />
+    </PedidoPage>
   )
 }

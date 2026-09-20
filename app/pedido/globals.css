@@ -87,10 +87,6 @@
   background: #16a34a;
 }
 
-/* Smooth transitions */
-* {
-  transition: all 0.2s ease-in-out;
-}
 
 /* Focus styles for accessibility */
 button:focus-visible,

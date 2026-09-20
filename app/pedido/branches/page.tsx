@@ -1,9 +1,8 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowLeft, MapPin, Phone, Clock } from "lucide-react"
+import { MapPin, Phone, Clock, MessageCircle, ArrowUpRight, ShoppingCart } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { PedidoHeader, PedidoPage } from "../components/pedido-ui"
 
 export default function BranchesPage() {
   const router = useRouter()
@@ -27,129 +26,112 @@ export default function BranchesPage() {
     },
   ];
 
+  const accents = ["bg-jussi-orange", "bg-jussi-beige"]
+
   return (
-    <div className="min-h-[calc(100dvh)] bg-gradient-to-br from-amber-50 to-orange-50">
-      {/* Header */}
-      <div className="sticky top-0 bg-white/90 backdrop-blur-sm border-b border-green-200 p-4 z-10">
-        <div className="flex items-center justify-between max-w-4xl mx-auto">
-          <Button variant="ghost" onClick={() => router.back()} className="text-brown-700 hover:bg-green-100">
-            <ArrowLeft className="w-5 h-5 mr-2" />
-            Volver
-          </Button>
-          <h1 className="text-xl font-bold text-brown-900">Nuestras Ubicaciones</h1>
-          <div className="w-16"></div>
-        </div>
-      </div>
+    <PedidoPage>
+      <PedidoHeader title="Nuestras ubicaciones" onBack={() => router.back()} wide />
 
-      <div className="max-w-4xl mx-auto p-4 pb-20">
-        <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-brown-900 mb-2">📍 Visítanos</h2>
-          <p className="text-brown-700">Encuentra la sede más cercana a ti</p>
+      <main className="mx-auto max-w-md px-4 pb-16 pt-8 md:max-w-4xl">
+        <div className="mb-8">
+          <h2 className="font-display text-4xl font-extrabold md:text-5xl">
+            Visítanos <span className="text-jussi-red">📍</span>
+          </h2>
+          <p className="mt-2 text-lg opacity-80">Encuentra la sede más cercana a ti.</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid gap-6 md:grid-cols-2">
           {branches.map((branch, index) => (
-            <Card key={index} className="border-2 border-green-200 shadow-lg hover:shadow-xl transition-shadow">
-              <CardHeader className="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-t-lg p-4">
-                <CardTitle className="text-lg flex items-center">
-                  <MapPin className="w-5 h-5 mr-2" />
-                  {branch.name}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                {/* Google Maps Embed */}
-                <div className="w-full h-[200px] md:h-64 bg-gray-200 rounded-none">
-                  <iframe
-                    src={branch.mapEmbed}
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    className="rounded-none"
-                  />
-                </div>
+            <article key={index} className="card-soft overflow-hidden bg-white">
+              <div className={`flex items-center gap-3 border-b border-jussi-brown/15 p-5 ${accents[index % accents.length]}`}>
+                <span className="flex h-11 w-11 items-center justify-center rounded-full ring-1 ring-jussi-brown/15 bg-jussi-beige">
+                  <MapPin className="h-5 w-5" />
+                </span>
+                <h3 className="font-display text-2xl font-extrabold">{branch.name}</h3>
+              </div>
 
-                {/* Branch Info */}
-                <div className="p-4 space-y-3">
-                  <div className="flex items-start space-x-2">
-                    <MapPin className="w-4 h-4 text-green-600 mt-1 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm font-medium text-brown-900">Dirección</p>
-                      <p className="text-sm text-brown-700">{branch.address}</p>
-                    </div>
-                  </div>
+              <div className="h-[220px] border-b border-jussi-brown/15 md:h-64">
+                <iframe
+                  src={branch.mapEmbed}
+                  title={`Mapa ${branch.name}`}
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0, display: "block" }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
 
-                  <div className="flex items-start space-x-2">
-                    <Phone className="w-4 h-4 text-green-600 mt-1 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm font-medium text-brown-900">Teléfono</p>
-                      <a href={`tel:${branch.phone}`} className="text-sm text-green-600 hover:text-green-700">
-                        {branch.phone}
-                      </a>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start space-x-2">
-                    <Clock className="w-4 h-4 text-green-600 mt-1 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm font-medium text-brown-900">Horarios</p>
-                      <p className="text-sm text-brown-700">Miércoles a Lunes</p>
-                      <p className="text-sm text-brown-700">6:00 PM - 10:30 PM</p>
-                    </div>
-                  </div>
-
-                  <div className="pt-2 space-y-2">
-                    <Button
-                      onClick={() => window.open(`https://wa.me/${branch.whatsappNumber}`, "_blank")}
-                      className="w-full bg-green-500 hover:bg-green-600 text-white py-2 text-sm"
-                    >
-                      💬 Contactar por WhatsApp
-                    </Button>
-                    <Button
-                      onClick={() =>
-                        window.open(`https://maps.google.com/?q=${encodeURIComponent(branch.address)}`, "_blank")
-                      }
-                      variant="outline"
-                      className="w-full border-green-500 text-green-600 hover:bg-green-50 py-2 text-sm"
-                    >
-                      🗺️ Abrir en Google Maps
-                    </Button>
+              <div className="space-y-4 p-5">
+                <div className="flex items-start gap-3">
+                  <MapPin className="mt-0.5 h-5 w-5 flex-shrink-0" />
+                  <div>
+                    <p className="text-sm font-bold uppercase tracking-widest opacity-80">Dirección</p>
+                    <p className="font-semibold">{branch.address}</p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+
+                <div className="flex items-start gap-3">
+                  <Phone className="mt-0.5 h-5 w-5 flex-shrink-0" />
+                  <div>
+                    <p className="text-sm font-bold uppercase tracking-widest opacity-80">Teléfono</p>
+                    <a href={`tel:${branch.phone}`} className="font-semibold underline decoration-jussi-orange decoration-2 underline-offset-4">
+                      {branch.phone}
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Clock className="mt-0.5 h-5 w-5 flex-shrink-0" />
+                  <div>
+                    <p className="text-sm font-bold uppercase tracking-widest opacity-80">Horarios</p>
+                    <p className="font-semibold">Miércoles a Lunes</p>
+                    <p className="text-base opacity-80">6:00 PM - 10:30 PM</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-3 pt-2">
+                  <button
+                    onClick={() => window.open(`https://wa.me/${branch.whatsappNumber}`, "_blank")}
+                    className="btn-pop btn-pop-dark w-full"
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                    Contactar por WhatsApp
+                  </button>
+                  <button
+                    onClick={() => window.open(`https://maps.google.com/?q=${encodeURIComponent(branch.address)}`, "_blank")}
+                    className="btn-pop btn-pop-beige w-full"
+                  >
+                    Abrir en Google Maps
+                    <ArrowUpRight className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            </article>
           ))}
         </div>
 
-        {/* General Info */}
-        <Card className="mt-6 border-2 border-orange-200 bg-orange-50">
-          <CardContent className="p-4 text-center">
-            <h3 className="text-lg font-bold text-brown-900 mb-2">🍕 Información General</h3>
-            <div className="grid md:grid-cols-2 gap-3 text-left text-sm">
-              <div>
-                <h4 className="font-semibold text-brown-900 mb-1">🕐 Horarios</h4>
-                <p className="text-brown-700">Miércoles a lunes: 5:30 PM - 10:30 PM</p>
-                <p className="text-brown-700">Martes cerrado!</p>
-              </div>
-              <div>
-                <h4 className="font-semibold text-brown-900 mb-1">🚚 Domicilios</h4>
-                <p className="text-brown-700">Toda Jamundí</p>
-                <p className="text-brown-700">30-45 minutos</p>
-              </div>
+        <section className="card-soft mt-8 bg-jussi-brown p-6 text-jussi-beige">
+          <h3 className="font-display text-2xl font-extrabold">🍕 Información general</h3>
+          <div className="mt-4 grid gap-5 text-base md:grid-cols-2">
+            <div>
+              <h4 className="mb-1 font-display font-bold text-jussi-orange">🕐 Horarios</h4>
+              <p>Miércoles a lunes: 5:30 PM - 10:30 PM</p>
+              <p>Martes cerrado</p>
             </div>
-            <div className="mt-4">
-              <Button
-                onClick={() => router.push("/")}
-                className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 text-sm"
-              >
-                🛒 Hacer Pedido
-              </Button>
+            <div>
+              <h4 className="mb-1 font-display font-bold text-jussi-orange">🚚 Domicilios</h4>
+              <p>Toda Jamundí</p>
+              <p>30-45 minutos</p>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+          </div>
+          <button onClick={() => router.push("/pedido")} className="btn-pop btn-pop-red mt-6 !border-jussi-beige !shadow-[4px_4px_0_0_#F3EDD6]">
+            <ShoppingCart className="h-4 w-4" />
+            Hacer pedido
+          </button>
+        </section>
+      </main>
+    </PedidoPage>
   )
 }

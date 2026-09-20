@@ -1,8 +1,7 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { ArrowLeft, ShoppingCart } from "lucide-react"
+import { ArrowRight, ShoppingCart } from "lucide-react"
+import { PedidoHeader, PedidoPage, PedidoActionBar } from "./pedido-ui"
 
 interface ItemSelectionProps {
   onBack: () => void
@@ -11,68 +10,55 @@ interface ItemSelectionProps {
   onViewSummary: () => void
 }
 
+const items = [
+  { type: "pizza" as const, emoji: "🍕", name: "Pizza", description: "Gran variedad de sabores", bg: "bg-jussi-red text-white" },
+  { type: "lasana" as const, emoji: "🍝", name: "Lasaña", description: "Las mejores lasañas caseras", bg: "bg-jussi-orange" },
+  { type: "desgranado" as const, emoji: "🌽", name: "Desgranado", description: "Como la lasaña, pero con maíz o maduro", bg: "bg-jussi-green" },
+  { type: "bebida" as const, emoji: "🥤", name: "Bebida", description: "Jugos naturales y gaseosas", bg: "bg-white" },
+]
+
 export function ItemSelection({ onBack, onSelectItem, hasItems, onViewSummary }: ItemSelectionProps) {
-  const items = [
-    { type: "pizza" as const, name: "🍕 Pizza", description: "Gran variedad de sabores" },
-    { type: "lasana" as const, name: "🍝 Lasaña", description: "Las mejores lasañas caseras" },
-    { type: "desgranado" as const, name: "🌽 Desgranado", description: "Con maíz o maduro" },
-    { type: "bebida" as const, name: "🥤 Bebida", description: "Jugos naturales y gaseosas" },
-  ]
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
-      {/* Header */}
-      <div className="sticky top-0 bg-white/90 backdrop-blur-sm border-b border-green-200 p-4 z-10">
-        <div className="flex items-center justify-between max-w-md mx-auto">
-          <Button variant="ghost" onClick={onBack} className="text-brown-700 hover:bg-green-100">
-            <ArrowLeft className="w-5 h-5 mr-2" />
-            
-          </Button>
-          <h1 className="text-xl font-bold text-brown-900">Hacer Pedido</h1>
-          <div className="w-16"></div>
-        </div>
-      </div>
+    <PedidoPage>
+      <PedidoHeader title="Hacer pedido" onBack={onBack} step={1} />
 
-      <div className="max-w-md mx-auto p-4 pb-24">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-brown-900 mb-2">¿Qué deseas añadir?</h2>
-          <p className="text-brown-700">Selecciona una categoría para comenzar</p>
+      <main className={`mx-auto max-w-md px-4 pt-8 md:max-w-2xl ${hasItems ? "pb-32" : "pb-10"}`}>
+        <div className="mb-8">
+          <h2 className="font-display text-4xl font-extrabold leading-tight md:text-5xl">
+            ¿Qué se te <span className="text-jussi-red">antoja</span>?
+          </h2>
+          <p className="mt-2 text-lg opacity-80">Elige una categoría para empezar tu pedido.</p>
         </div>
 
-        <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
           {items.map((item) => (
-            <Card
+            <button
               key={item.type}
-              className="border-2 border-green-200 shadow-md hover:shadow-lg transition-all hover:scale-105"
+              onClick={() => onSelectItem(item.type)}
+              className={`card-soft group relative flex aspect-[4/5] flex-col justify-between p-4 text-left transition-transform duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-1 active:translate-y-1 active:shadow-none md:aspect-[4/3] md:p-6 ${item.bg}`}
             >
-              <CardContent className="p-6">
-                <Button
-                  onClick={() => onSelectItem(item.type)}
-                  className="w-full h-16 text-xl font-semibold bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl shadow-md flex flex-col items-center justify-center px-4 py-2"
-                >
-                  <span className="text-lg font-bold leading-tight">{item.name}</span>
-                  <span className="text-xs opacity-90 leading-tight mt-0.5">{item.description}</span>
-                </Button>
-              </CardContent>
-            </Card>
+              <span className="flex h-14 w-14 items-center justify-center rounded-full ring-1 ring-jussi-brown/15 bg-jussi-beige text-3xl md:h-16 md:w-16 md:text-4xl">
+                {item.emoji}
+              </span>
+              <span className="min-w-0">
+                {/* El nombre se reduce en pantallas angostas para que "Desgranado" quepa entero */}
+                <span className="block font-display text-lg font-extrabold min-[380px]:text-xl md:text-3xl">{item.name}</span>
+                <span className="mt-1 block text-base font-medium leading-snug opacity-80">{item.description}</span>
+              </span>
+              <ArrowRight className="absolute right-4 top-4 h-6 w-6 transition-transform group-hover:translate-x-1" />
+            </button>
           ))}
         </div>
-      </div>
+      </main>
 
-      {/* Floating Summary Button */}
       {hasItems && (
-        <div className="fixed bottom-4 left-4 right-4 z-20">
-          <div className="max-w-md mx-auto">
-            <Button
-              onClick={onViewSummary}
-              className="w-full h-14 text-lg font-semibold bg-red-500 hover:bg-red-600 text-white rounded-xl shadow-lg"
-            >
-              <ShoppingCart className="w-5 h-5 mr-2" />
-              Ver resumen del pedido
-            </Button>
-          </div>
-        </div>
+        <PedidoActionBar>
+          <button onClick={onViewSummary} className="btn-pop btn-pop-red btn-pop-lg w-full">
+            <ShoppingCart className="h-5 w-5" />
+            Ver resumen del pedido
+          </button>
+        </PedidoActionBar>
       )}
-    </div>
+    </PedidoPage>
   )
 }

@@ -9,8 +9,7 @@ import { BebidaOrder } from "./bebida-order"
 import { OrderSummary } from "./order-summary"
 import { DeliveryInfoComponent } from "./delivery-info"
 import { Payment } from "./payment"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { useFlowDirection, DraftProvider, useClearDrafts, ToastProvider, useToast } from "./pedido-ui"
 
 interface OrderFlowProps {
   onBack: () => void
@@ -39,7 +38,9 @@ export interface DeliveryInfo {
   deliveryCost?: number
 }
 
-export function OrderFlow({ onBack }: OrderFlowProps) {
+function OrderFlowInner({ onBack }: OrderFlowProps) {
+  const clearDrafts = useClearDrafts()
+  const toast = useToast()
   const [currentStep, setCurrentStep] = useState<
     "selection" | "pizza" | "lasana" | "desgranado" | "bebida" | "summary" | "delivery" | "payment"
   >("selection")
@@ -100,44 +101,55 @@ export function OrderFlow({ onBack }: OrderFlowProps) {
     checkBusinessHours()
   }, [])
 
-  // // Out of Service Modal
+  // Posición de cada paso en el flujo, para saber si se avanza o se retrocede
+  const stepIndex = { selection: 0, pizza: 1, lasana: 1, desgranado: 1, bebida: 1, summary: 2, delivery: 3, payment: 4 }[
+    currentStep
+  ]
+  const direction = useFlowDirection(stepIndex)
+
+  const renderStep = () => {
+  // Fuera de servicio
   if (isOutOfService) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md border-2 border-red-200 shadow-2xl">
-          <CardHeader className="text-center bg-gradient-to-r from-red-500 to-red-600 text-white rounded-t-lg">
-            <CardTitle className="text-2xl">🍕 Jussi Pizza</CardTitle>
-          </CardHeader>
-          <CardContent className="p-8 text-center">
-            <div className="text-6xl mb-4">😴</div>
-            <h2 className="text-2xl font-bold text-red-800 mb-4">Fuera de Servicio</h2>
-            <p className="text-red-700 mb-6 text-lg leading-relaxed">{outOfServiceMessage}</p>
-            <div className="bg-orange-100 border border-orange-300 rounded-lg p-4 mb-6">
-              <h3 className="font-bold text-orange-800 mb-2">📅 Horarios de Atención:</h3>
-              <p className="text-orange-700">
-                <strong>Lunes a Domingo:</strong> 5:30 PM - 9:40 PM
+      <div className="flex min-h-screen items-center justify-center bg-jussi-beige p-4 font-sans text-jussi-brown">
+        <div className="card-soft w-full max-w-md overflow-hidden bg-white">
+          <div className="border-b border-jussi-brown/15 bg-jussi-red p-6 text-center text-white">
+            <p className="font-display text-2xl font-extrabold">🍕 Jussi Pizza</p>
+          </div>
+          <div className="p-6 text-center md:p-8">
+            <div className="mb-3 text-6xl">😴</div>
+            <h2 className="font-display text-3xl font-extrabold">Fuera de servicio</h2>
+            <p className="mt-3 whitespace-pre-line text-lg leading-relaxed opacity-80">{outOfServiceMessage}</p>
+
+            <div className="mt-6 rounded-2xl ring-1 ring-jussi-brown/15 bg-jussi-orange/30 p-4 text-left">
+              <h3 className="mb-1 font-display font-bold">📅 Horarios de atención</h3>
+              <p>
+                <strong>Lunes a domingo:</strong> 5:30 PM – 9:40 PM
                 <br />
-                <strong>Martes:</strong> Cerrado!
+                <strong>Martes:</strong> cerrado
               </p>
             </div>
-            <Button
-              onClick={onBack}
-              className="w-full h-12 text-lg font-semibold bg-red-500 hover:bg-red-600 text-white rounded-xl shadow-lg"
-            >
-              Volver al Inicio
-            </Button>
-          </CardContent>
-        </Card>
+
+            <button onClick={onBack} className="btn-pop btn-pop-red btn-pop-lg mt-6 w-full">
+              Volver al inicio
+            </button>
+          </div>
+        </div>
       </div>
     )
   }
 
   const addItem = (item: OrderItem) => {
+    // El formulario de ese producto vuelve a empezar en blanco para el siguiente
+    clearDrafts(`${item.type}.`)
     setOrderItems((prev) => [...prev, { ...item, id: Date.now().toString() }])
+    toast(`${item.name} añadido al pedido`, "success")
     setCurrentStep("summary")
   }
 
   const removeItem = (id: string) => {
+    const removed = orderItems.find((item) => item.id === id)
+    if (removed) toast(`Quitaste ${removed.name}`, "info")
     setOrderItems((prev) => prev.filter((item) => item.id !== id))
   }
 
@@ -213,5 +225,22 @@ export function OrderFlow({ onBack }: OrderFlowProps) {
       hasItems={orderItems.length > 0}
       onViewSummary={() => setCurrentStep("summary")}
     />
+  )
+  }
+
+  return (
+    <div key={currentStep} className={direction === "forward" ? "flow-forward" : "flow-back"}>
+      {renderStep()}
+    </div>
+  )
+}
+
+export function OrderFlow(props: OrderFlowProps) {
+  return (
+    <DraftProvider>
+      <ToastProvider>
+        <OrderFlowInner {...props} />
+      </ToastProvider>
+    </DraftProvider>
   )
 }

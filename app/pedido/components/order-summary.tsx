@@ -1,9 +1,8 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { ArrowLeft, Trash2, Plus } from "lucide-react"
+import { Trash2, Plus, ArrowRight, ShoppingBag } from "lucide-react"
 import type { OrderItem } from "./order-flow"
+import { PedidoHeader, PedidoPage, PedidoActionBar } from "./pedido-ui"
 
 interface OrderSummaryProps {
   items: OrderItem[]
@@ -13,6 +12,13 @@ interface OrderSummaryProps {
   onAddMore: () => void
   totalPrice: number
   deliveryCost: number
+}
+
+const emojiByType: Record<OrderItem["type"], string> = {
+  pizza: "🍕",
+  lasana: "🍝",
+  desgranado: "🌽",
+  bebida: "🥤",
 }
 
 export function OrderSummary({
@@ -25,108 +31,95 @@ export function OrderSummary({
   deliveryCost,
 }: OrderSummaryProps) {
   const finalTotal = totalPrice + deliveryCost
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
-      {/* Header */}
-      <div className="sticky top-0 bg-white/90 backdrop-blur-sm border-b border-green-200 p-4 z-10">
-        <div className="flex items-center justify-between max-w-md mx-auto">
-          <Button variant="ghost" onClick={onBack} className="text-brown-700 hover:bg-green-100">
-            <ArrowLeft className="w-5 h-5 mr-2" />
-            
-          </Button>
-          <h1 className="text-xl font-bold text-brown-900">Resumen del Pedido</h1>
-          <div className="w-16"></div>
-        </div>
-      </div>
 
-      <div className="max-w-md mx-auto p-4 pb-32">
+  return (
+    <PedidoPage>
+      <PedidoHeader title="Tu pedido" onBack={onBack} step={2} />
+
+      <main className={`mx-auto max-w-md px-4 pt-6 md:max-w-2xl ${items.length > 0 ? "pb-44" : "pb-10"}`}>
         {items.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-brown-600 text-lg mb-4">No hay productos en tu pedido</p>
-            <Button onClick={onAddMore} className="bg-green-500 hover:bg-green-600 text-white">
-              <Plus className="w-4 h-4 mr-2" />
+          <div className="card-soft mt-6 bg-white px-6 py-12 text-center">
+            <span className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full ring-1 ring-jussi-brown/15 bg-jussi-orange">
+              <ShoppingBag className="h-8 w-8" />
+            </span>
+            <p className="font-display text-2xl font-extrabold">Tu pedido está vacío</p>
+            <p className="mb-6 mt-1 opacity-80">Añade algo delicioso para empezar.</p>
+            <button onClick={onAddMore} className="btn-pop btn-pop-orange btn-pop-lg">
+              <Plus className="h-5 w-5" />
               Añadir productos
-            </Button>
+            </button>
           </div>
         ) : (
           <>
-            <div className="space-y-4 mb-6">
-              {items.map((item) => (
-                <Card key={item.id} className="border-2 border-green-200">
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-brown-900">{item.name}</h3>
-                        <div className="text-sm text-brown-600 mt-1">
-                          <p>Cantidad: {item.quantity}</p>
-                          {item.size && <p>Tamaño: {item.size}</p>}
-                          {item.base && <p>Base: {item.base}</p>}
-                          {item.flavors && item.flavors.length > 0 && <p>Sabor(es): {item.flavors.join(", ")}</p>}
-                        </div>
-                        <p className="font-bold text-green-600 mt-2">${item.price.toLocaleString()}</p>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onRemoveItem(item.id)}
-                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            <p className="mb-4 font-display text-base font-bold uppercase tracking-widest opacity-80">
+              {items.length} {items.length === 1 ? "producto" : "productos"}
+            </p>
 
-            {/* Total */}
-            <Card className="border-2 border-orange-200 bg-orange-50">
-              <CardContent className="p-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-lg font-medium text-brown-900">Subtotal:</span>
-                    <span className="text-lg font-medium text-brown-900">${totalPrice.toLocaleString()}</span>
-                  </div>
-                  {deliveryCost > 0 && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-lg font-medium text-brown-900">Domicilio:</span>
-                      <span className="text-lg font-medium text-brown-900">${deliveryCost.toLocaleString()}</span>
+            <ul className="mb-6 space-y-4">
+              {items.map((item) => (
+                <li key={item.id} className="card-soft flex items-start gap-3 bg-white p-4">
+                  <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full ring-1 ring-jussi-brown/15 bg-jussi-beige text-2xl">
+                    {emojiByType[item.type]}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-display text-lg font-extrabold leading-tight">{item.name}</h3>
+                    <div className="mt-1 flex flex-wrap gap-1.5 text-sm font-semibold">
+                      <span className="rounded-full bg-jussi-brown px-2.5 py-0.5 text-jussi-beige">x{item.quantity}</span>
+                      {item.size && <span className="rounded-full bg-jussi-orange/40 px-2.5 py-0.5">{item.size}</span>}
+                      {item.base && <span className="rounded-full bg-jussi-brown/10 px-2.5 py-0.5">{item.base}</span>}
                     </div>
-                  )}
-                  <div className="border-t pt-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-xl font-bold text-brown-900">Total:</span>
-                      <span className="text-2xl font-bold text-orange-600">${finalTotal.toLocaleString()}</span>
-                    </div>
+                    {item.flavors && item.flavors.length > 0 && (
+                      <p className="mt-2 text-base opacity-80">{item.flavors.join(", ")}</p>
+                    )}
+                    <p className="mt-2 font-display text-xl font-extrabold">${item.price.toLocaleString()}</p>
                   </div>
+                  <button
+                    onClick={() => onRemoveItem(item.id)}
+                    aria-label={`Quitar ${item.name}`}
+                    className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full ring-1 ring-jussi-brown/15 bg-white transition-colors hover:bg-jussi-red hover:text-white"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+
+            <div className="card-soft bg-jussi-brown p-5 text-jussi-beige">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="opacity-80">Subtotal</span>
+                  <span className="font-semibold">${totalPrice.toLocaleString()}</span>
                 </div>
-              </CardContent>
-            </Card>
+                {deliveryCost > 0 && (
+                  <div className="flex items-center justify-between">
+                    <span className="opacity-80">Domicilio</span>
+                    <span className="font-semibold">${deliveryCost.toLocaleString()}</span>
+                  </div>
+                )}
+                <div className="flex items-end justify-between border-t-2 border-dashed border-jussi-beige/30 pt-3">
+                  <span className="font-display text-lg font-bold">Total</span>
+                  <span className="font-display text-4xl font-extrabold text-jussi-orange">
+                    ${finalTotal.toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            </div>
           </>
         )}
-      </div>
+      </main>
 
-      {/* Fixed Action Buttons */}
       {items.length > 0 && (
-        <div className="fixed bottom-4 left-4 right-4 z-20">
-          <div className="max-w-md mx-auto space-y-3">
-            <Button
-              onClick={onAddMore}
-              variant="outline"
-              className="w-full h-12 text-lg font-semibold border-2 border-green-500 text-green-600 hover:bg-green-50"
-            >
-              <Plus className="w-5 h-5 mr-2" />
-              Añadir más productos
-            </Button>
-            <Button
-              onClick={onContinue}
-              className="w-full h-14 text-lg font-semibold bg-red-500 hover:bg-red-600 text-white rounded-xl shadow-lg"
-            >
-              Continuar con el pedido
-            </Button>
-          </div>
-        </div>
+        <PedidoActionBar>
+          <button onClick={onAddMore} className="btn-pop btn-pop-beige btn-pop-sm w-full">
+            <Plus className="h-5 w-5" />
+            Añadir más productos
+          </button>
+          <button onClick={onContinue} className="btn-pop btn-pop-red btn-pop-lg w-full">
+            Continuar con el pedido
+            <ArrowRight className="h-5 w-5" />
+          </button>
+        </PedidoActionBar>
       )}
-    </div>
+    </PedidoPage>
   )
 }

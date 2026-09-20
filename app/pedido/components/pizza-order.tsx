@@ -1,15 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
-import { ArrowLeft, AlertCircle } from "lucide-react"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { useEffect } from "react"
 import type { OrderItem } from "./order-flow"
-import { Badge } from "@/components/ui/badge"
+import { PedidoHeader, PedidoPage, Section, Stepper, OptionCard, AddToOrderBar, useDraft, useToast } from "./pedido-ui"
 
 interface PizzaOrderProps {
   onBack: () => void
@@ -17,11 +10,11 @@ interface PizzaOrderProps {
 }
 
 export function PizzaOrder({ onBack, onAddItem }: PizzaOrderProps) {
-  const [quantity, setQuantity] = useState(1)
-  const [size, setSize] = useState("")
-  const [selectedFlavors, setSelectedFlavors] = useState<string[]>([])
-  const [portions, setPortions] = useState<"8" | "10" | "">("")
-  const [showAlert, setShowAlert] = useState(false)
+  const [quantity, setQuantity] = useDraft("pizza.quantity", 1)
+  const [size, setSize] = useDraft("pizza.size", "")
+  const [selectedFlavors, setSelectedFlavors] = useDraft<string[]>("pizza.selectedFlavors", [])
+  const [portions, setPortions] = useDraft<"8" | "10" | "">("pizza.portions", "")
+  const toast = useToast()
 
   useEffect(() => {
     if (size === "Porción") {
@@ -188,12 +181,17 @@ export function PizzaOrder({ onBack, onAddItem }: PizzaOrderProps) {
     if (checked) {
       const maxFlavors = size === "Porción" ? 1 : 2
       if (selectedFlavors.length >= maxFlavors) {
-        setShowAlert(true)
-        setTimeout(() => setShowAlert(false), 3000)
+        toast(
+          size === "Porción"
+            ? "La porción solo puede tener un sabor. Quita el actual para elegir otro."
+            : "Solo puedes elegir 2 sabores (mitad y mitad). Quita uno para cambiarlo.",
+          "error",
+        )
         return
       }
       // Don't allow special flavors for Porción size
       if (size === "Porción" && flavors.find((f) => f.name === flavor)?.type === "special") {
+        toast("La porción solo tiene sabores tradicionales.", "info")
         return
       }
       setSelectedFlavors((prev) => [...prev, flavor])
@@ -203,8 +201,9 @@ export function PizzaOrder({ onBack, onAddItem }: PizzaOrderProps) {
   }
 
   const handleAddToOrder = () => {
-    if (!size || selectedFlavors.length === 0) return
-    if (size === "Mediana" && !portions) return
+    if (!size) return toast("Elige el tamaño de tu pizza.")
+    if (selectedFlavors.length === 0) return toast("Elige al menos un sabor.")
+    if (size === "Mediana" && !portions) return toast("Elige en cuántas porciones la quieres: 8 o 10.")
 
     const price = getPizzaPrice(size, selectedFlavors) * quantity
     const sizeDescription = sizes.find((s) => s.name === size)?.description
@@ -226,66 +225,19 @@ export function PizzaOrder({ onBack, onAddItem }: PizzaOrderProps) {
 
   const canAddToOrder = size && selectedFlavors.length > 0 && (size !== "Mediana" || portions)
 
+  const maxFlavors = size === "Porción" ? 1 : 2
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
-      {/* Header */}
-      <div className="sticky top-0 bg-white/90 backdrop-blur-sm border-b border-green-200 p-4 z-10">
-        <div className="flex items-center justify-between max-w-md mx-auto">
-          <Button variant="ghost" onClick={onBack} className="text-brown-700 hover:bg-green-100">
-            <ArrowLeft className="w-5 h-5 mr-2" />
-            
-          </Button>
-          <h1 className="text-xl font-bold text-brown-900">🍕 Pizza</h1>
-          <div className="w-16"></div>
-        </div>
-      </div>
+    <PedidoPage>
+      <PedidoHeader title="🍕 Pizza" onBack={onBack} step={1} />
 
-      <div className="max-w-md mx-auto p-4 pb-24">
-        {showAlert && (
-          <Alert className="mb-4 border-red-200 bg-red-50">
-            <AlertCircle className="h-4 w-4 text-red-600" />
-            <AlertDescription className="text-red-800">
-              {size === "Porción"
-                ? "La porción solo puede tener un sabor."
-                : "Solo puedes seleccionar 2 sabores (mitad y mitad)."}
-            </AlertDescription>
-          </Alert>
-        )}
+      <main className="mx-auto max-w-md px-4 pb-40 pt-6 md:max-w-2xl">
+        <Section title="Cantidad">
+          <Stepper value={quantity} onChange={setQuantity} />
+        </Section>
 
-        {/* Quantity */}
-        <Card className="mb-6 border-2 border-green-200">
-          <CardHeader>
-            <CardTitle className="text-brown-900">Cantidad</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center space-x-4">
-              <Button
-                variant="outline"
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="w-10 h-10 rounded-full"
-              >
-                -
-              </Button>
-              <Input
-                type="number"
-                value={quantity}
-                onChange={(e) => setQuantity(Math.max(1, Number.parseInt(e.target.value) || 1))}
-                className="w-20 text-center"
-                min="1"
-              />
-              <Button variant="outline" onClick={() => setQuantity(quantity + 1)} className="w-10 h-10 rounded-full">
-                +
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Size Selection */}
-        <Card className="mb-6 border-2 border-green-200">
-          <CardHeader>
-            <CardTitle className="text-brown-900">Seleccionar tamaño</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
+        <Section title="Elige el tamaño">
+          <div className="space-y-3" role="radiogroup" aria-label="Tamaño">
             {sizes.map((sizeOption) => {
               const canShow =
                 selectedFlavors.length === 0 ||
@@ -298,139 +250,88 @@ export function PizzaOrder({ onBack, onAddItem }: PizzaOrderProps) {
               const price = selectedFlavors.length > 0 ? getPizzaPrice(sizeOption.name, selectedFlavors) : 0
 
               return (
-                <div key={sizeOption.name} className="flex items-center space-x-3">
-                  <input
-                    type="radio"
-                    id={sizeOption.name}
-                    name="size"
-                    value={sizeOption.name}
-                    checked={size === sizeOption.name}
-                    onChange={(e) => setSize(e.target.value)}
-                    className="w-4 h-4 text-green-600"
-                  />
-                  <Label htmlFor={sizeOption.name} className="flex-1 cursor-pointer">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <div className="font-medium text-brown-900">{sizeOption.name}</div>
-                        <div className="text-sm text-brown-600">{sizeOption.description}</div>
-                      </div>
-                      {price > 0 && <div className="text-lg font-bold text-green-600">${price.toLocaleString()}</div>}
-                    </div>
-                  </Label>
-                </div>
+                <OptionCard
+                  key={sizeOption.name}
+                  selected={size === sizeOption.name}
+                  onSelect={() => setSize(sizeOption.name)}
+                  title={sizeOption.name}
+                  description={sizeOption.description}
+                  price={price > 0 ? price : undefined}
+                />
               )
             })}
-          </CardContent>
-        </Card>
+          </div>
+        </Section>
 
-        {/* Portions Selection for Mediana */}
         {size === "Mediana" && (
-          <Card className="mb-6 border-2 border-orange-200 bg-orange-50">
-            <CardHeader>
-              <CardTitle className="text-brown-900">¿En cuántas porciones?</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center space-x-3">
-                <input
-                  type="radio"
-                  id="8-portions"
-                  name="portions"
-                  value="8"
-                  checked={portions === "8"}
-                  onChange={(e) => setPortions(e.target.value as "8")}
-                  className="w-4 h-4 text-orange-600"
-                />
-                <Label htmlFor="8-portions" className="cursor-pointer text-brown-900 font-medium">
-                  8 porciones
-                </Label>
-              </div>
-              <div className="flex items-center space-x-3">
-                <input
-                  type="radio"
-                  id="10-portions"
-                  name="portions"
-                  value="10"
-                  checked={portions === "10"}
-                  onChange={(e) => setPortions(e.target.value as "10")}
-                  className="w-4 h-4 text-orange-600"
-                />
-                <Label htmlFor="10-portions" className="cursor-pointer text-brown-900 font-medium">
-                  10 porciones
-                </Label>
-              </div>
-            </CardContent>
-          </Card>
+          <section className="card-soft mb-6 bg-jussi-orange p-5">
+            <h2 className="font-display text-xl font-extrabold">¿En cuántas porciones?</h2>
+            <div className="mt-4 grid grid-cols-2 gap-3" role="radiogroup" aria-label="Porciones">
+              {(["8", "10"] as const).map((n) => (
+                <button
+                  key={n}
+                  type="button"
+                  role="radio"
+                  aria-checked={portions === n}
+                  onClick={() => setPortions(n)}
+                  className={`rounded-2xl ring-1 ring-jussi-brown/15 py-4 font-display text-lg font-extrabold transition-all ${
+                    portions === n ? "bg-jussi-brown text-jussi-beige shadow-pop-sm" : "bg-jussi-beige hover:-translate-y-0.5"
+                  }`}
+                >
+                  {n} porciones
+                </button>
+              ))}
+            </div>
+          </section>
         )}
 
-        {/* Flavor Selection */}
-        <Card className="mb-6 border-2 border-green-200">
-          <CardHeader>
-            <CardTitle className="text-brown-900">
-              Seleccionar sabores ({selectedFlavors.length}/{size === "Porción" ? "1" : "2"})
-            </CardTitle>
-            {size && size !== "Porción" && (
-              <p className="text-sm text-gray-600 mt-2">
-                Puedes elegir hasta 2 sabores para tu pizza mitad y mitad!
-              </p>
-            )}
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {flavors.map((flavor) => {
-              const isDisabled = size === "Porción" && flavor.type === "special"
-
-              return (
-                <div key={flavor.name} className="flex items-start space-x-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50">
-                  <Checkbox
-                    id={flavor.name}
-                    checked={selectedFlavors.includes(flavor.name)}
-                    onCheckedChange={(checked) => handleFlavorChange(flavor.name, checked as boolean)}
-                    disabled={isDisabled}
-                    className="mt-1"
+        <Section
+          title={`Elige los sabores (${selectedFlavors.length}/${maxFlavors})`}
+          hint={size && size !== "Porción" ? "Puedes elegir hasta 2 sabores: ¡mitad y mitad!" : undefined}
+        >
+          <div className="space-y-3">
+            {(["traditional", "special"] as const).map((group) => (
+              <div key={group}>
+                <p className="mb-2 mt-1 flex items-center gap-2 font-display text-sm font-bold uppercase tracking-widest">
+                  <span
+                    className={`inline-block h-3 w-3 rounded-full ring-1 ring-jussi-brown/15 ${
+                      group === "traditional" ? "bg-jussi-orange" : "bg-jussi-red"
+                    }`}
                   />
-                  <Label
-                    htmlFor={flavor.name}
-                    className={`cursor-pointer flex-1 ${isDisabled ? "opacity-50" : ""}`}
-                  >
-                    <div className="flex justify-between items-start mb-2">
-                      <span className="font-bold text-lg text-brown-500">{flavor.name}</span>
-                      <Badge
-                        variant="secondary"
-                        className={
-                          flavor.type === "traditional" ? "bg-blue-100 text-blue-800" : "bg-purple-100 text-purple-800"
-                        }
-                      >
-                        {flavor.type === "traditional" ? "Tradicional" : "Especial"}
-                      </Badge>
-                    </div>
-                    <div className="text-sm text-gray-600 leading-relaxed">
-                      {flavor.ingredients}
-                    </div>
-                  </Label>
+                  {group === "traditional" ? "Tradicionales" : "Especiales"}
+                </p>
+                <div className="space-y-3">
+                  {flavors
+                    .filter((f) => f.type === group)
+                    .map((flavor) => {
+                      const selected = selectedFlavors.includes(flavor.name)
+                      return (
+                        <OptionCard
+                          key={flavor.name}
+                          kind="check"
+                          selected={selected}
+                          onSelect={() => handleFlavorChange(flavor.name, !selected)}
+                          title={flavor.name}
+                          description={flavor.ingredients}
+                          disabled={size === "Porción" && flavor.type === "special"}
+                        />
+                      )
+                    })}
                 </div>
-              )
-            })}
+              </div>
+            ))}
             {size === "Porción" && (
-              <p className="text-sm text-orange-600 font-medium">* La porción solo puede tener sabores tradicionales</p>
+              <p className="text-base font-semibold text-jussi-red">* La porción solo puede tener sabores tradicionales</p>
             )}
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </Section>
+      </main>
 
-      {/* Fixed Add Button */}
-      <div className="fixed bottom-4 left-4 right-4 z-20">
-        <div className="max-w-md mx-auto">
-          <Button
-            onClick={handleAddToOrder}
-            disabled={!canAddToOrder}
-            className="w-full h-14 text-lg font-semibold bg-red-500 hover:bg-red-600 disabled:bg-gray-400 text-white rounded-xl shadow-lg"
-          >
-            Añadir al pedido
-            {canAddToOrder && size && (
-              <span className="ml-2">- ${(getPizzaPrice(size, selectedFlavors) * quantity).toLocaleString()}</span>
-            )}
-          </Button>
-        </div>
-      </div>
-    </div>
+      <AddToOrderBar
+        onClick={handleAddToOrder}
+        disabled={!canAddToOrder}
+        total={size ? getPizzaPrice(size, selectedFlavors) * quantity : undefined}
+      />
+    </PedidoPage>
   )
 }

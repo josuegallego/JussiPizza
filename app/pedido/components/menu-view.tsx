@@ -1,9 +1,7 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, ShoppingCart } from "lucide-react"
+import { ShoppingCart } from "lucide-react"
+import { PedidoHeader, PedidoPage, PedidoActionBar } from "./pedido-ui"
 
 interface MenuViewProps {
   onStartOrder: () => void
@@ -246,81 +244,86 @@ export function MenuView({ onStartOrder, onBack }: MenuViewProps) {
     },
   ]
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
-      {/* Header */}
-      <div className="sticky top-0 bg-white/90 backdrop-blur-sm border-b border-green-200 p-4 z-10">
-        <div className="flex items-center justify-between max-w-md mx-auto">
-          <Button variant="ghost" onClick={onBack} className="text-brown-700 hover:bg-green-100">
-            <ArrowLeft className="w-5 h-5 mr-2" />
-          </Button>
-          <h1 className="text-xl font-bold text-brown-900">Nuestro Menú</h1>
-          <div className="w-16"></div>
-        </div>
-      </div>
+  const accents = ["bg-jussi-red text-white", "bg-jussi-orange", "bg-jussi-beige", "bg-jussi-brown text-jussi-beige"]
 
-      <div className="max-w-md mx-auto p-4 pb-24">
-        {menuCategories.map((category) => (
-          <div key={category.id} className="mb-8">
-            <h2 className="text-2xl font-bold text-brown-900 mb-4 text-center">{category.name}</h2>
+  return (
+    <PedidoPage>
+      <PedidoHeader title="Nuestro menú" onBack={onBack} />
+
+      {/* Navegación por categoría */}
+      <nav className="sticky top-[70px] z-20 border-b border-jussi-brown/15 bg-jussi-beige">
+        <div className="mx-auto flex max-w-md gap-2 overflow-x-auto px-4 py-3 md:max-w-2xl">
+          {menuCategories.map((category, idx) => (
+            <a
+              key={category.id}
+              href={`#${category.id}`}
+              className={`btn-pop btn-pop-sm flex-shrink-0 whitespace-nowrap ${accents[idx % accents.length]}`}
+            >
+              {category.name}
+            </a>
+          ))}
+        </div>
+      </nav>
+
+      <main className="mx-auto max-w-md px-4 pb-32 pt-6 md:max-w-2xl">
+        {menuCategories.map((category, idx) => (
+          <section key={category.id} id={category.id} className="mb-10 scroll-mt-40">
+            <h2 className={`mb-4 inline-block rounded-full ring-1 ring-jussi-brown/15 px-5 py-2 font-display text-2xl font-extrabold shadow-pop-sm ${accents[idx % accents.length]}`}>
+              {category.name}
+            </h2>
+
             <div className="space-y-4">
               {category.items.map((item, index) => (
-                <Card key={index} className="border-2 border-green-200 shadow-md hover:shadow-lg transition-shadow">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-lg text-brown-900">{item.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-brown-700 text-sm mb-3">{item.ingredients}</p>
-                    {item.sizes && (
-                      <div className="mb-2">
-                        <p className="text-xs font-medium text-brown-600 mb-1">Tamaños disponibles:</p>
-                        <div className="flex flex-wrap gap-1">
-                          {item.sizes.map((size, sizeIndex) => (
-                            <Badge key={sizeIndex} variant="secondary" className="bg-green-100 text-green-800 text-xs">
-                              {size}
-                            </Badge>
-                          ))}
-                        </div>
+                <article key={index} className="card-soft bg-white p-5">
+                  <h3 className="font-display text-xl font-extrabold leading-tight">{item.name}</h3>
+                  <p className="mt-1 text-base opacity-80">{item.ingredients}</p>
+
+                  {item.sizes && (
+                    <div className="mt-4">
+                      <p className="mb-2 text-sm font-bold uppercase tracking-widest opacity-80">Tamaños</p>
+                      <div className="flex flex-wrap gap-2">
+                        {item.sizes.map((size, sizeIndex) => (
+                          <span
+                            key={sizeIndex}
+                            className="rounded-full ring-1 ring-jussi-brown/15 bg-jussi-brown/10 px-3 py-1 text-sm font-bold"
+                          >
+                            {size}
+                          </span>
+                        ))}
                       </div>
-                    )}
-                    {item.flavors && item.flavors.length > 0 && (
-                      <div>
-                        <p className="text-xs font-medium text-brown-600 mb-1">
-                          {category.id === "bebidas" ? "Opciones disponibles:" : "Sabores disponibles:"}
-                        </p>
-                        <div className="flex flex-wrap gap-1">
-                          {item.flavors.map((flavor, flavorIndex) => (
-                            <Badge
-                              key={flavorIndex}
-                              variant="secondary"
-                              className="bg-orange-100 text-orange-800 text-xs"
-                            >
-                              {flavor}
-                            </Badge>
-                          ))}
-                        </div>
+                    </div>
+                  )}
+
+                  {item.flavors && item.flavors.length > 0 && (
+                    <div className="mt-4">
+                      <p className="mb-2 text-sm font-bold uppercase tracking-widest opacity-80">
+                        {category.id === "bebidas" ? "Opciones" : "Sabores"}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {item.flavors.map((flavor, flavorIndex) => (
+                          <span
+                            key={flavorIndex}
+                            className="rounded-full ring-1 ring-jussi-brown/15 bg-jussi-orange/40 px-3 py-1 text-sm font-bold"
+                          >
+                            {flavor}
+                          </span>
+                        ))}
                       </div>
-                    )}
-                  </CardContent>
-                </Card>
+                    </div>
+                  )}
+                </article>
               ))}
             </div>
-          </div>
+          </section>
         ))}
-      </div>
+      </main>
 
-      {/* Floating Order Button */}
-      <div className="fixed bottom-4 left-4 right-4 z-20">
-        <div className="max-w-md mx-auto">
-          <Button
-            onClick={onStartOrder}
-            className="w-full h-14 text-lg font-semibold bg-red-500 hover:bg-red-600 text-white rounded-xl shadow-lg"
-          >
-            <ShoppingCart className="w-5 h-5 mr-2" />
-            Ordenar ahora
-          </Button>
-        </div>
-      </div>
-    </div>
+      <PedidoActionBar>
+        <button onClick={onStartOrder} className="btn-pop btn-pop-red btn-pop-lg w-full">
+          <ShoppingCart className="h-5 w-5" />
+          Ordenar ahora
+        </button>
+      </PedidoActionBar>
+    </PedidoPage>
   )
 }
