@@ -9,7 +9,7 @@ import { BebidaOrder } from "./bebida-order"
 import { OrderSummary } from "./order-summary"
 import { DeliveryInfoComponent } from "./delivery-info"
 import { Payment } from "./payment"
-import { useFlowDirection, DraftProvider, useClearDrafts, ToastProvider, useToast } from "./pedido-ui"
+import { useFlowDirection, DraftProvider, useClearDrafts, ToastProvider, useToast, OrderProvider } from "./pedido-ui"
 
 interface OrderFlowProps {
   onBack: () => void
@@ -229,9 +229,11 @@ function OrderFlowInner({ onBack }: OrderFlowProps) {
   }
 
   return (
-    <div key={currentStep} className={direction === "forward" ? "flow-forward" : "flow-back"}>
-      {renderStep()}
-    </div>
+    <OrderProvider value={{ items: orderItems, deliveryCost: deliveryInfo?.deliveryCost || 0 }}>
+      <div key={currentStep} className={direction === "forward" ? "flow-forward" : "flow-back"}>
+        {renderStep()}
+      </div>
+    </OrderProvider>
   )
 }
 

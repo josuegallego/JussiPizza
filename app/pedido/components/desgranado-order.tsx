@@ -1,7 +1,7 @@
 "use client"
 
 import type { OrderItem } from "./order-flow"
-import { PedidoHeader, PedidoPage, Section, Stepper, OptionCard, AddToOrderBar, useDraft, useToast } from "./pedido-ui"
+import { PedidoHeader, PedidoPage, Section, Stepper, OptionCard, AddToOrderButton, PedidoBody, optionGrid, useDraft, useToast } from "./pedido-ui"
 
 interface DesgranandoOrderProps {
   onBack: () => void
@@ -49,13 +49,21 @@ export function DesgranandoOrder({ onBack, onAddItem }: DesgranandoOrderProps) {
     <PedidoPage>
       <PedidoHeader title="🌽 Desgranado" onBack={onBack} step={1} />
 
-      <main className="mx-auto max-w-md px-4 pb-40 pt-6 md:max-w-2xl">
+      <PedidoBody
+        actions={
+          <AddToOrderButton
+            onClick={handleAddToOrder}
+            disabled={!canAddToOrder}
+            total={selectedBase ? selectedBase.price * quantity : undefined}
+          />
+        }
+      >
         <Section title="Cantidad">
           <Stepper value={quantity} onChange={setQuantity} />
         </Section>
 
         <Section title="¿Con qué lo quieres?">
-          <div className="space-y-3" role="radiogroup" aria-label="Base">
+          <div className={optionGrid} role="radiogroup" aria-label="Base">
             {bases.map((option) => (
               <OptionCard
                 key={option.name}
@@ -69,7 +77,7 @@ export function DesgranandoOrder({ onBack, onAddItem }: DesgranandoOrderProps) {
         </Section>
 
         <Section title="Elige el sabor" hint="Con maíz o maduro">
-          <div className="space-y-3" role="radiogroup" aria-label="Sabor">
+          <div className={optionGrid} role="radiogroup" aria-label="Sabor">
             {flavors.map((option) => (
               <OptionCard
                 key={option.name}
@@ -81,9 +89,7 @@ export function DesgranandoOrder({ onBack, onAddItem }: DesgranandoOrderProps) {
             ))}
           </div>
         </Section>
-      </main>
-
-      <AddToOrderBar onClick={handleAddToOrder} disabled={!canAddToOrder} total={selectedBase ? selectedBase.price * quantity : undefined} />
+      </PedidoBody>
     </PedidoPage>
   )
 }

@@ -2,7 +2,7 @@
 
 import { MapPin, Search, X, ArrowRight } from "lucide-react"
 import type { DeliveryInfo as DeliveryInfoType } from "./order-flow"
-import { PedidoHeader, PedidoPage, Section, OptionCard, PedidoActionBar, Field, useDraft, useToast } from "./pedido-ui"
+import { PedidoHeader, PedidoPage, PedidoBody, OrderPanel, advanceToNextSection, Section, OptionCard, Field, useDraft, useToast } from "./pedido-ui"
 
 interface DeliveryInfoProps {
   onBack: () => void
@@ -79,6 +79,7 @@ const neighborhoods = [
   { name: "PORTAL DE JAMUNDI 2", price: 6000, type: "barrio" },
   { name: "PORTAL DE JAMUNDI", price: 5000, type: "barrio" },
   { name: "PORTAL DEL SAMAN", price: 4000, type: "barrio" },
+  { name: "PORTAL DEL SAMAN 2", price: 6000, type: "barrio" },
   { name: "LAS PALMAS", price: 6000, type: "barrio" },
   { name: "QUINTAS DE BOLIVAR", price: 5000, type: "barrio" },
   { name: "VILLA ESTELA", price: 5000, type: "barrio" },
@@ -345,6 +346,8 @@ const allOptions = [
       : address && neighborhood && (neighborhood !== NOT_IN_LIST_OPTION.name || customNeighborhood.trim())
     )
 
+  const selectedPrice = [...neighborhoods, ...residentialUnits].find((n) => n.name === neighborhood)?.price ?? 0
+
   const kindLabel = locationType === "barrio" ? "Barrio" : "Unidad Residencial"
 
   const resetLocation = (type: "barrio" | "unidad") => {
@@ -367,12 +370,30 @@ const allOptions = [
     <PedidoPage>
       <PedidoHeader title="Datos de entrega" onBack={onBack} step={3} />
 
-      <main className="mx-auto max-w-md px-4 pb-40 pt-6 md:max-w-2xl">
-        <h2 className="mb-6 font-display text-3xl font-extrabold leading-tight">
+      <PedidoBody
+        aside={<OrderPanel deliveryCost={deliveryType === "delivery" ? selectedPrice : 0} />}
+        actions={
+          <button
+            onClick={handleContinue}
+            aria-disabled={!canContinue}
+            className={`btn-pop btn-pop-red btn-pop-lg w-full ${canContinue ? "" : "opacity-60"}`}
+          >
+            Continuar al pago
+            <ArrowRight className="h-5 w-5" />
+          </button>
+        }
+      >
+        <h2 className="mb-6 font-display text-3xl font-extrabold leading-tight md:mb-5 md:text-2xl">
           ¿Domicilio o <span className="text-jussi-red">para recoger</span>?
         </h2>
 
-        <div className="mb-6 grid grid-cols-2 gap-4" role="radiogroup" aria-label="Tipo de entrega">
+        <div
+          data-step-section
+          onClick={advanceToNextSection}
+          className="mb-6 grid grid-cols-2 gap-4"
+          role="radiogroup"
+          aria-label="Tipo de entrega"
+        >
           {[
             { id: "delivery" as const, emoji: "🏠", label: "Domicilio" },
             { id: "pickup" as const, emoji: "📍", label: "Recoger en tienda" },
@@ -393,18 +414,18 @@ const allOptions = [
                   setCustomNeighborhood("")
                 }
               }}
-              className={`card-soft flex flex-col items-center gap-2 p-5 text-center font-display text-lg font-extrabold transition-all duration-150 ${
+              className={`card-soft flex flex-col items-center gap-2 p-5 text-center font-display text-lg font-extrabold transition-all duration-150 md:flex-row md:justify-center md:gap-3 md:p-4 md:text-base ${
                 deliveryType === opt.id ? "bg-jussi-brown text-jussi-beige" : "bg-white hover:-translate-y-0.5"
               }`}
             >
-              <span className="text-4xl">{opt.emoji}</span>
+              <span className="text-4xl md:text-2xl">{opt.emoji}</span>
               {opt.label}
             </button>
           ))}
         </div>
 
         <Section title="Datos de contacto">
-          <div className="space-y-4">
+          <div className="space-y-4 lg:grid lg:grid-cols-2 lg:items-start lg:gap-4 lg:space-y-0">
             <Field id="name" label="Nombre completo *" value={name} onChange={setName} />
             <Field
               id="phone"
@@ -611,18 +632,7 @@ const allOptions = [
             </div>
           </Section>
         )}
-      </main>
-
-      <PedidoActionBar>
-        <button
-          onClick={handleContinue}
-          aria-disabled={!canContinue}
-          className={`btn-pop btn-pop-red btn-pop-lg w-full ${canContinue ? "" : "opacity-60"}`}
-        >
-          Continuar al pago
-          <ArrowRight className="h-5 w-5" />
-        </button>
-      </PedidoActionBar>
+      </PedidoBody>
     </PedidoPage>
   )
 }

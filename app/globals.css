@@ -203,18 +203,97 @@ iframe {
 .animate-drift-b { animation: driftB 12s ease-in-out infinite alternate; }
 .animate-drift-c { animation: driftC 10s ease-in-out infinite alternate; }
 
-@keyframes toastIn {
+/* Avisos (toasts): en celular bajan desde arriba; en escritorio entran por la derecha, abajo */
+@keyframes toastInTop {
   from {
     opacity: 0;
-    transform: translateY(-14px) scale(0.97);
+    transform: translateY(-18px) scale(0.96);
   }
   to {
     opacity: 1;
     transform: none;
   }
 }
+@keyframes toastOutTop {
+  to {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.96);
+  }
+}
+@keyframes toastInSide {
+  from {
+    opacity: 0;
+    transform: translateX(110%) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes toastOutSide {
+  to {
+    opacity: 0;
+    transform: translateX(40%) scale(0.96);
+  }
+}
+@keyframes toastTimer {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
 .animate-toast-in {
-  animation: toastIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: toastInTop 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.animate-toast-out {
+  animation: toastOutTop 0.28s cubic-bezier(0.4, 0, 1, 1) both;
+}
+.toast-timer {
+  transform-origin: left;
+  animation: toastTimer var(--toast-ms, 3600ms) linear both;
+}
+@media (min-width: 1024px) {
+  .animate-toast-in {
+    animation-name: toastInSide;
+    animation-duration: 0.55s;
+  }
+  .animate-toast-out {
+    animation-name: toastOutSide;
+  }
+}
+
+/* Bloque del pedido al que se acaba de llegar con el scroll automático: se eleva y brilla un instante */
+@keyframes sectionArrive {
+  0% {
+    transform: none;
+    outline: 3px solid rgb(242 127 27 / 0);
+    outline-offset: 10px;
+  }
+  35% {
+    transform: translateY(-3px) scale(1.008);
+    outline: 3px solid rgb(242 127 27 / 0.75);
+    outline-offset: 3px;
+  }
+  100% {
+    transform: none;
+    outline: 3px solid rgb(242 127 27 / 0);
+    outline-offset: 3px;
+  }
+}
+.section-arrive {
+  animation: sectionArrive 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Sin cursor de texto parpadeando sobre contenido que no se edita (p. ej. con "navegación con cursor" activa) */
+body {
+  caret-color: transparent;
+}
+input,
+textarea,
+[contenteditable="true"] {
+  caret-color: auto;
 }
 
 /* Entrada del hero */
@@ -274,7 +353,8 @@ iframe {
   .reveal {
     animation: none !important;
   }
-  .animate-toast-in,
+  /* Los avisos y el resalte de sección se mantienen: son cortos y sutiles, y Windows con
+     "animaciones desactivadas" marca esta preferencia sin que la persona lo haya pedido */
   .animate-drift-a,
   .animate-drift-b,
   .animate-drift-c,

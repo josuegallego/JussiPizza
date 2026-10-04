@@ -1,7 +1,7 @@
 "use client"
 
 import type { OrderItem } from "./order-flow"
-import { PedidoHeader, PedidoPage, Section, Stepper, OptionCard, AddToOrderBar, useDraft, useToast } from "./pedido-ui"
+import { PedidoHeader, PedidoPage, Section, Stepper, OptionCard, AddToOrderButton, PedidoBody, optionGrid, useDraft, useToast } from "./pedido-ui"
 
 interface LasanaOrderProps {
   onBack: () => void
@@ -39,7 +39,15 @@ export function LasanaOrder({ onBack, onAddItem }: LasanaOrderProps) {
     <PedidoPage>
       <PedidoHeader title="🍝 Lasaña" onBack={onBack} step={1} />
 
-      <main className="mx-auto max-w-md px-4 pb-40 pt-6 md:max-w-2xl">
+      <PedidoBody
+        actions={
+          <AddToOrderButton
+            onClick={handleAddToOrder}
+            disabled={!selectedSize}
+            total={selectedSize ? selectedSize.price * quantity : undefined}
+          />
+        }
+      >
         <div className="card-soft mb-6 bg-jussi-orange p-5">
           <h2 className="font-display text-2xl font-extrabold">Lasaña Mixta</h2>
           <p className="mt-1 font-medium">Pasta, queso, carne boloñesa y pollo</p>
@@ -50,7 +58,7 @@ export function LasanaOrder({ onBack, onAddItem }: LasanaOrderProps) {
         </Section>
 
         <Section title="Elige el tamaño">
-          <div className="space-y-3" role="radiogroup" aria-label="Tamaño">
+          <div className={optionGrid} role="radiogroup" aria-label="Tamaño">
             {sizes.map((option) => (
               <OptionCard
                 key={option.name}
@@ -62,9 +70,7 @@ export function LasanaOrder({ onBack, onAddItem }: LasanaOrderProps) {
             ))}
           </div>
         </Section>
-      </main>
-
-      <AddToOrderBar onClick={handleAddToOrder} disabled={!selectedSize} total={selectedSize ? selectedSize.price * quantity : undefined} />
+      </PedidoBody>
     </PedidoPage>
   )
 }

@@ -252,7 +252,7 @@ export function MenuView({ onStartOrder, onBack }: MenuViewProps) {
 
       {/* Navegación por categoría */}
       <nav className="sticky top-[70px] z-20 border-b border-jussi-brown/15 bg-jussi-beige">
-        <div className="mx-auto flex max-w-md gap-2 overflow-x-auto px-4 py-3 md:max-w-2xl">
+        <div className="mx-auto flex max-w-md gap-2 overflow-x-auto px-4 py-3 md:max-w-2xl lg:max-w-5xl xl:max-w-6xl">
           {menuCategories.map((category, idx) => (
             <a
               key={category.id}
@@ -265,14 +265,14 @@ export function MenuView({ onStartOrder, onBack }: MenuViewProps) {
         </div>
       </nav>
 
-      <main className="mx-auto max-w-md px-4 pb-32 pt-6 md:max-w-2xl">
+      <main className="mx-auto max-w-md px-4 pb-32 pt-6 md:max-w-2xl lg:max-w-5xl xl:max-w-6xl">
         {menuCategories.map((category, idx) => (
           <section key={category.id} id={category.id} className="mb-10 scroll-mt-40">
             <h2 className={`mb-4 inline-block rounded-full ring-1 ring-jussi-brown/15 px-5 py-2 font-display text-2xl font-extrabold shadow-pop-sm ${accents[idx % accents.length]}`}>
               {category.name}
             </h2>
 
-            <div className="space-y-4">
+            <div className="space-y-4 lg:grid lg:grid-cols-2 lg:items-start lg:gap-4 lg:space-y-0">
               {category.items.map((item, index) => (
                 <article key={index} className="card-soft bg-white p-5">
                   <h3 className="font-display text-xl font-extrabold leading-tight">{item.name}</h3>

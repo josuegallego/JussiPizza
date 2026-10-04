@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import type { OrderItem } from "./order-flow"
-import { PedidoHeader, PedidoPage, Section, Stepper, OptionCard, AddToOrderBar, useDraft, useToast } from "./pedido-ui"
+import { PedidoHeader, PedidoPage, Section, Stepper, OptionCard, AddToOrderButton, PedidoBody, optionGrid, advanceToNextSection, useDraft, useToast } from "./pedido-ui"
 
 interface PizzaOrderProps {
   onBack: () => void
@@ -231,13 +231,21 @@ export function PizzaOrder({ onBack, onAddItem }: PizzaOrderProps) {
     <PedidoPage>
       <PedidoHeader title="🍕 Pizza" onBack={onBack} step={1} />
 
-      <main className="mx-auto max-w-md px-4 pb-40 pt-6 md:max-w-2xl">
+      <PedidoBody
+        actions={
+          <AddToOrderButton
+            onClick={handleAddToOrder}
+            disabled={!canAddToOrder}
+            total={size ? getPizzaPrice(size, selectedFlavors) * quantity : undefined}
+          />
+        }
+      >
         <Section title="Cantidad">
           <Stepper value={quantity} onChange={setQuantity} />
         </Section>
 
         <Section title="Elige el tamaño">
-          <div className="space-y-3" role="radiogroup" aria-label="Tamaño">
+          <div className={optionGrid} role="radiogroup" aria-label="Tamaño">
             {sizes.map((sizeOption) => {
               const canShow =
                 selectedFlavors.length === 0 ||
@@ -264,7 +272,7 @@ export function PizzaOrder({ onBack, onAddItem }: PizzaOrderProps) {
         </Section>
 
         {size === "Mediana" && (
-          <section className="card-soft mb-6 bg-jussi-orange p-5">
+          <section data-step-section className="card-soft mb-6 bg-jussi-orange p-5" onClick={advanceToNextSection}>
             <h2 className="font-display text-xl font-extrabold">¿En cuántas porciones?</h2>
             <div className="mt-4 grid grid-cols-2 gap-3" role="radiogroup" aria-label="Porciones">
               {(["8", "10"] as const).map((n) => (
@@ -300,7 +308,7 @@ export function PizzaOrder({ onBack, onAddItem }: PizzaOrderProps) {
                   />
                   {group === "traditional" ? "Tradicionales" : "Especiales"}
                 </p>
-                <div className="space-y-3">
+                <div className={optionGrid}>
                   {flavors
                     .filter((f) => f.type === group)
                     .map((flavor) => {
@@ -325,13 +333,7 @@ export function PizzaOrder({ onBack, onAddItem }: PizzaOrderProps) {
             )}
           </div>
         </Section>
-      </main>
-
-      <AddToOrderBar
-        onClick={handleAddToOrder}
-        disabled={!canAddToOrder}
-        total={size ? getPizzaPrice(size, selectedFlavors) * quantity : undefined}
-      />
+      </PedidoBody>
     </PedidoPage>
   )
 }
