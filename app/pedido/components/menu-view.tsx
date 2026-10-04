@@ -3,6 +3,14 @@
 import { ShoppingCart } from "lucide-react"
 import { PedidoHeader, PedidoPage, PedidoActionBar } from "./pedido-ui"
 
+interface MenuItem {
+  name: string
+  ingredients: string
+  type?: "traditional" | "special"
+  sizes?: string[]
+  flavors?: string[]
+}
+
 interface MenuViewProps {
   onStartOrder: () => void
   onBack: () => void
@@ -45,7 +53,7 @@ export function MenuView({ onStartOrder, onBack }: MenuViewProps) {
     
     if (type === 'traditional') {
       return [
-        `Porción (${formatPrice(prices.portion)})`,
+        `Porción (${formatPrice(PRICES.traditional.portion)})`,
         `Personal (4 mini porciones ${formatPrice(prices.personal)})`,
         `Pequeña (6 porciones ${formatPrice(prices.small)})`,
         `Mediana (8-10 porciones ${formatPrice(prices.medium)})`,
@@ -59,7 +67,7 @@ export function MenuView({ onStartOrder, onBack }: MenuViewProps) {
     }
   }
 
-  const menuCategories = [
+  const menuCategories: { id: string; name: string; items: MenuItem[] }[] = [
     {
       id: "pizzas",
       name: "🍕 Pizzas",
@@ -246,12 +254,64 @@ export function MenuView({ onStartOrder, onBack }: MenuViewProps) {
 
   const accents = ["bg-jussi-red text-white", "bg-jussi-orange", "bg-jussi-beige", "bg-jussi-brown text-jussi-beige"]
 
+  // Portada de cada sección: foto real del producto + frase corta
+  const heroes: Record<string, { image: string; alt: string; tagline: string }> = {
+    pizzas: {
+      image: "/menu/pizza-mixta.webp",
+      alt: "Pizza recién horneada con maíz, tocineta y champiñones",
+      tagline: "Masa artesanal, horneada al momento",
+    },
+    lasanas: {
+      image: "/menu/lasana.webp",
+      alt: "Lasaña mixta gratinada con tostadas de ajo",
+      tagline: "Gratinada, casera y bien servida",
+    },
+    desgranados: {
+      image: "/menu/desgranado.webp",
+      alt: "Desgranado gratinado con queso derretido",
+      tagline: "Como la lasaña, pero con maíz o maduro",
+    },
+    bebidas: {
+      image: "/menu/bebidas.webp",
+      alt: "Jugo de mango, limonada y frappé de fresa",
+      tagline: "Jugos naturales, frappés, limonadas y gaseosas",
+    },
+  }
+
+  const pizzaGroups = [
+    {
+      type: "traditional",
+      title: "Tradicionales",
+      dot: "bg-jussi-orange",
+    },
+    {
+      type: "special",
+      title: "Especiales",
+      dot: "bg-jussi-red",
+    },
+  ] as const
+
+  const chipList = (label: string, values: string[], chipClass: string) => (
+    <div className="mt-4">
+      <p className="mb-2 text-sm font-bold uppercase tracking-widest opacity-80">{label}</p>
+      <div className="flex flex-wrap gap-2">
+        {values.map((value) => (
+          <span key={value} className={`rounded-full px-3 py-1 text-sm font-bold ring-1 ring-jussi-brown/15 ${chipClass}`}>
+            {value}
+          </span>
+        ))}
+      </div>
+    </div>
+  )
+
   return (
     <PedidoPage>
+      {/* Encabezado y categorías en un mismo bloque fijo: así no queda rendija entre los dos */}
+      <div className="sticky top-0 z-30">
       <PedidoHeader title="Nuestro menú" onBack={onBack} />
 
       {/* Navegación por categoría */}
-      <nav className="sticky top-[70px] z-20 border-b border-jussi-brown/15 bg-jussi-beige">
+      <nav className="border-b border-jussi-brown/15 bg-jussi-beige">
         <div className="mx-auto flex max-w-md gap-2 overflow-x-auto px-4 py-3 md:max-w-2xl lg:max-w-5xl xl:max-w-6xl">
           {menuCategories.map((category, idx) => (
             <a
@@ -264,58 +324,104 @@ export function MenuView({ onStartOrder, onBack }: MenuViewProps) {
           ))}
         </div>
       </nav>
+      </div>
 
       <main className="mx-auto max-w-md px-4 pb-32 pt-6 md:max-w-2xl lg:max-w-5xl xl:max-w-6xl">
-        {menuCategories.map((category, idx) => (
-          <section key={category.id} id={category.id} className="mb-10 scroll-mt-40">
-            <h2 className={`mb-4 inline-block rounded-full ring-1 ring-jussi-brown/15 px-5 py-2 font-display text-2xl font-extrabold shadow-pop-sm ${accents[idx % accents.length]}`}>
-              {category.name}
-            </h2>
+        {menuCategories.map((category, idx) => {
+          const hero = heroes[category.id]
+          return (
+            // Cada sección es una sola tarjeta: la foto es su parte de arriba y el contenido va pegado debajo
+            <section
+              key={category.id}
+              id={category.id}
+              className="card-soft mb-10 scroll-mt-40 overflow-hidden bg-white last:mb-0"
+            >
+              <figure className="relative bg-jussi-brown">
+                <img
+                  src={hero.image}
+                  alt={hero.alt}
+                  loading={idx === 0 ? "eager" : "lazy"}
+                  className="h-32 w-full object-cover sm:h-36 lg:h-40"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-jussi-brown/90 via-jussi-brown/50 to-jussi-brown/10" />
+                <figcaption className="absolute inset-0 flex items-center justify-between gap-3 px-5 md:px-8">
+                  <div className="min-w-0">
+                    <h2 className="font-display text-3xl font-extrabold leading-none text-white md:text-5xl">
+                      {category.name.replace(/^\S+\s/, "")}
+                    </h2>
+                    <p className="mt-1.5 text-sm font-semibold text-white/90 md:text-base">{hero.tagline}</p>
+                  </div>
+                  <span className={`sticker absolute right-3 top-3 flex-shrink-0 rotate-2 px-3 py-1 text-xs sm:static sm:px-4 sm:py-1.5 sm:text-sm ${accents[idx % accents.length]}`}>
+                    {category.items.length} {category.items.length === 1 ? "opción" : "opciones"}
+                  </span>
+                </figcaption>
+              </figure>
 
-            <div className="space-y-4 lg:grid lg:grid-cols-2 lg:items-start lg:gap-4 lg:space-y-0">
-              {category.items.map((item, index) => (
-                <article key={index} className="card-soft bg-white p-5">
-                  <h3 className="font-display text-xl font-extrabold leading-tight">{item.name}</h3>
-                  <p className="mt-1 text-base opacity-80">{item.ingredients}</p>
+              {category.id === "pizzas" ? (
+                // Pizzas: tradicionales y especiales dentro de la misma tarjeta, separadas por una línea
+                pizzaGroups.map((group, i) => {
+                  const pizzas = category.items.filter((item) => item.type === group.type)
+                  return (
+                    <div
+                      key={group.type}
+                      className={`px-5 pb-3 pt-5 md:px-6 ${i > 0 ? "border-t-2 border-dashed border-jussi-brown/15" : ""}`}
+                    >
+                      <h3 className="flex items-center gap-2 font-display text-xl font-extrabold sm:text-2xl">
+                        <span className={`inline-block h-3 w-3 flex-shrink-0 rounded-full ${group.dot}`} aria-hidden />
+                        Pizzas {group.title.toLowerCase()}
+                      </h3>
+                      {chipList("Tamaños y precios", pizzas[0]?.sizes ?? [], "bg-jussi-brown/10")}
 
-                  {item.sizes && (
-                    <div className="mt-4">
-                      <p className="mb-2 text-sm font-bold uppercase tracking-widest opacity-80">Tamaños</p>
-                      <div className="flex flex-wrap gap-2">
-                        {item.sizes.map((size, sizeIndex) => (
-                          <span
-                            key={sizeIndex}
-                            className="rounded-full ring-1 ring-jussi-brown/15 bg-jussi-brown/10 px-3 py-1 text-sm font-bold"
-                          >
-                            {size}
-                          </span>
+                      <p className="mb-1 mt-5 text-sm font-bold uppercase tracking-widest opacity-80">Sabores</p>
+                      <ul className="grid sm:grid-cols-2 sm:gap-x-8 lg:grid-cols-3">
+                        {pizzas.map((pizza) => (
+                          <li key={pizza.name} className="border-t border-dashed border-jussi-brown/15 py-3">
+                            <h4 className="font-display text-base font-extrabold leading-tight">{pizza.name}</h4>
+                            <p className="mt-0.5 text-sm opacity-75">{pizza.ingredients}</p>
+                          </li>
                         ))}
+                      </ul>
+                    </div>
+                  )
+                })
+              ) : (
+                (() => {
+                  // Productos en lista. Si todos comparten opciones y precios (p. ej. desgranados), esas
+                  // opciones se muestran una vez arriba.
+                  const items = category.items
+                  const sameAsFirst = (item: MenuItem) =>
+                    JSON.stringify([item.sizes, item.flavors]) === JSON.stringify([items[0].sizes, items[0].flavors])
+                  const shared = items.length > 1 && items.every(sameAsFirst) ? items[0] : null
+                  const optionsLabel = category.id === "bebidas" || category.id === "desgranados" ? "Opciones" : "Sabores"
+                  const chips = (item: MenuItem) => (
+                    <>
+                      {item.sizes && chipList("Tamaños", item.sizes, "bg-jussi-brown/10")}
+                      {item.flavors && item.flavors.length > 0 && chipList(optionsLabel, item.flavors, "bg-jussi-orange/40")}
+                    </>
+                  )
+
+                  return (
+                    <div className="px-5 pb-1 pt-1 md:px-6">
+                      {shared && <div className="pb-4">{chips(shared)}</div>}
+                      {/* Cada producto lleva línea arriba; sin opciones compartidas se recorta la de la primera fila */}
+                      <div className="overflow-hidden">
+                        <ul className={`grid sm:gap-x-8 ${items.length > 1 ? "sm:grid-cols-2" : ""} ${shared ? "" : "-mt-px"}`}>
+                          {items.map((item) => (
+                            <li key={item.name} className="border-t border-dashed border-jussi-brown/15 py-4">
+                              <h3 className="font-display text-lg font-extrabold leading-tight">{item.name}</h3>
+                              <p className="mt-0.5 text-sm opacity-75">{item.ingredients}</p>
+                              {!shared && <div className="[&>div]:mt-3">{chips(item)}</div>}
+                            </li>
+                          ))}
+                        </ul>
                       </div>
                     </div>
-                  )}
-
-                  {item.flavors && item.flavors.length > 0 && (
-                    <div className="mt-4">
-                      <p className="mb-2 text-sm font-bold uppercase tracking-widest opacity-80">
-                        {category.id === "bebidas" || category.id === "desgranados" ? "Opciones" : "Sabores"}
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {item.flavors.map((flavor, flavorIndex) => (
-                          <span
-                            key={flavorIndex}
-                            className="rounded-full ring-1 ring-jussi-brown/15 bg-jussi-orange/40 px-3 py-1 text-sm font-bold"
-                          >
-                            {flavor}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </article>
-              ))}
-            </div>
-          </section>
-        ))}
+                  )
+                })()
+              )}
+            </section>
+          )
+        })}
       </main>
 
       <PedidoActionBar>

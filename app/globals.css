@@ -264,6 +264,20 @@ iframe {
   }
 }
 
+/* Ícono que flota suavemente (aviso de fuera de servicio) */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(3deg);
+  }
+}
+.animate-float {
+  animation: float 3.2s ease-in-out infinite;
+}
+
 /* Bloque del pedido al que se acaba de llegar con el scroll automático: se eleva y brilla un instante */
 @keyframes sectionArrive {
   0% {
@@ -378,4 +392,10 @@ textarea,
     width: 50px !important;
     height: 50px !important;
   }
+}
+
+/* Foto fija del hero (landing): alto estable aunque aparezca/desaparezca la barra del navegador en celular */
+.hero-photo {
+  height: 100vh;
+  height: 100lvh;
 }
