@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { ArrowLeft, Clock } from "lucide-react"
 
 /** Horario de domicilios: 5:30 PM a 9:40 PM, todos los días menos el martes */
@@ -8,9 +8,9 @@ const OPEN = { h: 17, m: 30 }
 const CLOSE = { h: 21, m: 40 }
 const CLOSED_WEEKDAY = 2 // martes
 
-// Cierre especial (03 al 05 de agosto de 2026; 7 = agosto)
-const SPECIAL_CLOSE_START = new Date(2026, 7, 3, 0, 0, 0)
-const SPECIAL_CLOSE_END = new Date(2026, 7, 5, 0, 0, 0)
+// Cierre especial: todo el domingo 4 de octubre de 2026 (9 = octubre); el lunes 5 se atiende normal
+const SPECIAL_CLOSE_START = new Date(2026, 9, 4, 0, 0, 0)
+const SPECIAL_CLOSE_END = new Date(2026, 9, 5, 0, 0, 0)
 
 export type OutOfServiceReason = "special" | "tuesday" | "early" | "closed"
 
@@ -72,7 +72,7 @@ const content: Record<OutOfServiceReason, { emoji: string; title: string; messag
   special: {
     emoji: "🚧",
     title: "Hoy no tenemos servicio",
-    message: "Por motivos de fuerza mayor no estamos atendiendo. Volvemos el miércoles 5 de agosto. ¡Gracias por tu comprensión!",
+    message: "Por motivos de fuerza mayor no estamos atendiendo. Volvemos mañana lunes 5 de octubre desde las 5:30 PM. ¡Gracias por tu comprensión!",
   },
 }
 
@@ -94,7 +94,7 @@ export function previewTime(reason: OutOfServiceReason) {
   if (reason === "early") return at(0, 15, 10)
   if (reason === "closed") return at(0, 22, 15)
   if (reason === "tuesday") return at((CLOSED_WEEKDAY - d.getDay() + 7) % 7, 13)
-  return new Date(2026, 7, 3, 13) // special
+  return new Date(SPECIAL_CLOSE_START.getTime() + 13 * 3_600_000) // special
 }
 
 export function OutOfService({
@@ -114,7 +114,6 @@ export function OutOfService({
     return () => clearInterval(id)
   }, [])
   const now = simulatedNow ?? realNow
-  const { bgRef, cardRef } = useParallax()
 
   const { emoji, title, message } = content[reason]
   const next = getNextOpening(now)
@@ -125,17 +124,14 @@ export function OutOfService({
     <div className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-jussi-brown p-4 font-sans text-jussi-brown">
       {/* Foto de fondo, oscurecida para que la tarjeta resalte */}
       <img
-        ref={bgRef}
         src="/menu/pizza-mixta.webp"
         alt=""
         aria-hidden
-        className="absolute inset-0 h-full w-full scale-[1.18] object-cover opacity-40 blur-[2px] will-change-transform"
+        className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-[2px]"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-jussi-brown/60 via-jussi-brown/40 to-jussi-brown/80" aria-hidden />
 
-      {/* Capa del frente: se mueve un poco a favor del mouse (la foto va en contra) */}
-      <div ref={cardRef} className="relative w-full max-w-md will-change-transform">
-      <div className="animate-rise relative w-full">
+      <div className="animate-rise relative w-full max-w-md">
         {/* Sello "Cerrado" */}
         <span className="sticker absolute -right-2 -top-4 z-10 rotate-6 bg-jussi-red text-white sm:-right-5">Cerrado</span>
 
@@ -201,65 +197,6 @@ export function OutOfService({
           </div>
         </div>
       </div>
-      </div>
     </div>
   )
-}
-
-/**
- * Parallax en dos capas. Escritorio: la foto se desplaza en contra del mouse y la tarjeta un poco a favor.
- * Celular (y cualquier scroll): la foto baja más lento que el contenido. Se suaviza con interpolación y
- * el bucle de animación solo corre mientras hay movimiento.
- */
-function useParallax() {
-  const bgRef = useRef<HTMLImageElement>(null)
-  const cardRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const bg = bgRef.current
-    const card = cardRef.current
-    if (!bg || !card) return
-
-    const target = { x: 0, y: 0 }
-    const current = { x: 0, y: 0 }
-    let raf = 0
-
-    const render = () => {
-      current.x += (target.x - current.x) * 0.08
-      current.y += (target.y - current.y) * 0.08
-      const scroll = window.scrollY * 0.35
-      bg.style.transform = `translate3d(${-current.x * 28}px, ${-current.y * 28 + scroll}px, 0) scale(1.18)`
-      card.style.transform = `translate3d(${current.x * 8}px, ${current.y * 8}px, 0)`
-      const settled = Math.abs(target.x - current.x) < 0.001 && Math.abs(target.y - current.y) < 0.001
-      raf = settled ? 0 : requestAnimationFrame(render)
-    }
-    const kick = () => {
-      if (!raf) raf = requestAnimationFrame(render)
-    }
-    const onMove = (e: PointerEvent) => {
-      if (e.pointerType !== "mouse") return
-      // -0.5 a 0.5 según la posición del mouse en la ventana
-      target.x = e.clientX / window.innerWidth - 0.5
-      target.y = e.clientY / window.innerHeight - 0.5
-      kick()
-    }
-    const onLeave = () => {
-      target.x = 0
-      target.y = 0
-      kick()
-    }
-
-    window.addEventListener("pointermove", onMove, { passive: true })
-    document.documentElement.addEventListener("mouseleave", onLeave)
-    window.addEventListener("scroll", kick, { passive: true })
-    kick()
-    return () => {
-      cancelAnimationFrame(raf)
-      window.removeEventListener("pointermove", onMove)
-      document.documentElement.removeEventListener("mouseleave", onLeave)
-      window.removeEventListener("scroll", kick)
-    }
-  }, [])
-
-  return { bgRef, cardRef }
 }
