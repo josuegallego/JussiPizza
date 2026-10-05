@@ -8,15 +8,20 @@ const OPEN = { h: 17, m: 30 }
 const CLOSE = { h: 21, m: 40 }
 const CLOSED_WEEKDAY = 2 // martes
 
-// Cierre especial: todo el domingo 4 de octubre de 2026 (9 = octubre); el lunes 5 se atiende normal
-const SPECIAL_CLOSE_START = new Date(2026, 9, 4, 0, 0, 0)
-const SPECIAL_CLOSE_END = new Date(2026, 9, 5, 0, 0, 0)
+/**
+ * Cierre especial (p. ej. sin insumos o fuerza mayor). Para activarlo, pon las fechas y el mensaje:
+ *   { start: new Date(2026, 9, 4), end: new Date(2026, 9, 5), message: "Volvemos mañana desde las 5:30 PM." }
+ * (los meses van de 0 a 11: 9 = octubre). Déjalo en null cuando haya servicio normal.
+ */
+const SPECIAL_CLOSE = null as { start: Date; end: Date; message: string } | null
+
+const inSpecialClose = (d: Date) => !!SPECIAL_CLOSE && d >= SPECIAL_CLOSE.start && d <= SPECIAL_CLOSE.end
 
 export type OutOfServiceReason = "special" | "tuesday" | "early" | "closed"
 
 /** Motivo por el que no se reciben pedidos ahora, o null si está abierto */
 export function getOutOfServiceReason(now = new Date()): OutOfServiceReason | null {
-  if (now >= SPECIAL_CLOSE_START && now <= SPECIAL_CLOSE_END) return "special"
+  if (inSpecialClose(now)) return "special"
   if (now.getDay() === CLOSED_WEEKDAY) return "tuesday"
   const minutes = now.getHours() * 60 + now.getMinutes()
   if (minutes < OPEN.h * 60 + OPEN.m) return "early"
@@ -30,7 +35,7 @@ function getNextOpening(now: Date) {
     const candidate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i, OPEN.h, OPEN.m)
     if (candidate <= now) continue
     if (candidate.getDay() === CLOSED_WEEKDAY) continue
-    if (candidate >= SPECIAL_CLOSE_START && candidate <= SPECIAL_CLOSE_END) continue
+    if (inSpecialClose(candidate)) continue
     return candidate
   }
   return null
@@ -72,7 +77,7 @@ const content: Record<OutOfServiceReason, { emoji: string; title: string; messag
   special: {
     emoji: "🚧",
     title: "Hoy no tenemos servicio",
-    message: "Por motivos de fuerza mayor no estamos atendiendo. Volvemos mañana lunes 5 de octubre desde las 5:30 PM. ¡Gracias por tu comprensión!",
+    message: SPECIAL_CLOSE?.message ?? "Por motivos de fuerza mayor no estamos atendiendo. ¡Gracias por tu comprensión!",
   },
 }
 
@@ -94,7 +99,7 @@ export function previewTime(reason: OutOfServiceReason) {
   if (reason === "early") return at(0, 15, 10)
   if (reason === "closed") return at(0, 22, 15)
   if (reason === "tuesday") return at((CLOSED_WEEKDAY - d.getDay() + 7) % 7, 13)
-  return new Date(SPECIAL_CLOSE_START.getTime() + 13 * 3_600_000) // special
+  return SPECIAL_CLOSE ? new Date(SPECIAL_CLOSE.start.getTime() + 13 * 3_600_000) : at(0, 13) // special
 }
 
 export function OutOfService({
