@@ -1,7 +1,7 @@
 "use client"
 
 import type { OrderItem } from "./order-flow"
-import { PedidoHeader, PedidoPage, Section, Stepper, OptionCard, AddToOrderBar, useDraft, useToast } from "./pedido-ui"
+import { PedidoHeader, PedidoPage, Section, Stepper, OptionCard, AddToOrderButton, PedidoBody, optionGrid, useDraft, useToast } from "./pedido-ui"
 
 interface BebidaOrderProps {
   onBack: () => void
@@ -108,13 +108,15 @@ export function BebidaOrder({ onBack, onAddItem }: BebidaOrderProps) {
     <PedidoPage>
       <PedidoHeader title="🥤 Bebida" onBack={onBack} step={1} />
 
-      <main className="mx-auto max-w-md px-4 pb-40 pt-6 md:max-w-2xl">
+      <PedidoBody
+        actions={<AddToOrderButton onClick={handleAddToOrder} disabled={!canAddToOrder} total={getPrice() * quantity} />}
+      >
         <Section title="Cantidad">
           <Stepper value={quantity} onChange={setQuantity} />
         </Section>
 
         <Section title="¿Qué quieres tomar?">
-          <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label="Tipo de bebida">
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4" role="radiogroup" aria-label="Tipo de bebida">
             {types.map((typeOption) => (
               <button
                 key={typeOption.name}
@@ -138,7 +140,7 @@ export function BebidaOrder({ onBack, onAddItem }: BebidaOrderProps) {
 
         {type === "Jugo" && (
           <Section title="¿En agua o en leche?">
-            <div className="space-y-3" role="radiogroup" aria-label="Base">
+            <div className={optionGrid} role="radiogroup" aria-label="Base">
               {juiceBases.map((baseOption) => (
                 <OptionCard
                   key={baseOption.name}
@@ -154,7 +156,7 @@ export function BebidaOrder({ onBack, onAddItem }: BebidaOrderProps) {
 
         {type && (
           <Section title={flavorTitle[type]}>
-            <div className="space-y-3" role="radiogroup" aria-label="Opciones">
+            <div className={optionGrid} role="radiogroup" aria-label="Opciones">
               {type === "Jugo" &&
                 juiceFlavors.map((option) => (
                   <OptionCard key={option} selected={flavor === option} onSelect={() => setFlavor(option)} title={option} />
@@ -193,9 +195,7 @@ export function BebidaOrder({ onBack, onAddItem }: BebidaOrderProps) {
             </div>
           </Section>
         )}
-      </main>
-
-      <AddToOrderBar onClick={handleAddToOrder} disabled={!canAddToOrder} total={getPrice() * quantity} />
+      </PedidoBody>
     </PedidoPage>
   )
 }

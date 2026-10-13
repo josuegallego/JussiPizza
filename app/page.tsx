@@ -185,8 +185,10 @@ export default function Home() {
         className="relative flex min-h-screen items-end overflow-hidden px-4 pb-14 pt-36 md:px-8 md:pb-20"
         style={{ clipPath: "inset(0)" }}
       >
-        {/* Parallax: imagen fija, recortada al área del hero */}
-        <div className="fixed inset-0 z-0">
+        {/* Parallax: imagen fija, recortada al área del hero. Alto fijo en 100lvh (pantalla con la barra
+            del navegador escondida): con inset-0, en celular el alto cambiaba al mostrarse/ocultarse esa
+            barra y la foto se reescalaba como un zoom */}
+        <div className="hero-photo fixed inset-x-0 top-0 z-0">
           <img src="/IMG_0096.jpg" alt="" className="h-full w-full object-cover object-center" />
         </div>
         <div className="absolute inset-0 z-10 bg-jussi-brown/50" />
@@ -452,7 +454,7 @@ export default function Home() {
 
           <div className="mt-20 grid grid-cols-1 border-t border-jussi-beige/15 md:grid-cols-3">
             {[
-              { Icon: Clock, title: "Horarios", lines: ["Miércoles a Lunes", "6:00 PM - 10:30 PM"] },
+              { Icon: Clock, title: "Horarios", lines: ["Miércoles a lunes", "Local: 6:00 PM - 10:30 PM", "Domicilios: hasta 9:40 PM"] },
               { Icon: Users, title: "Servicio", lines: ["Domicilio", "Para llevar", "Consumo en sitio"] },
               { Icon: Pizza, title: "Especialidad", lines: ["Pizza crocante", "Ingredientes frescos", "Receta tradicional"] },
             ].map(({ Icon, title, lines }, i) => (

@@ -2,7 +2,7 @@
 
 import { Trash2, Plus, ArrowRight, ShoppingBag } from "lucide-react"
 import type { OrderItem } from "./order-flow"
-import { PedidoHeader, PedidoPage, PedidoActionBar } from "./pedido-ui"
+import { PedidoHeader, PedidoPage, PedidoBody, emojiByType } from "./pedido-ui"
 
 interface OrderSummaryProps {
   items: OrderItem[]
@@ -12,13 +12,6 @@ interface OrderSummaryProps {
   onAddMore: () => void
   totalPrice: number
   deliveryCost: number
-}
-
-const emojiByType: Record<OrderItem["type"], string> = {
-  pizza: "🍕",
-  lasana: "🍝",
-  desgranado: "🌽",
-  bebida: "🥤",
 }
 
 export function OrderSummary({
@@ -32,13 +25,51 @@ export function OrderSummary({
 }: OrderSummaryProps) {
   const finalTotal = totalPrice + deliveryCost
 
+  const totals = (
+    <div className="card-soft bg-jussi-brown p-5 text-jussi-beige">
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="opacity-80">Subtotal</span>
+          <span className="font-semibold">${totalPrice.toLocaleString()}</span>
+        </div>
+        {deliveryCost > 0 && (
+          <div className="flex items-center justify-between">
+            <span className="opacity-80">Domicilio</span>
+            <span className="font-semibold">${deliveryCost.toLocaleString()}</span>
+          </div>
+        )}
+        <div className="flex items-end justify-between border-t-2 border-dashed border-jussi-beige/30 pt-3">
+          <span className="font-display text-lg font-bold">Total</span>
+          <span className="font-display text-4xl font-extrabold text-jussi-orange">${finalTotal.toLocaleString()}</span>
+        </div>
+      </div>
+    </div>
+  )
+
   return (
     <PedidoPage>
       <PedidoHeader title="Tu pedido" onBack={onBack} step={2} />
 
-      <main className={`mx-auto max-w-md px-4 pt-6 md:max-w-2xl ${items.length > 0 ? "pb-44" : "pb-10"}`}>
+      <PedidoBody
+        mobilePad="pb-44"
+        aside={items.length > 0 ? totals : undefined}
+        actions={
+          items.length > 0 && (
+            <>
+              <button onClick={onAddMore} className="btn-pop btn-pop-beige btn-pop-sm w-full">
+                <Plus className="h-5 w-5" />
+                Añadir más productos
+              </button>
+              <button onClick={onContinue} className="btn-pop btn-pop-red btn-pop-lg w-full">
+                Continuar con el pedido
+                <ArrowRight className="h-5 w-5" />
+              </button>
+            </>
+          )
+        }
+      >
         {items.length === 0 ? (
-          <div className="card-soft mt-6 bg-white px-6 py-12 text-center">
+          <div className="card-soft mt-6 bg-white px-6 py-12 text-center lg:mt-0">
             <span className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full ring-1 ring-jussi-brown/15 bg-jussi-orange">
               <ShoppingBag className="h-8 w-8" />
             </span>
@@ -55,7 +86,7 @@ export function OrderSummary({
               {items.length} {items.length === 1 ? "producto" : "productos"}
             </p>
 
-            <ul className="mb-6 space-y-4">
+            <ul className="mb-6 space-y-4 lg:mb-0">
               {items.map((item) => (
                 <li key={item.id} className="card-soft flex items-start gap-3 bg-white p-4">
                   <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full ring-1 ring-jussi-brown/15 bg-jussi-beige text-2xl">
@@ -84,42 +115,11 @@ export function OrderSummary({
               ))}
             </ul>
 
-            <div className="card-soft bg-jussi-brown p-5 text-jussi-beige">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="opacity-80">Subtotal</span>
-                  <span className="font-semibold">${totalPrice.toLocaleString()}</span>
-                </div>
-                {deliveryCost > 0 && (
-                  <div className="flex items-center justify-between">
-                    <span className="opacity-80">Domicilio</span>
-                    <span className="font-semibold">${deliveryCost.toLocaleString()}</span>
-                  </div>
-                )}
-                <div className="flex items-end justify-between border-t-2 border-dashed border-jussi-beige/30 pt-3">
-                  <span className="font-display text-lg font-bold">Total</span>
-                  <span className="font-display text-4xl font-extrabold text-jussi-orange">
-                    ${finalTotal.toLocaleString()}
-                  </span>
-                </div>
-              </div>
-            </div>
+            {/* En escritorio el total va en la columna lateral */}
+            <div className="lg:hidden">{totals}</div>
           </>
         )}
-      </main>
-
-      {items.length > 0 && (
-        <PedidoActionBar>
-          <button onClick={onAddMore} className="btn-pop btn-pop-beige btn-pop-sm w-full">
-            <Plus className="h-5 w-5" />
-            Añadir más productos
-          </button>
-          <button onClick={onContinue} className="btn-pop btn-pop-red btn-pop-lg w-full">
-            Continuar con el pedido
-            <ArrowRight className="h-5 w-5" />
-          </button>
-        </PedidoActionBar>
-      )}
+      </PedidoBody>
     </PedidoPage>
   )
 }

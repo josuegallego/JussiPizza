@@ -78,7 +78,12 @@ export default function HomePage() {
           </span>
           <div className="text-base">
             <p className="font-display font-bold">Horario de atención</p>
-            <p>Miércoles a lunes · 5:30 – 10:30 PM</p>
+            <p>
+              <strong>Domicilios:</strong> 5:30 – 9:40 PM
+            </p>
+            <p>
+              <strong>En el local:</strong> hasta las 10:30 PM
+            </p>
             <p className="font-semibold text-jussi-red">Los martes no tenemos servicio</p>
           </div>
         </div>

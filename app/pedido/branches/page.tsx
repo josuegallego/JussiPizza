@@ -30,9 +30,9 @@ export default function BranchesPage() {
 
   return (
     <PedidoPage>
-      <PedidoHeader title="Nuestras ubicaciones" onBack={() => router.back()} wide />
+      <PedidoHeader title="Nuestras ubicaciones" onBack={() => router.back()} />
 
-      <main className="mx-auto max-w-md px-4 pb-16 pt-8 md:max-w-4xl">
+      <main className="mx-auto max-w-md px-4 pb-16 pt-8 md:max-w-2xl lg:max-w-5xl xl:max-w-6xl">
         <div className="mb-8">
           <h2 className="font-display text-4xl font-extrabold md:text-5xl">
             Visítanos <span className="text-jussi-red">📍</span>
@@ -40,7 +40,7 @@ export default function BranchesPage() {
           <p className="mt-2 text-lg opacity-80">Encuentra la sede más cercana a ti.</p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 lg:grid-cols-2">
           {branches.map((branch, index) => (
             <article key={index} className="card-soft overflow-hidden bg-white">
               <div className={`flex items-center gap-3 border-b border-jussi-brown/15 p-5 ${accents[index % accents.length]}`}>

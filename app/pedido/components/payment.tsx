@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { MessageCircle, CheckCircle, ArrowUpRight, X } from "lucide-react"
 import type { OrderItem, DeliveryInfo } from "./order-flow"
-import { PedidoHeader, PedidoPage, Section, OptionCard, PedidoActionBar, Field, useDraft, useToast } from "./pedido-ui"
+import { PedidoHeader, PedidoPage, PedidoBody, optionGrid, Section, OptionCard, Field, useDraft, useToast } from "./pedido-ui"
 
 interface PaymentProps {
   orderItems: OrderItem[]
@@ -269,9 +269,26 @@ Muchas gracias!`
     <PedidoPage>
       <PedidoHeader title="Pago" onBack={onBack} step={4} />
 
-      <main className="mx-auto max-w-md px-4 pb-64 pt-6 md:max-w-2xl">
-        {/* Resumen */}
-        <section className="card-soft mb-6 bg-jussi-brown p-5 text-jussi-beige">
+      <PedidoBody
+        mobilePad="pb-64"
+        actions={
+          <>
+            <button
+              onClick={handleWhatsApp}
+              aria-disabled={!paymentMethod || cashInvalid}
+              className={`btn-pop btn-pop-red btn-pop-lg w-full ${!paymentMethod || cashInvalid ? "opacity-60" : ""}`}
+            >
+              <MessageCircle className="h-5 w-5" />
+              Enviar pedido por WhatsApp
+            </button>
+            <button onClick={handleCompleteOrder} className="btn-pop btn-pop-beige btn-pop-sm w-full">
+              Cancelar pedido
+            </button>
+          </>
+        }
+      >
+        {/* Resumen (en escritorio va en la columna lateral) */}
+        <section className="card-soft mb-6 bg-jussi-brown p-5 text-jussi-beige lg:hidden">
           <h2 className="font-display text-xl font-extrabold">Resumen del pedido</h2>
           <ul className="mt-4 space-y-2 text-base">
             {orderItems.map((item, index) => (
@@ -301,8 +318,42 @@ Muchas gracias!`
           </div>
         </section>
 
+        {/* En escritorio hay espacio para repasar los datos de entrega antes de enviar */}
+        <section className="card-soft mb-6 hidden p-5 lg:block">
+          <h2 className="font-display text-xl font-extrabold">
+            {deliveryInfo.type === "delivery" ? "🏠 Domicilio" : "📍 Recoger en tienda"}
+          </h2>
+          <dl className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2 text-base">
+            <div>
+              <dt className="text-sm font-bold uppercase tracking-wider opacity-60">Nombre</dt>
+              <dd className="font-semibold">{deliveryInfo.name}</dd>
+            </div>
+            <div>
+              <dt className="text-sm font-bold uppercase tracking-wider opacity-60">Celular</dt>
+              <dd className="font-semibold">{deliveryInfo.phone}</dd>
+            </div>
+            {deliveryInfo.type === "delivery" ? (
+              <>
+                <div>
+                  <dt className="text-sm font-bold uppercase tracking-wider opacity-60">Dirección</dt>
+                  <dd className="font-semibold">{deliveryInfo.address}</dd>
+                </div>
+                <div>
+                  <dt className="text-sm font-bold uppercase tracking-wider opacity-60">Barrio / unidad</dt>
+                  <dd className="font-semibold">{deliveryInfo.neighborhood}</dd>
+                </div>
+              </>
+            ) : (
+              <div>
+                <dt className="text-sm font-bold uppercase tracking-wider opacity-60">Sede</dt>
+                <dd className="font-semibold">{deliveryInfo.location === "anturios" ? "Sede Anturios" : "Sede Sachamate"}</dd>
+              </div>
+            )}
+          </dl>
+        </section>
+
         <Section title="Método de pago">
-          <div className="space-y-3" role="radiogroup" aria-label="Método de pago">
+          <div className={optionGrid} role="radiogroup" aria-label="Método de pago">
             <OptionCard
               selected={paymentMethod === "cash"}
               onSelect={() => setPaymentMethod("cash")}
@@ -345,21 +396,7 @@ Muchas gracias!`
             Comunícate por WhatsApp para enviar el comprobante de transferencia.
           </div>
         )}
-      </main>
-
-      <PedidoActionBar>
-        <button
-          onClick={handleWhatsApp}
-          aria-disabled={!paymentMethod || cashInvalid}
-          className={`btn-pop btn-pop-red btn-pop-lg w-full ${!paymentMethod || cashInvalid ? "opacity-60" : ""}`}
-        >
-          <MessageCircle className="h-5 w-5" />
-          Enviar pedido por WhatsApp
-        </button>
-        <button onClick={handleCompleteOrder} className="btn-pop btn-pop-beige btn-pop-sm w-full">
-          Cancelar pedido
-        </button>
-      </PedidoActionBar>
+      </PedidoBody>
 
       {renderSedeModal(showLocationModal, () => setShowLocationModal(false))}
       {renderSedeModal(showWhatsAppModal, () => setShowWhatsAppModal(false))}
