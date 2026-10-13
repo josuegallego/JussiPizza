@@ -72,8 +72,10 @@ function OrderFlowInner({ onBack }: OrderFlowProps) {
   const currentTime = currentHour + currentMinute / 60
 
 
-    // Check if it's Tuesday (day 2)
-    if (currentDay === 2) {
+    // Martes sin servicio, salvo excepción: martes 13 de octubre de 2026 sí se trabaja
+    const isOpenTuesday =
+      now.getFullYear() === 2026 && now.getMonth() === 9 && now.getDate() === 13
+    if (currentDay === 2 && !isOpenTuesday) {
       setIsOutOfService(true)
       setOutOfServiceMessage("🚫 Los martes no tenemos servicio. ¡Te esperamos mañana a partir de las 5:30 PM!")
       return false
