@@ -13,7 +13,11 @@ const CLOSED_WEEKDAY = 2 // martes
  *   { start: new Date(2026, 9, 4), end: new Date(2026, 9, 5), message: "Volvemos mañana desde las 5:30 PM." }
  * (los meses van de 0 a 11: 9 = octubre). Déjalo en null cuando haya servicio normal.
  */
-const SPECIAL_CLOSE = null as { start: Date; end: Date; message: string } | null
+const SPECIAL_CLOSE = {
+  start: new Date(2026, 9, 16),
+  end: new Date(2026, 9, 16, 23, 59, 59),
+  message: "Este viernes no estamos atendiendo. Volvemos mañana sábado desde las 5:30 PM. ¡Gracias por tu comprensión!",
+} as { start: Date; end: Date; message: string } | null
 
 const inSpecialClose = (d: Date) => !!SPECIAL_CLOSE && d >= SPECIAL_CLOSE.start && d <= SPECIAL_CLOSE.end
 
